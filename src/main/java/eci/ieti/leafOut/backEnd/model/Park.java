@@ -4,55 +4,55 @@ import java.util.List;
 
 public class Park {
 
-    private Integer id;
-    private String name;
-    private String description;
-    private Location location;
-    private String address;
+    private Integer idPark;
+    private String namePark;
+    private String descriptionPark;
+    private Location locationPark;
+    private String addressPark;
     private List<Plan> plans;
 
     public Park(){
 
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIdPark() {
+        return idPark;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdPark(Integer idPark) {
+        this.idPark = idPark;
     }
 
-    public String getName() {
-        return name;
+    public String getNamePark() {
+        return namePark;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNamePark(String namePark) {
+        this.namePark = namePark;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescriptionPark() {
+        return descriptionPark;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptionPark(String descriptionPark) {
+        this.descriptionPark = descriptionPark;
     }
 
-    public Location getLocation() {
-        return location;
+    public Location getLocationPark() {
+        return locationPark;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocationPark(Location locationPark) {
+        this.locationPark = locationPark;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddressPark() {
+        return addressPark;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddressPark(String addressPark) {
+        this.addressPark = addressPark;
     }
 
     public List<Plan> getPlans() {
