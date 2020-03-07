@@ -17,6 +17,9 @@ import java.util.UUID;
 @RequestMapping("/payments")
 public class PaymentsController {
 
+    /**
+     * Injected payments service instance
+     */
     @Autowired
     private PaymentsService paymentServices;
 
