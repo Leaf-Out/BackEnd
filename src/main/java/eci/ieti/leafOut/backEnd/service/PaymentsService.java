@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * This class offers the basic CRUD methods of a payment
  *
- * @author <a href=josealejandro.naranjo@payulatam.com> José Alejandro Naranjo Guzmán </a>
+ * @author <a href=alejoguzm07@gmail.com> José Alejandro Naranjo Guzmán </a>
  * @since 0.0.1
  */
 public interface PaymentsService {
