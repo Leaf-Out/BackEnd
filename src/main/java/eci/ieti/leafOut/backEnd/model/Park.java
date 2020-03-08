@@ -1,4 +1,5 @@
-package eci.ieti.leafOut.backEnd.model;
+package eci.ieti.leafout.backEnd.model;
+
 
 import java.util.List;
 
@@ -66,4 +67,5 @@ public class Park {
 
 
 }
+
 

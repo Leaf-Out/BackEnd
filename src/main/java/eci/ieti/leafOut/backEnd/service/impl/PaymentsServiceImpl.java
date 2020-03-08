@@ -1,7 +1,13 @@
 package eci.ieti.leafout.backend.service.impl;
 
+import com.sun.tools.javac.util.List;
+import eci.ieti.leafout.backend.model.Purchase;
+import eci.ieti.leafout.backend.model.Refund;
+import eci.ieti.leafout.backend.model.Transaction;
 import eci.ieti.leafout.backend.service.PaymentsService;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 /**
  * This class implements the basic CRUD methods of a payment
@@ -12,23 +18,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentsServiceImpl implements PaymentsService {
 
-	@Override public void getAllTransactions() {
+	@Override
+	public void pay(Purchase purchase, UUID user) {
 
 	}
 
-	@Override public void pay() {
+	@Override
+	public void refund(Refund refund) {
 
 	}
 
-	@Override public void refund() {
+	@Override
+	public List<Transaction> getAllTransactions() {
 
+		return null;
 	}
 
-	@Override public void getTransactionsByUserId() {
+	@Override
+	public List<Transaction> getTransactionsByUser(UUID user) {
 
+		return null;
 	}
 
-	@Override public void getTransactionById() {
+	@Override
+	public Transaction getTransactionById(UUID id) {
 
+		return null;
 	}
 }

@@ -1,6 +1,8 @@
-package eci.ieti.leafOut.backEnd.model;
+
+package eci.ieti.leafout.backend.model;
 
 public class Plan {
+
 
 
     private Integer idPlan;
@@ -52,3 +54,4 @@ public class Plan {
         this.addressPlan = addressPlan;
     }
 }
+
