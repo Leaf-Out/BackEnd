@@ -1,11 +1,10 @@
-package eci.ieti.leafOut.backEnd.service;
+package eci.ieti.leafout.backend.service;
 
 
-import eci.ieti.leafOut.backEnd.model.Plan;
-import eci.ieti.leafOut.backEnd.persistence.LeafOutPersistenceException;
+import eci.ieti.leafout.backend.model.Plan;
+import eci.ieti.leafout.backend.repository.LeafOutPersistenceException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PlanService {
     List<Plan> getAllPlans() throws LeafOutPersistenceException;

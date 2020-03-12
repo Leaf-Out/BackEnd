@@ -1,19 +1,9 @@
-package eci.ieti.leafOut.backEnd.persistence;
+package eci.ieti.leafout.backend.repository;
 
 
-import eci.ieti.leafOut.backEnd.model.Park;
-import org.springframework.stereotype.Repository;
+import eci.ieti.leafout.backend.model.Park;
+import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
-import java.util.Optional;
-
-@Repository
-public interface ParkRepository {
-
-    List<Park> findAll();
-
-    Optional<Park> findByName(String name);
-
-    Park save(Park park);
+public interface ParkRepository extends CrudRepository<Park, Integer> {
 
 }

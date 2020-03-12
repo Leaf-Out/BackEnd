@@ -1,9 +1,9 @@
-package eci.ieti.leafOut.backEnd.service.impl;
+package eci.ieti.leafout.backend.service.impl;
 
-import eci.ieti.leafOut.backEnd.model.Park;
-import eci.ieti.leafOut.backEnd.persistence.LeafOutPersistenceException;
-import eci.ieti.leafOut.backEnd.persistence.ParkRepository;
-import eci.ieti.leafOut.backEnd.service.ParkService;
+import eci.ieti.leafout.backend.model.Park;
+import eci.ieti.leafout.backend.repository.LeafOutPersistenceException;
+import eci.ieti.leafout.backend.repository.ParkRepository;
+import eci.ieti.leafout.backend.service.ParkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package eci.ieti.leafOut.backEnd.restclient.impl;
+package eci.ieti.leafout.backend.restclient.impl;
 
 
 import eci.ieti.leafOut.backEnd.model.Park;

@@ -1,19 +1,9 @@
-package eci.ieti.leafOut.backEnd.persistence;
+package eci.ieti.leafout.backend.repository;
 
 
+import eci.ieti.leafout.backend.model.Plan;
+import org.springframework.data.repository.CrudRepository;
 
-import eci.ieti.leafOut.backEnd.model.Plan;
-import org.springframework.stereotype.Repository;
+public interface PlanRepository extends CrudRepository<Plan, Integer> {
 
-import java.util.List;
-import java.util.Optional;
-
-@Repository
-public interface PlanRepository {
-
-    List<Plan> findAll();
-
-    Optional<Plan> findByName(String name);
-
-    Plan save(Plan plan);
 }
