@@ -1,10 +1,10 @@
-package eci.ieti.leafout.backEnd.service.impl;
+package eci.ieti.leafout.backend.service.impl;
 
 
-import eci.ieti.leafout.backEnd.model.Purchase;
-import eci.ieti.leafout.backEnd.model.Refund;
-import eci.ieti.leafout.backEnd.model.Transaction;
-import eci.ieti.leafout.backEnd.service.PaymentsService;
+import eci.ieti.leafout.backend.model.Purchase;
+import eci.ieti.leafout.backend.model.Refund;
+import eci.ieti.leafout.backend.model.Transaction;
+import eci.ieti.leafout.backend.service.PaymentsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

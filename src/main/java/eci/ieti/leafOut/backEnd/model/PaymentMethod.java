@@ -1,4 +1,4 @@
-package eci.ieti.leafout.backEnd.model;
+package eci.ieti.leafout.backend.model;
 
 /**
  * This class defines all allowed payment methods

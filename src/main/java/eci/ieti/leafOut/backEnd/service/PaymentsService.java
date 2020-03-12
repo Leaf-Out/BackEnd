@@ -1,9 +1,9 @@
-package eci.ieti.leafout.backEnd.service;
+package eci.ieti.leafout.backend.service;
 
 
-import eci.ieti.leafout.backEnd.model.Purchase;
-import eci.ieti.leafout.backEnd.model.Refund;
-import eci.ieti.leafout.backEnd.model.Transaction;
+import eci.ieti.leafout.backend.model.Purchase;
+import eci.ieti.leafout.backend.model.Refund;
+import eci.ieti.leafout.backend.model.Transaction;
 
 import java.util.List;
 import java.util.UUID;

@@ -35,7 +35,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public void savePlan(Plan plan) throws LeafOutPersistenceException {
-        planRepository.registerPlan(plan);
+        planRepository.save(plan);
     }
 
     @Override
@@ -45,13 +45,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public void updatePlan(Plan plan) throws LeafOutPersistenceException {
-        Optional<Plan> optinalPlan = planRepository.getPlanByName(plan.getNamePlan());
-        boolean present = optinalPlan.isPresent();
-        if (!present)
-            throw new LeafOutPersistenceException(LeafOutPersistenceException.PLAN_NOT_FOUND);
-        else {
-
-        }
+        //TODO
 
     }
 

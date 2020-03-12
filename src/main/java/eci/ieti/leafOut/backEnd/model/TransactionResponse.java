@@ -1,4 +1,4 @@
-package eci.ieti.leafout.backEnd.model;
+package eci.ieti.leafout.backend.model;
 
 /**
  * This class defines all valid transaction response types for the business

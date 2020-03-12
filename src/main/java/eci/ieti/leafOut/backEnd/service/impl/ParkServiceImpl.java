@@ -1,5 +1,6 @@
 package eci.ieti.leafout.backend.service.impl;
 
+import eci.ieti.leafout.backend.model.Plan;
 import eci.ieti.leafout.backend.model.Park;
 import eci.ieti.leafout.backend.repository.LeafOutPersistenceException;
 import eci.ieti.leafout.backend.repository.ParkRepository;
@@ -34,7 +35,7 @@ public class ParkServiceImpl implements ParkService {
 
     @Override
     public void savePark(Park park) throws LeafOutPersistenceException {
-        parkRepository.registerPark(park);
+        parkRepository.save(park);
     }
 
     @Override
