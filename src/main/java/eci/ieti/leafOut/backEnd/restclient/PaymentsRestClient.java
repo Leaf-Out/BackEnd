@@ -1,12 +1,12 @@
-package eci.ieti.leafout.backEnd.restclient;
+package eci.ieti.leafout.backend.restclient;
 
-import eci.ieti.leafout.backEnd.model.exception.RestClientException;
-import eci.ieti.leafout.backEnd.model.Plan;
-import eci.ieti.leafout.backEnd.model.Purchase;
-import eci.ieti.leafout.backEnd.model.Refund;
-import eci.ieti.leafout.backEnd.model.RestClientResponse;
-import eci.ieti.leafout.backEnd.model.Transaction;
-import eci.ieti.leafout.backEnd.model.User;
+import eci.ieti.leafout.backend.model.exception.RestClientException;
+import eci.ieti.leafout.backend.model.Plan;
+import eci.ieti.leafout.backend.model.Purchase;
+import eci.ieti.leafout.backend.model.Refund;
+import eci.ieti.leafout.backend.model.RestClientResponse;
+import eci.ieti.leafout.backend.model.Transaction;
+import eci.ieti.leafout.backend.model.User;
 
 /**
  * This interface defines the methods a payment rest client should perform

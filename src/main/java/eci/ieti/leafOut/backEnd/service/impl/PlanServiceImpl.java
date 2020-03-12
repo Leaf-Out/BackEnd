@@ -1,13 +1,14 @@
-package eci.ieti.leafout.backEnd.service.impl;
+package eci.ieti.leafout.backend.service.impl;
 
 
-import eci.ieti.leafout.backEnd.model.Plan;
-import eci.ieti.leafout.backEnd.model.exception.LeafOutPersistenceException;
-import eci.ieti.leafout.backEnd.persistence.PlanRepository;
-import eci.ieti.leafout.backEnd.service.PlanService;
+import eci.ieti.leafout.backend.model.Plan;
+import eci.ieti.leafout.backend.repository.LeafOutPersistenceException;
+import eci.ieti.leafout.backend.repository.PlanRepository;
+import eci.ieti.leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +28,9 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<Plan> getAllPlans() throws LeafOutPersistenceException {
-        return planRepository.getAllPlans();
+        List<Plan> plans = new ArrayList<Plan>();
+        planRepository.findAll().forEach(plan -> plans.add(plan));
+        return plans;
     }
 
     @Override

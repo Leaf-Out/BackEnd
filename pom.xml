@@ -8,7 +8,7 @@
 		<version>2.2.5.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>eci.ieti.leafOut</groupId>
+	<groupId>eci.ieti.leafout</groupId>
 	<artifactId>backEnd</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backEnd</name>

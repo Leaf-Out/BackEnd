@@ -1,11 +1,9 @@
-package eci.ieti.leafout.backEnd.service;
+package eci.ieti.leafout.backend.service;
 
-import eci.ieti.leafout.backEnd.model.Park;
-import eci.ieti.leafout.backEnd.model.Plan;
-import eci.ieti.leafout.backEnd.model.exception.LeafOutPersistenceException;
+import eci.ieti.leafout.backend.model.Park;
+import eci.ieti.leafout.backend.repository.LeafOutPersistenceException;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * This interface implements the basic methods of a Park

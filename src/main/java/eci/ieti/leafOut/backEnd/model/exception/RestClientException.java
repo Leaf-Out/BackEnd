@@ -1,4 +1,4 @@
-package eci.ieti.leafout.backEnd.model.exception;
+package eci.ieti.leafout.backend.model.exception;
 
 /**
  * This exception occurs when there is an error trying to make a request to a payment platform

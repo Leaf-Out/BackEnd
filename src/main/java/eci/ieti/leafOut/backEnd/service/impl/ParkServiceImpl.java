@@ -1,13 +1,13 @@
-package eci.ieti.leafout.backEnd.service.impl;
+package eci.ieti.leafout.backend.service.impl;
 
-import eci.ieti.leafout.backEnd.model.Park;
-import eci.ieti.leafout.backEnd.model.Plan;
-import eci.ieti.leafout.backEnd.model.exception.LeafOutPersistenceException;
-import eci.ieti.leafout.backEnd.persistence.ParkRepository;
-import eci.ieti.leafout.backEnd.service.ParkService;
+import eci.ieti.leafout.backend.model.Park;
+import eci.ieti.leafout.backend.repository.LeafOutPersistenceException;
+import eci.ieti.leafout.backend.repository.ParkRepository;
+import eci.ieti.leafout.backend.service.ParkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +27,9 @@ public class ParkServiceImpl implements ParkService {
 
     @Override
     public List<Park> getAllParks() throws LeafOutPersistenceException {
-        return parkRepository.getAllParks();
+        List<Park> parks = new ArrayList<Park>();
+        parkRepository.findAll().forEach(park -> parks.add(park));
+        return parks;
     }
 
     @Override

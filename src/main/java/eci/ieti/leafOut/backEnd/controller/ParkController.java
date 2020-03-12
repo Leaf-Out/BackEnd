@@ -1,9 +1,9 @@
-package eci.ieti.leafout.backEnd.controller;
+package eci.ieti.leafout.backend.controller;
 
 
-import eci.ieti.leafout.backEnd.model.Park;
-import eci.ieti.leafout.backEnd.model.exception.LeafOutPersistenceException;
-import eci.ieti.leafout.backEnd.service.ParkService;
+import eci.ieti.leafout.backend.model.Park;
+import eci.ieti.leafout.backend.repository.LeafOutPersistenceException;
+import eci.ieti.leafout.backend.service.ParkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
