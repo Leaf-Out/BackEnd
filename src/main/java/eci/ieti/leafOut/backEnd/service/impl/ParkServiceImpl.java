@@ -7,6 +7,7 @@ import eci.ieti.leafout.backend.service.ParkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,9 @@ public class ParkServiceImpl implements ParkService {
 
     @Override
     public List<Park> getAllParks() throws LeafOutPersistenceException {
-        return parkRepository.findAll();
+        List<Park> parks = new ArrayList<Park>();
+        parkRepository.findAll().forEach(park -> parks.add(park));
+        return parks;
     }
 
     @Override

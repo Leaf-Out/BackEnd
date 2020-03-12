@@ -8,6 +8,7 @@ import eci.ieti.leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,9 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<Plan> getAllPlans() throws LeafOutPersistenceException {
-        return planRepository.findAll();
+        List<Plan> plans = new ArrayList<Plan>();
+        planRepository.findAll().forEach(plan -> plans.add(plan));
+        return plans;
     }
 
     @Override
