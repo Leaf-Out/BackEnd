@@ -1,4 +1,4 @@
-package eci.ieti.leafOut.backEnd.controller;
+package eci.ieti.leafout.backend.controller;
 
 import java.util.UUID;
 
