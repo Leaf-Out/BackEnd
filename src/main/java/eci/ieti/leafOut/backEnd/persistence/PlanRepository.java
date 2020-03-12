@@ -1,19 +1,27 @@
-package eci.ieti.leafOut.backEnd.persistence;
+package eci.ieti.leafout.backEnd.persistence;
 
-
-
-import eci.ieti.leafOut.backEnd.model.Plan;
+import eci.ieti.leafout.backEnd.model.Plan;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * This interface defines the methods used to persist plan
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
+
 @Repository
 public interface PlanRepository {
 
-    List<Plan> findAll();
+    List<Plan> getAllPlans();
 
-    Optional<Plan> findByName(String name);
+    Optional<Plan> getPlanByName(String name);
 
-    Plan save(Plan plan);
+    Plan registerPlan(Plan plan);
+
+    void updatePlan(Plan plan);
 }

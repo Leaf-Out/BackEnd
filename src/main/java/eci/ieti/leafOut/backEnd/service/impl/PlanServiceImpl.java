@@ -1,18 +1,23 @@
-package eci.ieti.leafOut.backEnd.service.impl;
+package eci.ieti.leafout.backEnd.service.impl;
 
 
-import eci.ieti.leafOut.backEnd.model.Park;
-import eci.ieti.leafOut.backEnd.model.Plan;
-import eci.ieti.leafOut.backEnd.persistence.LeafOutPersistenceException;
-import eci.ieti.leafOut.backEnd.persistence.PlanRepository;
-import eci.ieti.leafOut.backEnd.service.PlanService;
+import eci.ieti.leafout.backEnd.model.Plan;
+import eci.ieti.leafout.backEnd.model.exception.LeafOutPersistenceException;
+import eci.ieti.leafout.backEnd.persistence.PlanRepository;
+import eci.ieti.leafout.backEnd.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-
+/**
+ * This class implements the basic methods of a Plan
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
 @Service
 public class PlanServiceImpl implements PlanService {
 
@@ -22,20 +27,33 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<Plan> getAllPlans() throws LeafOutPersistenceException {
-        return planRepository.findAll();
+        return planRepository.getAllPlans();
     }
 
     @Override
     public void savePlan(Plan plan) throws LeafOutPersistenceException {
-        planRepository.save(plan);
+        planRepository.registerPlan(plan);
     }
 
     @Override
-    public Plan findPlanByName(String name) throws LeafOutPersistenceException {
-        Optional<Plan> optinalPlan = planRepository.findByName(name);
+    public Plan findPlanByName(UUID park) throws LeafOutPersistenceException {
+        return null;
+    }
+
+    @Override
+    public void updatePlan(Plan plan) throws LeafOutPersistenceException {
+        Optional<Plan> optinalPlan = planRepository.getPlanByName(plan.getNamePlan());
         boolean present = optinalPlan.isPresent();
         if (!present)
             throw new LeafOutPersistenceException(LeafOutPersistenceException.PLAN_NOT_FOUND);
-        return optinalPlan.get();
+        else {
+
+        }
+
+    }
+
+    @Override
+    public Integer getCostPlan(UUID plan) {
+        return null;
     }
 }

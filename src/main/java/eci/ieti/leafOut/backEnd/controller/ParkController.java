@@ -1,16 +1,23 @@
-package eci.ieti.leafOut.backEnd.restclient.impl;
+package eci.ieti.leafout.backEnd.controller;
 
 
-import eci.ieti.leafOut.backEnd.model.Park;
-import eci.ieti.leafOut.backEnd.persistence.LeafOutPersistenceException;
-import eci.ieti.leafOut.backEnd.service.ParkService;
+import eci.ieti.leafout.backEnd.model.Park;
+import eci.ieti.leafout.backEnd.model.exception.LeafOutPersistenceException;
+import eci.ieti.leafout.backEnd.service.ParkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
+/**
+ * This interface offers all Park API endpoints
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
 @RestController
 @RequestMapping(value = "/Parks")
 public class ParkController {
@@ -30,10 +37,10 @@ public class ParkController {
 
 
     @GetMapping(path = "/{name}")
-    public ResponseEntity<?> getPlanByName(@PathVariable("name") String name){
+    public ResponseEntity<?> getPlanByName(@PathVariable("name") UUID parkName){
         Park park = null;
         try{
-            park = parkServices.findParkByName(name);
+            park = parkServices.findParkByName(parkName);
             return new ResponseEntity<>(park,HttpStatus.ACCEPTED);
         }catch (LeafOutPersistenceException ex){
             return new ResponseEntity<>(ex.getMessage(),HttpStatus.NOT_FOUND);
@@ -51,6 +58,13 @@ public class ParkController {
             return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(path = "/{park}/plans")
+    public ResponseEntity<?> getPlansByPark(@PathVariable UUID park){return null;}
+
+    @GetMapping(path = "/{park}/ticket")
+    public ResponseEntity<?> getTicketPark(@PathVariable UUID park){return null;}
+
 
 
 }

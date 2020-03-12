@@ -1,4 +1,4 @@
-package eci.ieti.leafout.backend.connection;
+package eci.ieti.leafout.backEnd.connection;
 
 import java.sql.Connection;
 

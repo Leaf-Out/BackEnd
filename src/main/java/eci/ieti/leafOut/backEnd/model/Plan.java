@@ -1,57 +1,49 @@
+package eci.ieti.leafout.backEnd.model;
 
-package eci.ieti.leafout.backend.model;
 
+import lombok.*;
+
+import java.util.Date;
+
+/**
+ * This class represents a Plan
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
+
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Plan {
-
-
-
+    /**
+     * id number of a plan
+     */
     private Integer idPlan;
+    /**
+     * Name of a plan
+     */
     private String namePlan;
+    /**
+     * Description of a plan
+     */
     private String descriptionPlan;
-    private Location locationPlan;
-    private String addressPlan;
+    /**
+     * Cost of a plan
+     */
+    private Integer costPlan;
+    /**
+     * Initial date
+     */
+    private Date intialDate;
+    /**
+     * Final date
+     */
+    private Date finalDate;
 
-    public Plan(){
 
-    }
-    public Integer getIdPlan() {
-        return idPlan;
-    }
-
-    public void setIdPlan(Integer idPlan) {
-        this.idPlan = idPlan;
-    }
-
-    public String getNamePlan() {
-        return namePlan;
-    }
-
-    public void setNamePlan(String namePlan) {
-        this.namePlan = namePlan;
-    }
-
-    public String getDescriptionPlan() {
-        return descriptionPlan;
-    }
-
-    public void setDescriptionPlan(String descriptionPlan) {
-        this.descriptionPlan = descriptionPlan;
-    }
-
-    public Location getLocationPlan() {
-        return locationPlan;
-    }
-
-    public void setLocationPlan(Location locationPlan) {
-        this.locationPlan = locationPlan;
-    }
-
-    public String getAddressPlan() {
-        return addressPlan;
-    }
-
-    public void setAddressPlan(String addressPlan) {
-        this.addressPlan = addressPlan;
-    }
 }
 

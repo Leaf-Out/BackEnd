@@ -1,16 +1,24 @@
-package eci.ieti.leafOut.backEnd.restclient.impl;
+package eci.ieti.leafout.backEnd.controller;
 
 
 
-import eci.ieti.leafOut.backEnd.model.Plan;
-import eci.ieti.leafOut.backEnd.persistence.LeafOutPersistenceException;
-import eci.ieti.leafOut.backEnd.service.PlanService;
+import eci.ieti.leafout.backEnd.model.Plan;
+import eci.ieti.leafout.backEnd.service.PlanService;
+import eci.ieti.leafout.backEnd.model.exception.LeafOutPersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
+
+/**
+ * This interface offers all plan API endpoints
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
 
 @RestController
 @RequestMapping(value = "/Plans")
@@ -31,7 +39,7 @@ public class PlanController {
 
 
     @GetMapping(path = "/{name}")
-    public ResponseEntity<?> getPlanByName(@PathVariable("name") String name){
+    public ResponseEntity<?> getPlanByName(@PathVariable("name") UUID name){
         Plan plan = null;
         try{
             plan = planServices.findPlanByName(name);
@@ -52,6 +60,10 @@ public class PlanController {
             return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(path = "/{plan}/ticket")
+    public ResponseEntity<?> getPlanTicket(@PathVariable UUID plan){return null;}
+
 
 
 }

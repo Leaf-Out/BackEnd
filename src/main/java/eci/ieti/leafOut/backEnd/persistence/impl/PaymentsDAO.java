@@ -1,6 +1,6 @@
-package eci.ieti.leafout.backend.persistence.impl;
+package eci.ieti.leafout.backEnd.persistence.impl;
 
-import eci.ieti.leafout.backend.persistence.PaymentsPersistence;
+import eci.ieti.leafout.backEnd.persistence.PaymentsPersistence;
 import org.springframework.stereotype.Service;
 
 @Service

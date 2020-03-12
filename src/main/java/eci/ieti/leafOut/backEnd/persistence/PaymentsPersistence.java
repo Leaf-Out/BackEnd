@@ -1,4 +1,4 @@
-package eci.ieti.leafout.backend.persistence;
+package eci.ieti.leafout.backEnd.persistence;
 
 /**
  * This interface defines the methods used to persist a payment
