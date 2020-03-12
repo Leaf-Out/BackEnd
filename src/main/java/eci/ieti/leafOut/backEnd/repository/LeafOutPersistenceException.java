@@ -1,4 +1,4 @@
-package eci.ieti.leafOut.backEnd.persistence;
+package eci.ieti.leafout.backend.repository;
 
 public class LeafOutPersistenceException extends Exception {
     // TODO exceptions

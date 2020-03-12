@@ -1,10 +1,9 @@
-package eci.ieti.leafOut.backEnd.service;
+package eci.ieti.leafout.backend.service;
 
-import eci.ieti.leafOut.backEnd.model.Park;
-import eci.ieti.leafOut.backEnd.persistence.LeafOutPersistenceException;
+import eci.ieti.leafout.backend.model.Park;
+import eci.ieti.leafout.backend.repository.LeafOutPersistenceException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ParkService {
     List<Park> getAllParks() throws LeafOutPersistenceException;
