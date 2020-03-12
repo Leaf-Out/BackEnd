@@ -19,7 +19,6 @@ public interface CartService {
 
     public Plan getPlanById(UUID user,Integer plan);
 
-
     public void removePlan(UUID user, Integer plan);
 
     public void updatePlan(UUID user, Integer plan);
