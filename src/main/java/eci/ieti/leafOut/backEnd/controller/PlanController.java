@@ -11,6 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
+
+/**
+ * This interface offers all plan API endpoints
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
 
 @RestController
 @RequestMapping(value = "/Plans")
@@ -31,7 +39,7 @@ public class PlanController {
 
 
     @GetMapping(path = "/{name}")
-    public ResponseEntity<?> getPlanByName(@PathVariable("name") String name){
+    public ResponseEntity<?> getPlanByName(@PathVariable("name") UUID name){
         Plan plan = null;
         try{
             plan = planServices.findPlanByName(name);
@@ -52,6 +60,10 @@ public class PlanController {
             return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(path = "/{plan}/ticket")
+    public ResponseEntity<?> getPlanTicket(@PathVariable UUID plan){return null;}
+
 
 
 }

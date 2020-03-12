@@ -1,6 +1,6 @@
 package eci.ieti.leafout.backend.controller;
 
-import eci.ieti.leafOut.backEnd.service.PaymentsService;
+import eci.ieti.leafout.backend.service.PaymentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

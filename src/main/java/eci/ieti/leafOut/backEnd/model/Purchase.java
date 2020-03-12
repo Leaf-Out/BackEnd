@@ -1,4 +1,4 @@
-package eci.ieti.leafout.backend.model;
+package eci.ieti.leafout.backEnd.model;
 
 import lombok.*;
 

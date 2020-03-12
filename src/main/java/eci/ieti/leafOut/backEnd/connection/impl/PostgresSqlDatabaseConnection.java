@@ -1,6 +1,6 @@
-package eci.ieti.leafout.backend.connection.impl;
+package eci.ieti.leafout.backEnd.connection.impl;
 
-import eci.ieti.leafout.backend.connection.SqlDatabaseConnection;
+import eci.ieti.leafout.backEnd.connection.SqlDatabaseConnection;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;

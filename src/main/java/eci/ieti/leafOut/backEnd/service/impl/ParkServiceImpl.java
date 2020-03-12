@@ -10,8 +10,15 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
+/**
+ * This class implements the basic methods of a Park
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
 @Service
 public class ParkServiceImpl implements ParkService {
 
@@ -27,16 +34,26 @@ public class ParkServiceImpl implements ParkService {
 
     @Override
     public void savePark(Park park) throws LeafOutPersistenceException {
-        parkRepository.save(park);
+        parkRepository.registerPark(park);
     }
 
     @Override
-    public Park findParkByName(String name) throws LeafOutPersistenceException {
-        Optional<Park> optinalPark = parkRepository.findByName(name);
-        boolean present = optinalPark.isPresent();
-        if (!present)
-            throw new LeafOutPersistenceException(LeafOutPersistenceException.PARK_NOT_FOUND);
-        return optinalPark.get();
+    public Park findParkByName(UUID park) throws LeafOutPersistenceException {
+        return null;
+    }
 
+    @Override
+    public void updatePark(Park park) {
+
+    }
+
+    @Override
+    public List<Plan> getListPlansByPark(UUID park) {
+        return null;
+    }
+
+    @Override
+    public Integer getTicketCost(UUID park) {
+        return null;
     }
 }
