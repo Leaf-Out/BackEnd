@@ -1,13 +1,13 @@
-package eci.ieti.leafout.backend;
+package leafout.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BackEndApplication {
+public class LeafOutBackEndApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BackEndApplication.class, args);
+		SpringApplication.run(LeafOutBackEndApplication.class, args);
 	}
 
 }
