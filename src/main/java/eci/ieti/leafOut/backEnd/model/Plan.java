@@ -1,9 +1,6 @@
-
 package eci.ieti.leafout.backend.model;
 
 public class Plan {
-
-
 
     private Integer idPlan;
     private String namePlan;
@@ -11,9 +8,8 @@ public class Plan {
     private Location locationPlan;
     private String addressPlan;
 
-    public Plan(){
+    public Plan(){ }
 
-    }
     public Integer getIdPlan() {
         return idPlan;
     }

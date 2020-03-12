@@ -1,4 +1,4 @@
-package eci.ieti.leafOut.backEnd;
+package eci.ieti.leafout.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

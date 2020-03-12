@@ -21,7 +21,7 @@ public class PaymentsController {
      * Injected payments service instance
      */
     @Autowired
-    private PaymentsService paymentServices;
+    PaymentsService paymentServices;
 
     @GetMapping
     public ResponseEntity<?> getAllTransactions() {
@@ -48,3 +48,4 @@ public class PaymentsController {
         return null;
     }
 }
+

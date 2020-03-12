@@ -1,4 +1,4 @@
-package eci.ieti.leafout.backEnd.model;
+package eci.ieti.leafout.backend.model;
 
 
 import java.util.List;
@@ -12,9 +12,7 @@ public class Park {
     private String addressPark;
     private List<Plan> plans;
 
-    public Park(){
-
-    }
+    public Park(){ }
 
     public Integer getIdPark() {
         return idPark;
@@ -63,9 +61,6 @@ public class Park {
     public void setPlans(List<Plan> plans) {
         this.plans = plans;
     }
-
-
-
 }
 
 

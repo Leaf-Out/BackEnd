@@ -1,15 +1,16 @@
-package eci.ieti.leafOut.backEnd.restclient.impl;
+package eci.ieti.leafout.backend.controller;
 
 
-import eci.ieti.leafOut.backEnd.model.Park;
-import eci.ieti.leafOut.backEnd.persistence.LeafOutPersistenceException;
-import eci.ieti.leafOut.backEnd.service.ParkService;
+import eci.ieti.leafout.backend.model.Park;
+import eci.ieti.leafout.backend.model.exception.LeafOutPersistenceException;
+import eci.ieti.leafout.backend.service.ParkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/Parks")
@@ -19,21 +20,16 @@ public class ParkController {
     private ParkService parkServices;
 
     @GetMapping
-    public ResponseEntity<?> getAllPlans(){
-        try{
-            List<Park> parks = parkServices.getAllParks();
-            return new ResponseEntity<>(parks, HttpStatus.ACCEPTED);
-        }catch (LeafOutPersistenceException ex){
-            return new ResponseEntity<>(ex.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> getAllPlans() {
+        List<Park> parks = parkServices.getAll();
+        return new ResponseEntity<>(parks, HttpStatus.ACCEPTED);
     }
 
-
-    @GetMapping(path = "/{name}")
-    public ResponseEntity<?> getPlanByName(@PathVariable("name") String name){
-        Park park = null;
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getPlanByName(@PathVariable("id") int id) {
+        Optional<Park> park = null;
         try{
-            park = parkServices.findParkByName(name);
+            park = parkServices.getById(id);
             return new ResponseEntity<>(park,HttpStatus.ACCEPTED);
         }catch (LeafOutPersistenceException ex){
             return new ResponseEntity<>(ex.getMessage(),HttpStatus.NOT_FOUND);
@@ -45,7 +41,7 @@ public class ParkController {
     @PostMapping
     public ResponseEntity<?> addNewPlan(@RequestBody Park park){
         try{
-            parkServices.savePark(park);
+            parkServices.save(park);
             return new ResponseEntity<>(park,HttpStatus.CREATED);
         }catch (LeafOutPersistenceException ex){
             return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);

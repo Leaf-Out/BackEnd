@@ -1,6 +1,6 @@
 package eci.ieti.leafout.backend.restclient.impl;
 
-import eci.ieti.leafout.backend.model.Exception.RestClientException;
+import eci.ieti.leafout.backend.model.exception.RestClientException;
 import eci.ieti.leafout.backend.model.Plan;
 import eci.ieti.leafout.backend.model.Purchase;
 import eci.ieti.leafout.backend.model.Refund;
