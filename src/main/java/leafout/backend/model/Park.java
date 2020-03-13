@@ -1,4 +1,4 @@
-package leafout.backend.controller;
+package leafout.backend.model;
 
 public class Park {
 	//TODO implement

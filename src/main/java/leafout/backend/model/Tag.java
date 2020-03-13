@@ -1,4 +1,4 @@
-package leafout.backend.controller;
+package leafout.backend.model;
 
 /**
  * This class defines the tags a payable item can have
