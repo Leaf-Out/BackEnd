@@ -109,6 +109,12 @@ public class PayuRestClient implements PaymentRestClient {
 		return paymentResponse;
 	}
 
+	/**
+	 * This method interprets the answer returned by the PayU Payments API
+	 *
+	 * @param jsonObject Object representing a JSON with the response returned by PayU
+	 * @return PaymentResponse object with the response, whether the transaction is satisfactory or not, is pending or an error
+	 */
 	private PaymentResponse responseInterpreter(JSONObject jsonObject) {
 		final PaymentResponse paymentResponse;
 		if (PayuTransactionResponse.SUCCESS.equals(PayuTransactionResponse.valueOf(jsonObject.getString("code")))) {
