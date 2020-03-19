@@ -1,0 +1,42 @@
+package leafout.backend.service.impl;
+
+import leafout.backend.model.User;
+import leafout.backend.persistence.UserRepository;
+import leafout.backend.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+public class UserServiceImpl implements IUserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+
+    @Override
+    public List<User> getAll() {
+        List<User> users = new ArrayList<User>();
+        userRepository.findAll().forEach(user -> users.add(user));
+        return users;
+    }
+
+    @Override
+    public Optional<User> getById(UUID userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public void delete(UUID userId) {
+        userRepository.deleteById(userId);
+    }
+}
