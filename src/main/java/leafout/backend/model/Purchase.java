@@ -36,6 +36,11 @@ public class Purchase {
 	private String name;
 
 	/**
+	 * The document of the cardholder
+	 */
+	private String dni;
+
+	/**
 	 * Payment method used in a payment
 	 */
 	private PaymentMethod paymentMethod;

@@ -43,6 +43,11 @@ public class Ticket {
 	private int units;
 
 	/**
+	 * Segment being payed
+	 */
+	private Population population;
+
+	/**
 	 * Total price of the ticket
 	 */
 	private double totalPrice;

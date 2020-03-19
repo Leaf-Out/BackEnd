@@ -1,11 +1,5 @@
 package leafout.backend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -16,11 +10,6 @@ import java.util.UUID;
  * @author <a href=alejoguzm07@gmail.com> José Alejandro Naranjo Guzmán </a>
  * @since 0.0.1
  */
-@Builder
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public abstract class Pay {
 
 	/**
