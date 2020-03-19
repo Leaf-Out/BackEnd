@@ -7,5 +7,9 @@ package leafout.backend.model;
  * @since 0.0.1
  */
 public enum PaymentResponseCode {
-	//TODO define responses
+	SUCCESSFUL_TRANSACTION,
+	PENDING_TRANSACTION,
+	UNSUCCESSFUL_TRANSACTION,
+	TRANSACTION_ERROR,
+	REFUNDED
 }
