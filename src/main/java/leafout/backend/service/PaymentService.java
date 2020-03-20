@@ -3,7 +3,13 @@ package leafout.backend.service;
 import leafout.backend.model.Purchase;
 import leafout.backend.model.Refund;
 import leafout.backend.model.Transaction;
+import leafout.backend.model.exception.NoPayableFoundException;
+import leafout.backend.model.exception.NoTransactionFoundException;
+import leafout.backend.model.exception.NoUserFoundException;
+import leafout.backend.model.exception.NotRefundableTransactionException;
+import leafout.backend.model.exception.TransactionErrorException;
 import leafout.backend.model.exception.PaymentPlatformException;
+import leafout.backend.model.exception.UnsuccessfulTransactionException;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,16 +28,27 @@ public interface PaymentService {
 	 * @param purchase Purchase object containing data needed to make a payment
 	 * @param user UUID of the user making a payment
 	 * @throws PaymentPlatformException if there was a problem with the payment platform while doing the payment
+	 * @throws NoPayableFoundException if the park, plan or activity being payed does not exist
+	 * @throws NoUserFoundException if the user paying does not exist
+	 * @throws TransactionErrorException When the transaction results in an error
+	 * @throws UnsuccessfulTransactionException When the transaction is unsuccessful
 	 */
-	void pay(Purchase purchase, UUID user) throws PaymentPlatformException;
+	void pay(Purchase purchase, UUID user) throws PaymentPlatformException, NoPayableFoundException,
+												  NoUserFoundException, TransactionErrorException,
+												  UnsuccessfulTransactionException;
 
 	/**
 	 * This method makes a refund of a transaction
 	 *
 	 * @param refund Refund object with necessary data to make a refund
 	 * @throws PaymentPlatformException if there was a problem with the payment platform while refunding a transaction
+	 * @throws UnsuccessfulTransactionException When the transaction is unsuccessful
+	 * @throws NotRefundableTransactionException When the transaction state can not be refunded due to a previous state
+	 * @throws NoTransactionFoundException if the transaction being refunded does not exist
 	 */
-	void refund(Refund refund) throws PaymentPlatformException;
+	void refund(Refund refund)
+			throws PaymentPlatformException, UnsuccessfulTransactionException, NotRefundableTransactionException,
+				   NoTransactionFoundException;
 
 	/**
 	 * This method returns all transactions made on the platform
@@ -41,10 +58,10 @@ public interface PaymentService {
 	List<Transaction> getAllTransactions();
 
 	/**
-	 * This method returns all transactions made by a customer
+	 * This method returns all transactions made by a user
 	 *
 	 * @param user UUID of the user
-	 * @return A list with the transactions of a customer
+	 * @return A list with the transactions of a user
 	 */
 	List<Transaction> getTransactionsByUser(UUID user);
 

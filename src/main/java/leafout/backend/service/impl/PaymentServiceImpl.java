@@ -1,16 +1,18 @@
 package leafout.backend.service.impl;
 
-import leafout.backend.model.Activity;
-import leafout.backend.model.Park;
 import leafout.backend.model.PaymentResponse;
 import leafout.backend.model.PaymentResponseCode;
-import leafout.backend.model.Plan;
 import leafout.backend.model.Purchase;
 import leafout.backend.model.Refund;
-import leafout.backend.model.Ticket;
 import leafout.backend.model.Transaction;
 import leafout.backend.model.User;
+import leafout.backend.model.exception.NoPayableFoundException;
+import leafout.backend.model.exception.NoTransactionFoundException;
+import leafout.backend.model.exception.NoUserFoundException;
+import leafout.backend.model.exception.NotRefundableTransactionException;
+import leafout.backend.model.exception.TransactionErrorException;
 import leafout.backend.model.exception.PaymentPlatformException;
+import leafout.backend.model.exception.UnsuccessfulTransactionException;
 import leafout.backend.restclient.PaymentRestClient;
 import leafout.backend.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +74,7 @@ public class PaymentServiceImpl implements PaymentService {
 	@Autowired
 	private PaymentRestClient restClient;
 
-	@Override public void pay(Purchase purchase, UUID userId) throws PaymentPlatformException {
+	@Override public void pay(Purchase purchase, UUID userId) throws PaymentPlatformException, NoPayableFoundException, NoUserFoundException {
 		/*final User user = userServices.getUserById(userId);
 		if (user != null) {
 			final Park park = parkServices.getParkById(purchase.getTicket().getPaying().getId());
@@ -82,10 +84,10 @@ public class PaymentServiceImpl implements PaymentService {
 				final PaymentResponse paymentResponse = restClient.pay(purchase, user);
 				paymentProcess(paymentResponse,purchase,user);
 			} else {
-				//TODO throw no payable exception
+				throw new NoPayableFoundException(purchase.getTicket().getPaying().getId());
 			}
 		} else {
-			//TODO throw no customer exception
+			throw new NoUserFoundException(userId);
 		}*/
 	}
 
@@ -95,8 +97,11 @@ public class PaymentServiceImpl implements PaymentService {
 	 * @param response Response given by the payments platform
 	 * @param purchase The purchase being made
 	 * @param user The user paying
+	 * @throws TransactionErrorException When the transaction results in an error
+	 * @throws UnsuccessfulTransactionException When the transaction is unsuccessful
 	 */
-	private void paymentProcess(PaymentResponse response, Purchase purchase, User user) {
+	private void paymentProcess(PaymentResponse response, Purchase purchase, User user)
+			throws TransactionErrorException, UnsuccessfulTransactionException {
 		final Transaction transaction = Transaction.builder()
 												   .id(UUID.fromString(response.getTransactionId()))
 												   .orderId(response.getOrderId())
@@ -107,9 +112,9 @@ public class PaymentServiceImpl implements PaymentService {
 												   .build();
 		//TODO register transaction
 		if (PaymentResponseCode.TRANSACTION_ERROR.equals(response.getPaymentResult().getPaymentResponseCode())) {
-			//TODO throw payment error exception
+			throw new TransactionErrorException(response.getPaymentResult().getReason());
 		} else if (PaymentResponseCode.UNSUCCESSFUL_TRANSACTION.equals(response.getPaymentResult().getPaymentResponseCode())) {
-			//TODO throw unsuccessful payment exception
+			throw new UnsuccessfulTransactionException(response.getPaymentResult().getReason());
 		} else {
 			if (PaymentResponseCode.SUCCESSFUL_TRANSACTION.equals(response.getPaymentResult().getPaymentResponseCode())) {
 				//TODO remove ticket from the shopping cart
@@ -117,7 +122,9 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 	}
 
-	@Override public void refund(Refund refund) throws PaymentPlatformException {
+	@Override public void refund(Refund refund)
+			throws PaymentPlatformException, UnsuccessfulTransactionException, NotRefundableTransactionException,
+				   NoTransactionFoundException {
 		Transaction transaction = getTransactionById(refund.getTransactionId());
 		if (transaction != null) {
 			if (PaymentResponseCode.SUCCESSFUL_TRANSACTION.equals(transaction.getState())) {
@@ -126,28 +133,28 @@ public class PaymentServiceImpl implements PaymentService {
 						.equals(paymentResponse.getPaymentResult().getPaymentResponseCode())) {
 					//TODO update transaction state
 				} else {
-					//TODO throw unsuccessful refund exception
+					throw new UnsuccessfulTransactionException(paymentResponse.getPaymentResult().getReason());
 				}
 			} else {
-				//TODO throw not refundable transaction state exception
+				throw new NotRefundableTransactionException(transaction.getState());
 			}
 		} else {
-			//TODO throw no transaction exception
+			throw new NoTransactionFoundException(refund.getTransactionId());
 		}
 	}
 
 	@Override public List<Transaction> getAllTransactions() {
-
+		//TODO get transactions
 		return null;
 	}
 
 	@Override public List<Transaction> getTransactionsByUser(UUID user) {
-
+		//TODO get transactions
 		return null;
 	}
 
 	@Override public Transaction getTransactionById(UUID id) {
-
+		//TODO get transaction
 		return null;
 	}
 }
