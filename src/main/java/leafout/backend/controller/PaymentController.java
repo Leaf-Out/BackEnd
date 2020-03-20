@@ -1,11 +1,43 @@
 package leafout.backend.controller;
 
+import leafout.backend.apimodel.ApiPaymentResponseCode;
+import leafout.backend.apimodel.PayRequest;
+import leafout.backend.apimodel.PurchaseRequest;
+import leafout.backend.apimodel.RefundRequest;
+import leafout.backend.apimodel.TicketResponse;
+import leafout.backend.apimodel.TransactionResponse;
+import leafout.backend.model.Activity;
+import leafout.backend.model.Park;
+import leafout.backend.model.Pay;
+import leafout.backend.model.PaymentResponseCode;
+import leafout.backend.model.Plan;
+import leafout.backend.model.Purchase;
+import leafout.backend.model.Refund;
+import leafout.backend.model.Ticket;
+import leafout.backend.model.Transaction;
+import leafout.backend.model.exception.NoPayableFoundException;
+import leafout.backend.model.exception.NoTransactionFoundException;
+import leafout.backend.model.exception.NoUserFoundException;
+import leafout.backend.model.exception.NotRefundableTransactionException;
+import leafout.backend.model.exception.PaymentPlatformException;
+import leafout.backend.model.exception.TransactionErrorException;
+import leafout.backend.model.exception.UnsuccessfulTransactionException;
 import leafout.backend.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This interface offers all payment API endpoints
@@ -17,316 +49,266 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/payments")
 public class PaymentController {
 
+	/**
+	 * PaymentService injected object
+	 */
 	@Autowired
 	private PaymentService paymentService;
+
+	/**
+	 * ParckService injected object
+	 */
+	//@Autowired
+	//private ParkService parkService;
+
+	/**
+	 * PlanService injected object
+	 */
+	//@Autowired
+	//private PlanService planService;
+
+	/**
+	 * ActivityService injected object
+	 */
+	//@Autowired
+	//private ActivityService activityService;
 
 	/**
 	 * This method returns all transactions made
 	 *
 	 * @return A list of transactions
-	 * @throws DatabaseException If occurs a problem related to the database
-	 * @throws RestIntegrationException If occurs a problem related to the payment platform
 	 */
-	/*@GetMapping
-	public ResponseEntity<List<ApiTransactionResponse>> getAllTransactions() throws DatabaseException, RestIntegrationException {
+	@GetMapping
+	public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
 		final ResponseEntity response;
-		try {
-			response = new ResponseEntity<>(mapTransactionsResponse(paymentServices.getAllTransactions()), HttpStatus.ACCEPTED);
-		} catch (RestClientException e) {
-			throw new RestIntegrationException();
-		} catch (DatabaseConnectionException e) {
-			throw new DatabaseException();
-		} catch (DatabaseQueryException e) {
-			throw new DatabaseException();
-		}
+			response = new ResponseEntity<>(mapTransactionsResponse(paymentService.getAllTransactions()), HttpStatus.ACCEPTED);
 		return response;
-	}/*
+	}
 
 	/**
-	 * This method returns all transactions made by a customer
+	 * This method returns all transactions made by a user
 	 *
-	 * @param customer UUID of the customer
+	 * @param user UUID of the user
 	 * @return A list of transactions
-	 * @throws DatabaseException If occurs a problem related to the database
-	 * @throws RestIntegrationException If occurs a problem related to the payment platform
-	 * @throws CrudException If there is a problem getting the transactions of a customer
 	 */
-	/*@GetMapping("/customer/{id}")
-	public ResponseEntity<List<ApiTransactionResponse>> getTransactionsByCustomer(@PathVariable("id") UUID customer)
-			throws CrudException, DatabaseException, RestIntegrationException {
+	@GetMapping("/user/{id}")
+	public ResponseEntity<List<TransactionResponse>> getTransactionsByCustomer(final @PathVariable("id") UUID user) {
 		final ResponseEntity response;
-		try {
-			response = new ResponseEntity<>(mapTransactionsResponse(paymentServices.getTransactionsByCustomer(customer)), HttpStatus.ACCEPTED);
-		} catch (NoCustomerFoundException e) {
-			throw new CrudException(e.getMessage());
-		} catch (DatabaseConnectionException e) {
-			throw new DatabaseException();
-		} catch (RestClientException e) {
-			throw new RestIntegrationException();
-		} catch (DatabaseQueryException e) {
-			throw new DatabaseException();
-		}
+			response = new ResponseEntity<>(mapTransactionsResponse(paymentService.getTransactionsByUser(user)), HttpStatus.ACCEPTED);
+
 		return response;
-	}*/
+	}
 
 	/**
 	 * This method returns a transaction given its ID
 	 *
 	 * @param id UUID of the transaction
 	 * @return A list of transactions
-	 * @throws DatabaseException If occurs a problem related to the database
-	 * @throws RestIntegrationException If occurs a problem related to the payment platform
-	 * @throws CrudException If there is a problem getting a transactions
 	 */
-	/*@GetMapping("/id/{id}")
-	public ResponseEntity<ApiTransactionResponse> getTransactionById(@PathVariable("id") UUID id)
-			throws DatabaseException, CrudException, RestIntegrationException {
+	@GetMapping("/id/{id}")
+	public ResponseEntity<TransactionResponse> getTransactionById(final @PathVariable("id") UUID id) {
 		final ResponseEntity response;
-		try {
-			final ApiTransactionResponse transaction = mapTransactionResponse(paymentServices.getTransactionById(id));
+			final TransactionResponse transaction = mapTransactionResponse(paymentService.getTransactionById(id));
 			response = new ResponseEntity<>(transaction, HttpStatus.ACCEPTED);
-		} catch (DatabaseConnectionException e) {
-			throw new DatabaseException();
-		} catch (NoTransactionFoundException e) {
-			throw new CrudException(e.getMessage());
-		} catch (RestClientException e) {
-			throw new RestIntegrationException();
-		} catch (DatabaseQueryException e) {
-			throw new DatabaseException();
-		}
+
 		return response;
-	}*/
+	}
 
 	/**
 	 * This method makes a payment with the data received
 	 *
-	 * @param customer UUID of the customer
+	 * @param user UUID of the user
+	 * @param purchase Purchase request object with the necessary information to make a payment
 	 * @return HTTP Response
-	 * @throws CrudException If there is a problem with the customer or products during the payment process
-	 * @throws DatabaseException If occurs a problem related to the database
-	 * @throws PaymentFailureException If the payment could not be done
 	 */
-	/*@PostMapping("/pay/id/{customer}")
-	public ResponseEntity<HttpStatus> pay(@RequestBody ApiPurchase purchase, @PathVariable("customer") UUID customer)
-			throws CrudException, DatabaseException, PaymentFailureException {
-		final ResponseEntity response;
+	@PostMapping("/pay/user/{user}")
+	public ResponseEntity<HttpStatus> pay(final @RequestBody PurchaseRequest purchase, final @PathVariable("user") UUID user) {
+
 		try {
-			paymentServices.pay(mapPurchase(purchase), customer);
-			response = new ResponseEntity<>(HttpStatus.ACCEPTED);
-		} catch (NoProductFoundException e) {
-			throw new CrudException(e.getMessage());
-		} catch (NoCustomerFoundException e) {
-			throw new CrudException(e.getMessage());
-		} catch (DatabaseConnectionException e) {
-			throw new DatabaseException();
-		} catch (NoStockException e) {
-			throw new PaymentFailureException(e.getMessage());
-		} catch (FailedPaymentsException e) {
-			throw new PaymentFailureException(e.getMessage());
-		} catch (DatabaseQueryException e) {
-			throw new DatabaseException();
+			paymentService.pay(mapPurchase(purchase), user);
+		} catch (PaymentPlatformException e) {
+			e.printStackTrace();
+		} catch (NoPayableFoundException e) {
+			e.printStackTrace();
+		} catch (NoUserFoundException e) {
+			e.printStackTrace();
+		} catch (TransactionErrorException e) {
+			e.printStackTrace();
+		} catch (UnsuccessfulTransactionException e) {
+			e.printStackTrace();
 		}
+		final ResponseEntity response = new ResponseEntity<>(HttpStatus.ACCEPTED);
 		return response;
-	}*/
+	}
 
 
 
 	/**
 	 * This method makes a refund of a transaction
 	 *
-	 * @param refund ApiRefund object with the necessary information to refund a transaction
+	 * @param refund Refund request object with the necessary information to refund a transaction
 	 * @return HTTP Response
-	 * @throws CrudException If there is a problem with the customer or products during the refund process
-	 * @throws DatabaseException If occurs a problem related to the database
-	 * @throws PaymentFailureException If the refund could not be done
-	 * @throws RestIntegrationException If occurs a problem related to the payment platform
 	 */
-	/*@PostMapping("/refund")
-	public ResponseEntity<HttpStatus> refund(@RequestBody ApiRefund refund)
-			throws CrudException, PaymentFailureException, DatabaseException, RestIntegrationException {
-		final ResponseEntity response;
+	@PostMapping("/refund")
+	public ResponseEntity<HttpStatus> refund(final @RequestBody RefundRequest refund) {
 		try {
-			paymentServices.refund(mapRefund(refund));
-			response = new ResponseEntity<>(HttpStatus.ACCEPTED);
-		} catch (NoProductFoundException e) {
-			throw new CrudException(e.getMessage());
-		} catch (RefundException e) {
-			throw new PaymentFailureException(e.getMessage());
-		} catch (DatabaseConnectionException e) {
-			throw new DatabaseException();
-		} catch (RestClientException e) {
-			throw new RestIntegrationException();
-		} catch (DatabaseQueryException e) {
-			throw new DatabaseException();
+			paymentService.refund(mapRefund(refund));
+		} catch (PaymentPlatformException e) {
+			e.printStackTrace();
+		} catch (UnsuccessfulTransactionException e) {
+			e.printStackTrace();
+		} catch (NotRefundableTransactionException e) {
+			e.printStackTrace();
+		} catch (NoTransactionFoundException e) {
+			e.printStackTrace();
 		}
+		final ResponseEntity response = new ResponseEntity<>(HttpStatus.ACCEPTED);
 		return response;
-	}*/
+	}
 
 	/**
 	 * This method transforms a Rest purchase object into the business purchase object
 	 *
-	 * @param apiPurchase Rest purchase object to be transformed
+	 * @param purchaseRequest Rest purchase object to be transformed
 	 * @return A Purchase object
 	 */
-	/*private Purchase mapPurchase(final ApiPurchase apiPurchase) {
+	private Purchase mapPurchase(final PurchaseRequest purchaseRequest) {
 		Purchase purchase = Purchase.builder()
-									.cardNumber(apiPurchase.getCardNumber())
-									.expirationDate(apiPurchase.getExpirationDate())
-									.name(apiPurchase.getName())
-									.paymentMethod(apiPurchase.getPaymentMethod())
-									.securityCode(apiPurchase.getSecurityCode())
-									.items(mapItems(apiPurchase.getItems()))
+									.cardNumber(purchaseRequest.getCardNumber())
+									.dni(purchaseRequest.getDni())
+									.expirationDate(purchaseRequest.getExpirationDate())
+									.name(purchaseRequest.getName())
+									.paymentMethod(purchaseRequest.getPaymentMethod())
+									.securityCode(purchaseRequest.getSecurityCode())
+									.ticket(generateTicket(purchaseRequest))
 									.build();
 		return purchase;
-	}*/
+	}
 
 	/**
-	 * This method transforms a Rest token purchase object into the business token purchase object
+	 * This method generates a ticket with the information provided
 	 *
-	 * @param apiPurchase Rest token purchase object to be transformed
-	 * @return A TokenPurchase object
+	 * @param purchaseRequest Rest purchase object with necessary information to create a ticket
+	 * @return The ticket generated
 	 */
-	/*private TokenPurchase mapPurchase(final ApiTokenPurchase apiPurchase) {
-		TokenPurchase purchase = TokenPurchase.builder()
-											  .tokenId(apiPurchase.getTokenId())
-											  .paymentMethod(apiPurchase.getPaymentMethod())
-											  .items(mapItems(apiPurchase.getItems()))
-											  .build();
-		return purchase;
-	}*/
-
-	/**
-	 * This method transforms a Rest item object list into a business item object list
-	 *
-	 * @param items ApiItem object list
-	 * @return Item object list
-	 */
-	/*private List<Item> mapItems(List<ApiItem> items) {
-		List<Item> mappedItems = new ArrayList<Item>();
-		for (ApiItem item: items) {
-			mappedItems.add(
-					Item.builder()
-						.product(item.getProduct())
-						.units(item.getUnits())
-						.build()
-						   );
+	private Ticket generateTicket(final PurchaseRequest purchaseRequest) {
+		final Pay pay;
+		if (PayRequest.PARK.equals(purchaseRequest.getPay())) {
+			//TODO get park from park service
+			pay = null;
+		} else if (PayRequest.PLAN.equals(purchaseRequest.getPay())) {
+			//TODO get plan from plan service
+			pay = null;
+		} else {
+			//TODO get activity from activity service
+			pay = null;
 		}
-		return mappedItems;
-	}*/
+		final double totalPrice = purchaseRequest.getUnits() * pay.getPrices().get(purchaseRequest.getPopulation());
+		final Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MONTH, 3);
+		final Date expirationDate = new Date(calendar.getTime().getTime());
+		return Ticket.builder()
+					 .id(UUID.randomUUID())
+					 .population(purchaseRequest.getPopulation())
+					 .units(purchaseRequest.getUnits())
+					 .totalPrice(totalPrice)
+					 .date(new Date(Calendar.getInstance().getTime().getTime()))
+					 .expirationDate(expirationDate)
+					 .paying(pay)
+					 .build();
+	}
 
 	/**
-	 * This method transforms a Rest refund object into the business refund object
+	 * Maps a refund request into a refund understood by the business
 	 *
-	 * @param apiRefund Rest token purchase object to be transformed
-	 * @return A Refund object
+	 * @param refundRequest Refund request made by the client
+	 * @return Refund object state understood by the business
 	 */
-	/*private Refund mapRefund(ApiRefund apiRefund) {
-		Refund refund = Refund.builder()
-							  .orderId(apiRefund.getOrderId())
-							  .transactionId(apiRefund.getTransactionId())
-							  .reason(apiRefund.getReason())
+	private Refund mapRefund(final RefundRequest refundRequest) {
+		final Refund refund = Refund.builder()
+							  .transactionId(refundRequest.getTransactionId())
+							  .reason(refundRequest.getReason())
 							  .build();
 		return refund;
-	}*/
+	}
 
 	/**
-	 * This method transforms a Rest token generation request object into the business token generation request object
-	 *
-	 * @param request Rest token generation request object to be transformed
-	 * @return A TokenRequest object
-	 */
-	/*private TokenRequest mapTokenRequest(ApiTokenRequest request) {
-		TokenRequest tokenRequest = TokenRequest.builder()
-												.expirationDate(request.getExpirationDate())
-												.identificationNumber(request.getIdentificationNumber())
-												.name(request.getName())
-												.number(request.getNumber())
-												.paymentMethod(request.getPaymentMethod())
-												.build();
-		return tokenRequest;
-	}*/
-
-	/**
-	 * This method transforms a list of transactions into Rest transaction response object list
+	 * This method transforms a list of transactions into a client oriented transaction list
 	 *
 	 * @param allTransactions Transaction object list
-	 * @return ApiTransactionResponse object list
+	 * @return TransactionResponse object list
 	 */
-	/*private List<ApiTransactionResponse> mapTransactionsResponse(List<Transaction> allTransactions) {
-		List<ApiTransactionResponse> transactions= new ArrayList<>();
+	private List<TransactionResponse> mapTransactionsResponse(final List<Transaction> allTransactions) {
+		final List<TransactionResponse> transactions= new ArrayList<>();
 		for (Transaction transaction: allTransactions) {
 			transactions.add(
-					ApiTransactionResponse.builder()
-										  .id(transaction.getId())
-										  .idProduct(transaction.getIdProduct())
-										  .orderId(transaction.getOrderId())
-										  .paymentMethod(transaction.getPaymentMethod())
-										  .price(transaction.getPrice())
-										  .units(transaction.getUnits())
-										  .responseCode(transaction.getResponseCode())
-										  .date(transaction.getDate())
-										  .updateDate(transaction.getUpdateDate())
-										  .build()
+					TransactionResponse.builder()
+									   .id(transaction.getId())
+									   .date(transaction.getDate())
+									   .updateDate(transaction.getUpdateDate())
+									   .state(mapPaymentResponseCode(transaction.getState()))
+									   .paymentMethod(transaction.getPaymentMethod())
+									   .ticket(mapTicket(transaction.getTicket()))
+									   .build()
 							);
 		}
 		return transactions;
-	}*/
+	}
 
 	/**
-	 * This method transforms a transaction into Rest transaction response
+	 * This method transforms a transaction into a client oriented transaction
 	 *
 	 * @param transaction Transaction object
-	 * @return ApiTransactionResponse object
+	 * @return TransactionResponse object
 	 */
-	/*private ApiTransactionResponse mapTransactionResponse(Transaction transaction) {
-		ApiTransactionResponse mappedTransaction = ApiTransactionResponse.builder()
-																		 .id(transaction.getId())
-																		 .idProduct(transaction.getIdProduct())
-																		 .orderId(transaction.getOrderId())
-																		 .paymentMethod(transaction.getPaymentMethod())
-																		 .price(transaction.getPrice())
-																		 .units(transaction.getUnits())
-																		 .responseCode(transaction.getResponseCode())
-																		 .date(transaction.getDate())
-																		 .updateDate(transaction.getUpdateDate())
-																		 .build();
+	private TransactionResponse mapTransactionResponse(final Transaction transaction) {
+		final TransactionResponse mappedTransaction = TransactionResponse.builder()
+																   	.id(transaction.getId())
+																   	.date(transaction.getDate())
+																   	.updateDate(transaction.getUpdateDate())
+																   	.state(mapPaymentResponseCode(transaction.getState()))
+																   	.paymentMethod(transaction.getPaymentMethod())
+																   	.ticket(mapTicket(transaction.getTicket()))
+																   	.build();
 		return mappedTransaction;
-	}*/
+	}
 
 	/**
-	 * This method transforms a list of tokens into Rest token response object list
+	 * Maps a ticker into client oriented ticket
 	 *
-	 * @param allTokens Token object list
-	 * @return ApiTokenResponse object list
+	 * @param ticket Ticket object understood by the business
+	 * @return Ticket object state understood by the client
 	 */
-	/*private List<ApiTokenResponse> mapTokensResponse(List<Token> allTokens) {
-		List<ApiTokenResponse> tokens= new ArrayList<>();
-		for (Token token: allTokens) {
-			tokens.add(
-					ApiTokenResponse.builder()
-									.id(token.getId())
-									.maskedNumber(token.getMaskedNumber())
-									.paymentMethod(token.getPaymentMethod())
-									.token(token.getToken())
-									.build()
-					  );
+	private TicketResponse mapTicket(final Ticket ticket) {
+		final TicketResponse mappedTicked = TicketResponse.builder()
+														  .id(ticket.getId())
+														  .date(ticket.getDate())
+														  .expirationDate(ticket.getExpirationDate())
+														  .population(ticket.getPopulation())
+														  .totalPrice(ticket.getTotalPrice())
+														  .units(ticket.getUnits())
+														  .name(ticket.getPaying().getName())
+														  .build();
+		return mappedTicked;
+	}
+
+	/**
+	 * Maps a transaction state into client oriented transaction state
+	 *
+	 * @param paymentResponseCode Transaction state understood by the business
+	 * @return Transaction state understood by the client
+	 */
+	private ApiPaymentResponseCode mapPaymentResponseCode(final PaymentResponseCode paymentResponseCode) {
+		if (PaymentResponseCode.SUCCESSFUL_TRANSACTION.equals(paymentResponseCode)) {
+			return ApiPaymentResponseCode.SUCCESSFUL;
+		} else if (PaymentResponseCode.REFUNDED.equals(paymentResponseCode)) {
+			return ApiPaymentResponseCode.REFUNDED;
+		} else if (PaymentResponseCode.PENDING_TRANSACTION.equals(paymentResponseCode)) {
+			return ApiPaymentResponseCode.PENDING;
+		} else {
+			return ApiPaymentResponseCode.UNSUCCESSFUL;
 		}
-		return tokens;
-	}*/
+	}
 
-	/**
-	 * This method transforms a token into Rest token response
-	 *
-	 * @param token Token object
-	 * @return ApiTokenResponse object
-	 */
-	/*private ApiTokenResponse mapTokenResponse(Token token) {
-		ApiTokenResponse mappedToken = ApiTokenResponse.builder()
-													   .id(token.getId())
-													   .maskedNumber(token.getMaskedNumber())
-													   .paymentMethod(token.getPaymentMethod())
-													   .token(token.getToken())
-													   .build();
-		return mappedToken;
-	}*/
+
 }

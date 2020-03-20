@@ -122,12 +122,13 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 	}
 
-	@Override public void refund(Refund refund)
+	@Override public void refund(final Refund refund)
 			throws PaymentPlatformException, UnsuccessfulTransactionException, NotRefundableTransactionException,
 				   NoTransactionFoundException {
 		Transaction transaction = getTransactionById(refund.getTransactionId());
 		if (transaction != null) {
 			if (PaymentResponseCode.SUCCESSFUL_TRANSACTION.equals(transaction.getState())) {
+				refund.setOrderId(transaction.getOrderId());
 				final PaymentResponse paymentResponse = restClient.refund(refund);
 				if (PaymentResponseCode.SUCCESSFUL_TRANSACTION
 						.equals(paymentResponse.getPaymentResult().getPaymentResponseCode())) {
