@@ -45,7 +45,7 @@ public class Transaction {
 	/**
 	 * The state in which the transaction is
 	 */
-	private TransactionState state;
+	private PaymentResponseCode state;
 
 	/**
 	 * Payment method used to make a payment
