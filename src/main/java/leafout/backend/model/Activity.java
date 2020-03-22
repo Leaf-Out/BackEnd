@@ -1,5 +1,5 @@
 package leafout.backend.model;
 
-public class Activity {
+public class Activity extends Pay{
 	//TODO implement
 }
