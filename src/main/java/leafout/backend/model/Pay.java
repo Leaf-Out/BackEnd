@@ -1,10 +1,11 @@
 package leafout.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 import java.util.Map;
@@ -16,16 +17,21 @@ import java.util.UUID;
  * @author <a href=alejoguzm07@gmail.com> José Alejandro Naranjo Guzmán </a>
  * @since 0.0.1
  */
-@Builder
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "typ")
+@JsonSubTypes({
+		@JsonSubTypes.Type(value = Park.class, name = "Park"),
+		@JsonSubTypes.Type(value = Plan.class, name = "Plan"),
+		@JsonSubTypes.Type(value = Activity.class, name = "Activity"),
+})
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public abstract class Pay {
 
 	/**
 	 * ID of the payable item
 	 */
+	@Id
 	private UUID id;
 
 	/**

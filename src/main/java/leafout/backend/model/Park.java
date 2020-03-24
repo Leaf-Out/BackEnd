@@ -1,9 +1,15 @@
 package leafout.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -14,6 +20,8 @@ import java.util.List;
  */
 @Getter
 @Setter
+@Document
+@JsonTypeName("Plan")
 public class Park extends Pay {
 
     /**
@@ -25,6 +33,14 @@ public class Park extends Pay {
      * List of activities of a park
      */
     List<Activity> activitiesList;
+
+
+    @Builder
+    public Park(UUID id, String name, String description, Map< Population,Double > prices, List<Tag> tags,Feedback feedback,List<Plan> planList, List<Activity> activitiesList) {
+        super(id,name,description,prices,tags,feedback);
+        this.planList = planList;
+        this.activitiesList = activitiesList;
+    }
 
 
 }

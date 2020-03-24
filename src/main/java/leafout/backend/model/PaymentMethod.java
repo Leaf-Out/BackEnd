@@ -7,5 +7,8 @@ package leafout.backend.model;
  * @since 0.0.1
  */
 public enum PaymentMethod {
-	// TODO add methods
+	MASTERCARD,
+	VISA,
+	VISA_DEBIT,
+	AMEX
 }

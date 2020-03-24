@@ -1,13 +1,21 @@
 package leafout.backend.controller;
 
+import leafout.backend.apimodel.ActivityRequest;
+import leafout.backend.apimodel.ParkRequest;
+import leafout.backend.apimodel.PlanRequest;
+import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.LeafoutPersistenceException;
+import leafout.backend.model.Park;
 import leafout.backend.model.Pay;
-import leafout.backend.service.ParkServices;
+
+import leafout.backend.model.Plan;
+import leafout.backend.service.ParkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,52 +26,161 @@ import java.util.UUID;
  * @since 0.0.1
  */
 @RestController
-@RequestMapping(value = "/Parks")
-public class ParkController {
+@RequestMapping(value = "/parks")
+public class ParkController{
 
     @Autowired
-    private ParkServices parkServices;
+    private ParkService parkService;
 
     @GetMapping
     public ResponseEntity<?> getAllPlans() {
-        try {
-            List<Pay> parks = parkServices.getAllParks();
-            return new ResponseEntity<>(parks, HttpStatus.ACCEPTED);
-        } catch (LeafoutPersistenceException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapParks(parkService.getAllParks()), HttpStatus.ACCEPTED);
+        return response;
     }
 
 
-    @GetMapping(path = "/{uuid}")
-    public ResponseEntity<?> getPlanByName(@PathVariable("uuid") UUID parkUuid) {
-        Pay park = null;
-        try {
-            park = parkServices.findParkById(parkUuid);
-            return new ResponseEntity<>(park, HttpStatus.ACCEPTED);
-        } catch (LeafoutPersistenceException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getPlanByName(@PathVariable("id") UUID parkId) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapParkResponse(parkService.getParkById(parkId)), HttpStatus.ACCEPTED);
+        return response;
 
+    }
 
     @PostMapping
-    public ResponseEntity<?> addNewPlan(@RequestBody Pay park) {
+    public ResponseEntity<?> addNewPark(@RequestBody ParkRequest park) {
+
         try {
-            parkServices.savePark(park);
-            return new ResponseEntity<>(park, HttpStatus.CREATED);
+            parkService.savePark(mapPark(park));
         } catch (LeafoutPersistenceException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            ex.printStackTrace();
         }
+        final ResponseEntity response = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return response;
     }
 
-    @GetMapping(path = "/{park}/plans")
-    public ResponseEntity<?> getPlansByPark(@PathVariable UUID park) {
-        return null;
+    @GetMapping(path = "/{id}/plans")
+    public ResponseEntity<?> getPlansByPark(@PathVariable("id") UUID parkId) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapPlansResponse(parkService.getParkById(parkId).getPlanList()), HttpStatus.ACCEPTED);
+        return response;
+
     }
 
-    @GetMapping(path = "/{park}/ticket")
-    public ResponseEntity<?> getTicketPark(@PathVariable UUID park) {
-        return null;
+    @GetMapping(path = "/{id}/activities")
+    public ResponseEntity<?> getActivitiesByPark(@PathVariable("id") UUID parkId) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapActivitiesResponse(parkService.getParkById(parkId).getActivitiesList()), HttpStatus.ACCEPTED);
+        return response;
     }
+
+    /**
+     * This method transforms a Rest Park object into the business park object
+     *
+     * @param parkRequest Rest park object to be transformed
+     * @return A Park object
+     */
+    private Park mapPark(final ParkRequest parkRequest) {
+        Park park = Park.builder().id(parkRequest.getId())
+                .activitiesList(parkRequest.getActivitiesList())
+                .description(parkRequest.getDescription())
+                .feedback(parkRequest.getFeedback())
+                .name(parkRequest.getName())
+                .planList(parkRequest.getPlanList())
+                .prices(parkRequest.getPrices())
+                .tags(parkRequest.getTags())
+                .planList(parkRequest.getPlanList())
+                .build();
+        return park;
+    }
+    /**
+     * This method transforms a Rest Park object into the business park object
+     *
+     * @param parkRequest Rest park object to be transformed
+     * @return A Park object
+     */
+    private ParkRequest mapParkResponse(final Park parkRequest) {
+        ParkRequest park = ParkRequest.builder().id(parkRequest.getId())
+                .activitiesList(parkRequest.getActivitiesList())
+                .description(parkRequest.getDescription())
+                .feedback(parkRequest.getFeedback())
+                .name(parkRequest.getName())
+                .planList(parkRequest.getPlanList())
+                .prices(parkRequest.getPrices())
+                .tags(parkRequest.getTags())
+                .build();
+        return park;
+    }
+    /**
+     * This method transforms a lists of  Park object into the response  list park object
+     *
+     * @param allparks Rest park object to be transformed
+     * @return A Park object
+     */
+    private List<ParkRequest> mapParks(final List<Park> allparks) {
+        List<ParkRequest> parks = new ArrayList<>();
+        for (Park park : allparks) {
+            parks.add(
+                    ParkRequest.builder().id(park.getId())
+                            .activitiesList(park.getActivitiesList())
+                            .description(park.getDescription())
+                            .feedback(park.getFeedback())
+                            .name(park.getName())
+                            .planList(park.getPlanList())
+                            .prices(park.getPrices())
+                            .tags(park.getTags())
+                            .build()
+            );
+        }
+
+        return parks;
+    }
+    /**
+     * This method transforms a lists of  Plan object into the response  list Plan object
+     *
+     * @param allplans Rest park object to be transformed
+     * @return A List<Plan> object
+     */
+    private List<PlanRequest> mapPlansResponse(final List<Plan> allplans) {
+        final List<PlanRequest> plans = new ArrayList<>();
+        for (Plan plan : allplans) {
+            plans.add(
+                    PlanRequest.builder().id(plan.getId())
+                            .activitiesList(plan.getActivitiesList())
+                            .description(plan.getDescription())
+                            .feedback(plan.getFeedback())
+                            .name(plan.getName())
+                            .prices(plan.getPrices())
+                            .tags(plan.getTags())
+                            .build()
+            );
+        }
+
+        return plans;
+    }
+    /**
+     * This method transforms a lists of  activities object into the response  list activities object
+     *
+     * @param allActivities Rest park object to be transformed
+     * @return A List<Activities>  object
+     */
+    private List<ActivityRequest> mapActivitiesResponse(final List<Activity> allActivities) {
+        final List<ActivityRequest> Activities = new ArrayList<>();
+        for (Activity activity : allActivities) {
+            Activities.add(
+                    ActivityRequest.builder().id(activity.getId())
+                            .description(activity.getDescription())
+                            .feedback(activity.getFeedback())
+                            .name(activity.getName())
+                            .prices(activity.getPrices())
+                            .tags(activity.getTags())
+                            .build()
+            );
+        }
+
+        return Activities;
+    }
+
+
 }

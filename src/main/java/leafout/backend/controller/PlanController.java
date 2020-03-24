@@ -1,13 +1,20 @@
 package leafout.backend.controller;
 
+import leafout.backend.apimodel.ActivityRequest;
+import leafout.backend.apimodel.ParkRequest;
+import leafout.backend.apimodel.PlanRequest;
+import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.LeafoutPersistenceException;
+import leafout.backend.model.Park;
 import leafout.backend.model.Pay;
-import leafout.backend.service.PlanServices;
+import leafout.backend.model.Plan;
+import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,49 +26,127 @@ import java.util.UUID;
  */
 
 @RestController
-@RequestMapping(value = "/Plans")
+@RequestMapping(value = "/plans")
 public class PlanController {
     @Autowired
-    private PlanServices planServices;
+    private PlanService planServices;
 
 
     @GetMapping
     public ResponseEntity<?> getAllPlans(){
-        try{
-            List<Pay> Plans = planServices.getAllPlans();
-            return new ResponseEntity<>(Plans, HttpStatus.ACCEPTED);
-        }catch (LeafoutPersistenceException ex){
-            return new ResponseEntity<>(ex.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapPlansResponse(planServices.getAllPlans()), HttpStatus.ACCEPTED);
+        return response;
+
     }
 
 
-    @GetMapping(path = "/{uuid}")
-    public ResponseEntity<?> getPlanById(@PathVariable("uuid") UUID uuid){
-        Pay plan = null;
-        try{
-            plan = planServices.findPlanById(uuid);
-            return new ResponseEntity<>(plan,HttpStatus.ACCEPTED);
-        }catch (LeafoutPersistenceException ex){
-            return new ResponseEntity<>(ex.getMessage(),HttpStatus.NOT_FOUND);
-        }
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getPlanById(@PathVariable("id") UUID planId){
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapPlanResponse(planServices.getPlanById(planId)), HttpStatus.ACCEPTED);
+        return response;
     }
 
 
 
     @PostMapping
-    public ResponseEntity<?> addNewPlan(@RequestBody Pay plan){
+    public ResponseEntity<?> addNewPlan(@RequestBody PlanRequest plan){
         try{
-            planServices.savePlan(plan);
-            return new ResponseEntity<>(plan,HttpStatus.CREATED);
+            planServices.savePlan(mapPlan(plan));
         }catch (LeafoutPersistenceException ex){
-            return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+            ex.printStackTrace();
         }
+        final ResponseEntity response = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return response;
     }
 
-    @GetMapping(path = "/{plan}/ticket")
-    public ResponseEntity<?> getPlanTicket(@PathVariable UUID plan){return null;}
+    @GetMapping(path = "/{id}/activities")
+    public ResponseEntity<?> getActivitiesByPlan(@PathVariable("id") UUID planId) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapActivitiesResponse(planServices.getPlanById(planId).getActivitiesList()), HttpStatus.ACCEPTED);
+        return response;
+    }
 
+    /**
+     * This method transforms a Rest plan object into the business plan object
+     *
+     * @param planRequest Rest park object to be transformed
+     * @return A plan object
+     */
+    private Plan mapPlan(final PlanRequest planRequest) {
+        Plan plan = Plan.builder().id(planRequest.getId())
+                .activitiesList(planRequest.getActivitiesList())
+                .description(planRequest.getDescription())
+                .feedback(planRequest.getFeedback())
+                .name(planRequest.getName())
+                .prices(planRequest.getPrices())
+                .tags(planRequest.getTags())
+                .build();
+        return plan;
+    }
+    /**
+     * This method transforms a Rest plan object into the business plan object
+     *
+     * @param plan Rest park object to be transformed
+     * @return A plan object
+     */
+    private PlanRequest mapPlanResponse(final Plan plan) {
+        PlanRequest planRe = PlanRequest.builder().id(plan.getId())
+                .activitiesList(plan.getActivitiesList())
+                .description(plan.getDescription())
+                .feedback(plan.getFeedback())
+                .name(plan.getName())
+                .prices(plan.getPrices())
+                .tags(plan.getTags())
+                .build();
+        return planRe;
+    }
 
+    /**
+     * This method transforms a lists of  Plan object into the response  list Plan object
+     *
+     * @param allplans Rest park object to be transformed
+     * @return A List<Plan> object
+     */
+    private List<PlanRequest> mapPlansResponse(final List<Plan> allplans) {
+        List<PlanRequest> plans = new ArrayList<>();
+        for (Plan plan : allplans) {
+            plans.add(
+                    PlanRequest.builder().id(plan.getId())
+                            .activitiesList(plan.getActivitiesList())
+                            .description(plan.getDescription())
+                            .feedback(plan.getFeedback())
+                            .name(plan.getName())
+                            .prices(plan.getPrices())
+                            .tags(plan.getTags())
+                            .build()
+            );
+        }
+
+        return plans;
+    }
+    /**
+     * This method transforms a lists of  activities object into the response  list activities object
+     *
+     * @param allActivities Rest park object to be transformed
+     * @return A List<Activities>  object
+     */
+    private List<ActivityRequest> mapActivitiesResponse(final List<Activity> allActivities) {
+        List<ActivityRequest> Activities = new ArrayList<>();
+        for (Activity activity : allActivities) {
+            Activities.add(
+                    ActivityRequest.builder().id(activity.getId())
+                            .description(activity.getDescription())
+                            .feedback(activity.getFeedback())
+                            .name(activity.getName())
+                            .prices(activity.getPrices())
+                            .tags(activity.getTags())
+                            .build()
+            );
+        }
+
+        return Activities;
+    }
 
 }
