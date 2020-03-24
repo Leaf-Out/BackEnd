@@ -1,5 +1,7 @@
-package leafout.backend.model;
+package leafout.backend.apimodel;
 
+import leafout.backend.model.Pay;
+import leafout.backend.model.Population;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +12,7 @@ import java.sql.Date;
 import java.util.UUID;
 
 /**
- * This class represents a ticket to be payed, to access to a park plan or activity
+ * This class represents a ticket to the client
  *
  * @author <a href=alejoguzm07@gmail.com> José Alejandro Naranjo Guzmán </a>
  * @since 0.0.1
@@ -20,8 +22,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ticket {
-
+public class TicketResponse {
 	/**
 	 * ID of the ticket to be payed
 	 */
@@ -53,8 +54,8 @@ public class Ticket {
 	private double totalPrice;
 
 	/**
-	 * Product to be payed
+	 * Product payed
 	 */
-	private Pay paying;
+	private String name;
 
 }
