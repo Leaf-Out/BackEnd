@@ -8,17 +8,16 @@ import leafout.backend.model.exception.NotRefundableTransactionException;
 import leafout.backend.model.exception.TransactionErrorException;
 import leafout.backend.model.exception.PaymentPlatformException;
 import leafout.backend.model.exception.UnsuccessfulTransactionException;
+import leafout.backend.persistence.TransactionRepository;
 import leafout.backend.restclient.PaymentRestClient;
-import leafout.backend.service.ActivityService;
-import leafout.backend.service.ParkService;
-import leafout.backend.service.PaymentService;
-import leafout.backend.service.PlanService;
+import leafout.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -33,8 +32,8 @@ public class PaymentServiceImpl implements PaymentService {
 	/**
 	 * Injected UserServices object
 	 */
-	//@Autowired
-	//private UserServices userServices;
+	@Autowired
+	private IUserService userServices;
 
 	/**
 	 * Injected ParkServices object
@@ -63,8 +62,8 @@ public class PaymentServiceImpl implements PaymentService {
 	/**
 	 * Injected PaymentPersistence object
 	 */
-	//@Autowired
-	//private PaymentPersistence paymentPersistence;
+	@Autowired
+	private TransactionRepository transactionRepository;
 
 	/**
 	 * Injected PaymentRestClient object
@@ -73,7 +72,8 @@ public class PaymentServiceImpl implements PaymentService {
 	private PaymentRestClient restClient;
 
 	@Override public void pay(Purchase purchase, UUID userId) throws PaymentPlatformException, NoPayableFoundException, NoUserFoundException, UnsuccessfulTransactionException, TransactionErrorException {
-		/**final User user = userServices.getUserById(userId);
+		Optional<User> userOptional = userServices.getById(userId);
+		final User user = userOptional.get();
 		if (user != null) {
 			final Park park = parkService.getParkById(purchase.getTicket().getPaying().getId());
 			final Plan plan = planService.getPlanById(purchase.getTicket().getPaying().getId());
@@ -86,7 +86,7 @@ public class PaymentServiceImpl implements PaymentService {
 			}
 		} else {
 			throw new NoUserFoundException(userId);
-		}*/
+		}
 	}
 
 	/**
@@ -143,17 +143,16 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override public List<Transaction> getAllTransactions() {
-		//TODO get transactions
-		return null;
+
+		return transactionRepository.findAll();
 	}
 
 	@Override public List<Transaction> getTransactionsByUser(UUID user) {
-		//TODO get transactions
-		return null;
+		return transactionRepository.getTransactionsByUserId(user);
 	}
 
-	@Override public Transaction getTransactionById(UUID id) {
-		//TODO get transaction
-		return null;
+	@Override public Transaction getTransactionById(UUID transactionId) {
+		Optional<Transaction> optionalTransaction = transactionRepository.getTransactionById(transactionId);
+		return optionalTransaction.get();
 	}
 }

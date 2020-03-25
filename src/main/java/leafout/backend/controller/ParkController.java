@@ -4,7 +4,7 @@ import leafout.backend.apimodel.ActivityRequest;
 import leafout.backend.apimodel.ParkRequest;
 import leafout.backend.apimodel.PlanRequest;
 import leafout.backend.model.Activity;
-import leafout.backend.model.Exception.LeafoutPersistenceException;
+import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Park;
 
 
@@ -44,13 +44,13 @@ public class ParkController{
 
     /**
      * This method returns a http response with the park of the id
-     * @param parkId id of the conrresponsive park
+     * @param parkName id of the conrresponsive park
      * @return http response
      */
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getPlanByName(@PathVariable("id") UUID parkId) {
+    @GetMapping(path = "/{name}")
+    public ResponseEntity<?> getPlanByName(@PathVariable("name") String parkName) {
         final ResponseEntity response;
-        response = new ResponseEntity<>(mapParkResponse(parkService.getParkById(parkId)), HttpStatus.ACCEPTED);
+        response = new ResponseEntity<>(mapParkResponse(parkService.getParkByName(parkName)), HttpStatus.ACCEPTED);
         return response;
 
     }
@@ -64,7 +64,7 @@ public class ParkController{
 
         try {
             parkService.savePark(mapPark(park));
-        } catch (LeafoutPersistenceException ex) {
+        } catch (ParkException ex) {
             ex.printStackTrace();
         }
         final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
@@ -73,26 +73,26 @@ public class ParkController{
 
     /**
      * This method get all the plans by a park
-     * @param parkId the id form a park
+     * @param parkName the name of a park
      * @return list<Plan></>
      */
-    @GetMapping(path = "/{id}/plans")
-    public ResponseEntity<?> getPlansByPark(@PathVariable("id") UUID parkId) {
+    @GetMapping(path = "/{name}/plans")
+    public ResponseEntity<?> getPlansByPark(@PathVariable("name") String parkName) {
         final ResponseEntity response;
-        response = new ResponseEntity<>(mapPlansResponse(parkService.getParkById(parkId).getPlanList()), HttpStatus.ACCEPTED);
+        response = new ResponseEntity<>(mapPlansResponse(parkService.getParkByName(parkName).getPlanList()), HttpStatus.ACCEPTED);
         return response;
 
     }
     /**
      * This method get all the Activities by a park
-     * @param parkId the id form a park
+     * @param parkName the id form a park
      * @return list<Activities></>
      */
 
-    @GetMapping(path = "/{id}/activities")
-    public ResponseEntity<?> getActivitiesByPark(@PathVariable("id") UUID parkId) {
+    @GetMapping(path = "/{name}/activities")
+    public ResponseEntity<?> getActivitiesByPark(@PathVariable("name") String parkName) {
         final ResponseEntity response;
-        response = new ResponseEntity<>(mapActivitiesResponse(parkService.getParkById(parkId).getActivitiesList()), HttpStatus.ACCEPTED);
+        response = new ResponseEntity<>(mapActivitiesResponse(parkService.getParkByName(parkName).getActivitiesList()), HttpStatus.ACCEPTED);
         return response;
     }
 

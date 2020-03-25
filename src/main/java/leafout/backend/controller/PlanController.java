@@ -3,7 +3,7 @@ package leafout.backend.controller;
 import leafout.backend.apimodel.ActivityRequest;
 import leafout.backend.apimodel.PlanRequest;
 import leafout.backend.model.Activity;
-import leafout.backend.model.Exception.LeafoutPersistenceException;
+import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Plan;
 import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +42,13 @@ public class PlanController {
 
     /**
      * This method returns a http response with the plan of the id
-     * @param planId id of the conrresponsive plan
+     * @param planName id of the conrresponsive plan
      * @return http response
      */
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getPlanById(@PathVariable("id") UUID planId){
+    @GetMapping(path = "/{name}")
+    public ResponseEntity<?> getPlanById(@PathVariable("name") String planName){
         final ResponseEntity response;
-        response = new ResponseEntity<>(mapPlanResponse(planServices.getPlanById(planId)), HttpStatus.ACCEPTED);
+        response = new ResponseEntity<>(mapPlanResponse(planServices.getPlanByName(planName)), HttpStatus.ACCEPTED);
         return response;
     }
 
@@ -60,23 +60,26 @@ public class PlanController {
 
     @PostMapping
     public ResponseEntity<?> addNewPlan(@RequestBody PlanRequest plan){
+        ResponseEntity response;
         try{
             planServices.savePlan(mapPlan(plan));
-        }catch (LeafoutPersistenceException ex){
+            response = new ResponseEntity<>(HttpStatus.CREATED);
+        }catch (PlanException ex){
             ex.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
+
         return response;
     }
     /**
      * This method get all the Activities by a plan
-     * @param planId the id form a plan
+     * @param planName the name of a plan
      * @return list<Activities></>
      */
-    @GetMapping(path = "/{id}/activities")
-    public ResponseEntity<?> getActivitiesByPlan(@PathVariable("id") UUID planId) {
+    @GetMapping(path = "/{name}/activities")
+    public ResponseEntity<?> getActivitiesByPlan(@PathVariable("name") String planName) {
         final ResponseEntity response;
-        response = new ResponseEntity<>(mapActivitiesResponse(planServices.getPlanById(planId).getActivitiesList()), HttpStatus.ACCEPTED);
+        response = new ResponseEntity<>(mapActivitiesResponse(planServices.getPlanByName(planName).getActivitiesList()), HttpStatus.ACCEPTED);
         return response;
     }
 

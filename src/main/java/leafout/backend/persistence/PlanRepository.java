@@ -2,6 +2,7 @@ package leafout.backend.persistence;
 
 
 
+import leafout.backend.model.Park;
 import leafout.backend.model.Plan;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -24,7 +25,13 @@ public interface PlanRepository  extends MongoRepository<Plan, UUID> {
     List<Plan> findAll();
     /**
      * find an Plan by id
-     * @param planId the di of Plan
+     * @param planName the di of Plan
+     * @return optional<Plan>
+     **/
+    Optional<Plan> getPlanByName(String planName);
+    /**
+     * find an Plan by id
+     * @param planId the id of Plan
      * @return optional<Plan>
      **/
     Optional<Plan> getPlanById(UUID planId);
@@ -41,5 +48,12 @@ public interface PlanRepository  extends MongoRepository<Plan, UUID> {
      * @return boolean
      */
     boolean existsPlanById(UUID planId);
+    /**
+     * if the Plan exisist
+     * @param activityName the id of Plan
+     * @return boolean
+     */
+    boolean existsPlanByName(String activityName);
+
 
 }

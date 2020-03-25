@@ -3,7 +3,7 @@ package leafout.backend.controller;
 
 import leafout.backend.apimodel.ActivityRequest;
 import leafout.backend.model.Activity;
-import leafout.backend.model.Exception.LeafoutPersistenceException;
+import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,13 +42,13 @@ public class ActivityController {
 
     /**
      * This method returns a http response with the activity of the id
-     * @param activityId id of the conrresponsive activity
+     * @param activityName id of the conrresponsive activity
      * @return http response
      */
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getActivityById(@PathVariable("id") UUID activityId){
+    @GetMapping(path = "/{name}")
+    public ResponseEntity<?> getActivityById(@PathVariable("name") String activityName){
         final ResponseEntity response;
-        response = new ResponseEntity<>(mapActivityResponse(activityServices.getActivityById(activityId)), HttpStatus.ACCEPTED);
+        response = new ResponseEntity<>(mapActivityResponse(activityServices.getActivityByName(activityName)), HttpStatus.ACCEPTED);
         return response;
     }
 
@@ -62,7 +62,7 @@ public class ActivityController {
     public ResponseEntity<?> addNewActivity(@RequestBody ActivityRequest activity){
         try{
             activityServices.saveActivity(mapActivity(activity));
-        }catch (LeafoutPersistenceException ex){
+        }catch (ActivityException ex){
             ex.printStackTrace();
         }
         final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);

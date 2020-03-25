@@ -1,7 +1,6 @@
 package leafout.backend.service.impl;
 
-import leafout.backend.model.Activity;
-import leafout.backend.model.Exception.LeafoutPersistenceException;
+import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Park;
 
 
@@ -36,13 +35,20 @@ public class ParkServiceImpl implements ParkService {
     }
 
     @Override
-    public void savePark(Park park) throws LeafoutPersistenceException {
-        if(parkRepository.existsParkById(park.getId())){
-            throw new LeafoutPersistenceException();
+    public void savePark(Park park) throws  ParkException {
+        if(parkRepository.existsParkByName(park.getName())){
+
+            throw new ParkException(park.getName());
         }
         parkRepository.save(park);
     }
 
+
+    @Override
+    public Park  getParkByName(String parkName) {
+        Optional<Park> optionalPay = parkRepository.getParkByName(parkName);
+        return optionalPay.get();
+    }
 
     @Override
     public Park getParkById(UUID parkId) {
@@ -51,17 +57,17 @@ public class ParkServiceImpl implements ParkService {
     }
 
     @Override
-    public void updatePark(Park park) throws LeafoutPersistenceException {
+    public void updatePark(Park park) throws ParkException {
         if(!parkRepository.existsParkById(park.getId())){
-            throw new LeafoutPersistenceException();
+            throw new ParkException(park.getId());
         }
         parkRepository.save(park);
     }
 
     @Override
-    public void remove(Park park) throws LeafoutPersistenceException {
+    public void remove(Park park) throws  ParkException {
         if(!parkRepository.existsParkById(park.getId())){
-            throw new LeafoutPersistenceException();
+            throw new ParkException(park.getId());
         }
         parkRepository.delete(park);
     }

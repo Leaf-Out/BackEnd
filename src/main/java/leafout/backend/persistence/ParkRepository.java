@@ -1,6 +1,7 @@
 package leafout.backend.persistence;
 
 
+import leafout.backend.model.Activity;
 import leafout.backend.model.Park;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -24,7 +25,13 @@ public interface ParkRepository extends MongoRepository<Park, UUID> {
     List<Park> findAll();
     /**
      * find an Park by id
-     * @param parkId the di of Park
+     * @param parkName the di of Park
+     * @return optional<Park>
+     **/
+    Optional<Park> getParkByName(String parkName);
+    /**
+     * find an Park by id
+     * @param parkId the id of Park
      * @return optional<Park>
      **/
     Optional<Park> getParkById(UUID parkId);
@@ -41,4 +48,12 @@ public interface ParkRepository extends MongoRepository<Park, UUID> {
      * @return boolean
      */
     boolean existsParkById(UUID parkId);
+
+    /**
+     * if the Park exisist
+     * @param parkName the id of Park
+     * @return boolean
+     */
+    boolean existsParkByName(String parkName);
+
 }

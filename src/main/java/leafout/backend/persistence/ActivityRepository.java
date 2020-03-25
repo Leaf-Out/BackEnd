@@ -24,8 +24,14 @@ public interface ActivityRepository extends MongoRepository<Activity, UUID> {
     List<Activity> findAll();
 
     /**
+     * find an activity by name
+     * @param activitiesName the di of activity
+     * @return optional<Activity>
+     **/
+    Optional<Activity> getActivityByName(String activitiesName);
+    /**
      * find an activity by id
-     * @param activitiesId the di of activity
+     * @param activitiesId the id of activity
      * @return optional<Activity>
      **/
     Optional<Activity> getActivityById(UUID activitiesId);
@@ -43,4 +49,14 @@ public interface ActivityRepository extends MongoRepository<Activity, UUID> {
      * @return boolean
      */
     boolean existsActivityById(UUID activityId);
+
+    /**
+     * if the acivity exisist
+     * @param activityName the id of activity
+     * @return boolean
+     */
+    boolean existsActivityByName(String activityName);
+
+
+
 }

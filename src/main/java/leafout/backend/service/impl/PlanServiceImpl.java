@@ -1,8 +1,7 @@
 package leafout.backend.service.impl;
 
 
-import leafout.backend.model.Exception.LeafoutPersistenceException;
-import leafout.backend.model.Park;
+import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Plan;
 import leafout.backend.persistence.PlanRepository;
 import leafout.backend.service.PlanService;
@@ -32,31 +31,37 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public void savePlan(Plan plan) throws LeafoutPersistenceException {
-        if(planRepository.existsPlanById(plan.getId())){
-            throw new LeafoutPersistenceException();
+    public void savePlan(Plan plan) throws  PlanException {
+        if(planRepository.existsPlanByName(plan.getName())){
+            throw new PlanException(plan.getName());
         }
         planRepository.save(plan);
     }
 
     @Override
-    public Plan getPlanById(UUID planId)  {
+    public Plan getPlanByName(String planName)  {
+        Optional<Plan> optionalPay = planRepository.getPlanByName(planName);
+        return optionalPay.get();
+    }
+
+    @Override
+    public Plan getPlanById(UUID planId) {
         Optional<Plan> optionalPay = planRepository.getPlanById(planId);
         return optionalPay.get();
     }
 
     @Override
-    public void updatePlan(Plan plan) throws LeafoutPersistenceException {
+    public void updatePlan(Plan plan) throws  PlanException {
         if(!planRepository.existsPlanById(plan.getId())){
-            throw new LeafoutPersistenceException();
+            throw new PlanException(plan.getId());
         }
         planRepository.save(plan);
     }
 
     @Override
-    public void remove(Plan plan) throws LeafoutPersistenceException {
+    public void remove(Plan plan) throws  PlanException {
         if(!planRepository.existsPlanById(plan.getId())){
-            throw new LeafoutPersistenceException();
+            throw new PlanException(plan.getId());
         }
         planRepository.delete(plan);
     }

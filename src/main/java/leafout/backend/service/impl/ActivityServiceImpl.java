@@ -1,7 +1,7 @@
 package leafout.backend.service.impl;
 
 import leafout.backend.model.Activity;
-import leafout.backend.model.Exception.LeafoutPersistenceException;
+import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.persistence.ActivityRepository;
 import leafout.backend.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 
 /**
  * This class represent the implementation of the services of Activities
@@ -28,11 +29,17 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void saveActivity(Activity activity) throws LeafoutPersistenceException {
-        if(activityRepository.existsActivityById(activity.getId())){
-            throw new LeafoutPersistenceException();
+    public void saveActivity(Activity activity) throws  ActivityException {
+        if(activityRepository.existsActivityByName(activity.getName())){
+            throw new ActivityException(activity.getName());
         }
         activityRepository.save(activity);
+    }
+
+    @Override
+    public Activity getActivityByName(String activityName) {
+        Optional<Activity> optionalPay = activityRepository.getActivityByName(activityName);
+        return optionalPay.get();
     }
 
     @Override
@@ -42,17 +49,17 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void updateActivity(Activity activity) throws LeafoutPersistenceException {
+    public void updateActivity(Activity activity) throws ActivityException {
         if(!activityRepository.existsActivityById(activity.getId())){
-            throw new LeafoutPersistenceException();
+            throw new ActivityException(activity.getId());
         }
         activityRepository.save(activity);
     }
 
     @Override
-    public void remove(Activity activity) throws LeafoutPersistenceException {
+    public void remove(Activity activity) throws ActivityException {
         if(!activityRepository.existsActivityById(activity.getId())){
-            throw new LeafoutPersistenceException();
+            throw new ActivityException(activity.getId());
         }
         activityRepository.delete(activity);
     }

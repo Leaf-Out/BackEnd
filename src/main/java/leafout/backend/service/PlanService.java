@@ -1,6 +1,6 @@
 package leafout.backend.service;
 
-import leafout.backend.model.Exception.LeafoutPersistenceException;
+import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Plan;
 
 import java.util.List;
@@ -17,13 +17,18 @@ public interface PlanService <P extends Plan>{
      * This method save a Plan
      * @param plan to save
      */
-    void savePlan(P plan) throws LeafoutPersistenceException;
+    void savePlan(P plan) throws  PlanException;
 
     /**
      * This method get a Plan
-     * @param planId UUID of the Plan
+     * @param planName name of the Plan
      */
 
+    P getPlanByName(String planName) ;
+    /**
+     * This method get a Plan
+     * @param planId id of the Plan
+     */
     P getPlanById(UUID planId) ;
 
     /**
@@ -31,11 +36,11 @@ public interface PlanService <P extends Plan>{
      * @param plan that gonna get an update Plan
      */
 
-    void updatePlan(P plan)  throws LeafoutPersistenceException;
+    void updatePlan(P plan) throws  PlanException;
 
     /**
      * This method remove  a Plan
      * @param plan UUID of the Plan
      */
-    void remove(P plan) throws LeafoutPersistenceException;
+    void remove(P plan) throws  PlanException;
 }

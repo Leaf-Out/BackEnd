@@ -1,10 +1,12 @@
 package leafout.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.sql.Date;
 import java.util.UUID;
@@ -20,6 +22,8 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Document(collection = "Transactions")
+@JsonTypeName("Plan")
 public class Transaction {
 
 	/**
@@ -56,5 +60,10 @@ public class Transaction {
 	 * The ticket being payed
 	 */
 	private Ticket ticket;
+
+	/**
+	 * the user of the ticket
+	 */
+	private User user;
 
 }
