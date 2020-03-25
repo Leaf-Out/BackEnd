@@ -17,7 +17,6 @@ import java.util.UUID;
  */
 
 @Document
-@Builder
 @JsonTypeName("Plan")
 public class Activity extends Pay{
 	//TODO implement

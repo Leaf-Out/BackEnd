@@ -6,7 +6,7 @@ import leafout.backend.apimodel.PlanRequest;
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.LeafoutPersistenceException;
 import leafout.backend.model.Park;
-import leafout.backend.model.Pay;
+
 
 import leafout.backend.model.Plan;
 import leafout.backend.service.ParkService;

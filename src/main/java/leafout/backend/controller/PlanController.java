@@ -1,12 +1,9 @@
 package leafout.backend.controller;
 
 import leafout.backend.apimodel.ActivityRequest;
-import leafout.backend.apimodel.ParkRequest;
 import leafout.backend.apimodel.PlanRequest;
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.LeafoutPersistenceException;
-import leafout.backend.model.Park;
-import leafout.backend.model.Pay;
 import leafout.backend.model.Plan;
 import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
