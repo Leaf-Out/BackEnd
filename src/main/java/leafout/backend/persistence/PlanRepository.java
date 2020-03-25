@@ -9,18 +9,37 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+/**
+ * This class represent the repository of a Plan
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
 @Repository
 public interface PlanRepository  extends MongoRepository<Plan, UUID> {
-
-    List<Plan> getAllPlans();
-
+    /**
+     * find all Plans created
+     * @return list<Plan>
+     */
+    List<Plan> findAll();
+    /**
+     * find an Plan by id
+     * @param planId the di of Plan
+     * @return optional<Plan>
+     **/
     Optional<Plan> getPlanById(UUID planId);
+    /**
+     * Save a Plan
+     * @param plan the Plan would be save
+     * @return Plan
+     */
+    Plan save(Plan plan);
 
-    Plan registerPlan(Plan plan);
-
-    void updatePlan(Plan plan);
-
+    /**
+     * if the Plan exisist
+     * @param planId the id of Plan
+     * @return boolean
+     */
     boolean existsPlanById(UUID planId);
 
 }

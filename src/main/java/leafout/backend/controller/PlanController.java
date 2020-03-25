@@ -28,7 +28,10 @@ public class PlanController {
     @Autowired
     private PlanService planServices;
 
-
+    /**
+     * This method returns all Plans create
+     * @return
+     */
     @GetMapping
     public ResponseEntity<?> getAllPlans(){
         final ResponseEntity response;
@@ -37,7 +40,11 @@ public class PlanController {
 
     }
 
-
+    /**
+     * This method returns a http response with the plan of the id
+     * @param planId id of the conrresponsive plan
+     * @return http response
+     */
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getPlanById(@PathVariable("id") UUID planId){
         final ResponseEntity response;
@@ -45,7 +52,11 @@ public class PlanController {
         return response;
     }
 
-
+    /**
+     * This method create a new plan
+     * @param plan the plan that would be create
+     * @return http reponse
+     */
 
     @PostMapping
     public ResponseEntity<?> addNewPlan(@RequestBody PlanRequest plan){
@@ -54,10 +65,14 @@ public class PlanController {
         }catch (LeafoutPersistenceException ex){
             ex.printStackTrace();
         }
-        final ResponseEntity response = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
         return response;
     }
-
+    /**
+     * This method get all the Activities by a plan
+     * @param planId the id form a plan
+     * @return list<Activities></>
+     */
     @GetMapping(path = "/{id}/activities")
     public ResponseEntity<?> getActivitiesByPlan(@PathVariable("id") UUID planId) {
         final ResponseEntity response;
@@ -72,7 +87,7 @@ public class PlanController {
      * @return A plan object
      */
     private Plan mapPlan(final PlanRequest planRequest) {
-        Plan plan = Plan.builder().id(planRequest.getId())
+        Plan plan = Plan.builder().id(UUID.randomUUID())
                 .activitiesList(planRequest.getActivitiesList())
                 .description(planRequest.getDescription())
                 .feedback(planRequest.getFeedback())
@@ -89,7 +104,7 @@ public class PlanController {
      * @return A plan object
      */
     private PlanRequest mapPlanResponse(final Plan plan) {
-        PlanRequest planRe = PlanRequest.builder().id(plan.getId())
+        PlanRequest planRe = PlanRequest.builder()
                 .activitiesList(plan.getActivitiesList())
                 .description(plan.getDescription())
                 .feedback(plan.getFeedback())
@@ -110,7 +125,7 @@ public class PlanController {
         List<PlanRequest> plans = new ArrayList<>();
         for (Plan plan : allplans) {
             plans.add(
-                    PlanRequest.builder().id(plan.getId())
+                    PlanRequest.builder()
                             .activitiesList(plan.getActivitiesList())
                             .description(plan.getDescription())
                             .feedback(plan.getFeedback())
@@ -133,7 +148,7 @@ public class PlanController {
         List<ActivityRequest> Activities = new ArrayList<>();
         for (Activity activity : allActivities) {
             Activities.add(
-                    ActivityRequest.builder().id(activity.getId())
+                    ActivityRequest.builder()
                             .description(activity.getDescription())
                             .feedback(activity.getFeedback())
                             .name(activity.getName())

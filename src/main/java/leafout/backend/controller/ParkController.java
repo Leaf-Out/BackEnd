@@ -31,7 +31,10 @@ public class ParkController{
 
     @Autowired
     private ParkService parkService;
-
+    /**
+     * This method returns all parks create
+     * @return
+     */
     @GetMapping
     public ResponseEntity<?> getAllPlans() {
         final ResponseEntity response;
@@ -39,7 +42,11 @@ public class ParkController{
         return response;
     }
 
-
+    /**
+     * This method returns a http response with the park of the id
+     * @param parkId id of the conrresponsive park
+     * @return http response
+     */
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getPlanByName(@PathVariable("id") UUID parkId) {
         final ResponseEntity response;
@@ -47,7 +54,11 @@ public class ParkController{
         return response;
 
     }
-
+    /**
+     * This method create a new park
+     * @param park the activity that would be create
+     * @return http reponse
+     */
     @PostMapping
     public ResponseEntity<?> addNewPark(@RequestBody ParkRequest park) {
 
@@ -56,10 +67,15 @@ public class ParkController{
         } catch (LeafoutPersistenceException ex) {
             ex.printStackTrace();
         }
-        final ResponseEntity response = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
         return response;
     }
 
+    /**
+     * This method get all the plans by a park
+     * @param parkId the id form a park
+     * @return list<Plan></>
+     */
     @GetMapping(path = "/{id}/plans")
     public ResponseEntity<?> getPlansByPark(@PathVariable("id") UUID parkId) {
         final ResponseEntity response;
@@ -67,6 +83,11 @@ public class ParkController{
         return response;
 
     }
+    /**
+     * This method get all the Activities by a park
+     * @param parkId the id form a park
+     * @return list<Activities></>
+     */
 
     @GetMapping(path = "/{id}/activities")
     public ResponseEntity<?> getActivitiesByPark(@PathVariable("id") UUID parkId) {
@@ -82,7 +103,7 @@ public class ParkController{
      * @return A Park object
      */
     private Park mapPark(final ParkRequest parkRequest) {
-        Park park = Park.builder().id(parkRequest.getId())
+        Park park = Park.builder().id(UUID.randomUUID())
                 .activitiesList(parkRequest.getActivitiesList())
                 .description(parkRequest.getDescription())
                 .feedback(parkRequest.getFeedback())
@@ -101,7 +122,7 @@ public class ParkController{
      * @return A Park object
      */
     private ParkRequest mapParkResponse(final Park parkRequest) {
-        ParkRequest park = ParkRequest.builder().id(parkRequest.getId())
+        ParkRequest park = ParkRequest.builder()
                 .activitiesList(parkRequest.getActivitiesList())
                 .description(parkRequest.getDescription())
                 .feedback(parkRequest.getFeedback())
@@ -122,7 +143,7 @@ public class ParkController{
         List<ParkRequest> parks = new ArrayList<>();
         for (Park park : allparks) {
             parks.add(
-                    ParkRequest.builder().id(park.getId())
+                    ParkRequest.builder()
                             .activitiesList(park.getActivitiesList())
                             .description(park.getDescription())
                             .feedback(park.getFeedback())
@@ -146,7 +167,7 @@ public class ParkController{
         final List<PlanRequest> plans = new ArrayList<>();
         for (Plan plan : allplans) {
             plans.add(
-                    PlanRequest.builder().id(plan.getId())
+                    PlanRequest.builder()
                             .activitiesList(plan.getActivitiesList())
                             .description(plan.getDescription())
                             .feedback(plan.getFeedback())
@@ -169,7 +190,7 @@ public class ParkController{
         final List<ActivityRequest> Activities = new ArrayList<>();
         for (Activity activity : allActivities) {
             Activities.add(
-                    ActivityRequest.builder().id(activity.getId())
+                    ActivityRequest.builder()
                             .description(activity.getDescription())
                             .feedback(activity.getFeedback())
                             .name(activity.getName())

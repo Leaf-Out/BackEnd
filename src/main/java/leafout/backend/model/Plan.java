@@ -20,10 +20,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Document
+@Document(collection = "Plans")
 @JsonTypeName("Plan")
 public class Plan extends Pay{
-	//TODO implement
     /**
      * List of activities of a park
      */

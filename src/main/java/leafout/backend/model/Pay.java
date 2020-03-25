@@ -32,31 +32,32 @@ public abstract class Pay {
 	 * ID of the payable item
 	 */
 	@Id
-	private UUID id;
+	protected UUID id;
 
 	/**
 	 * Name of the payable item
 	 */
-	private String name;
+	protected String name;
 
 	/**
 	 * Description of the payable item
 	 */
-	private String description;
+	protected String description;
 
 	/**
 	 * Price of the item depending on the population segment
 	 */
-	private Map< Population,Double > prices;
+	protected Map< Population,Double > prices;
 
 	/**
 	 * Key words that represent the item
 	 */
-	private List<Tag> tags;
+	protected List<Tag> tags;
 
 	/**
 	 * Reviews given by the users about the item
 	 */
-	private Feedback feedback;
+	protected Feedback feedback;
+
 
 }

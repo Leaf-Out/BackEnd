@@ -20,8 +20,8 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-@Document
-@JsonTypeName("Plan")
+@Document(collection = "Parks")
+@JsonTypeName("Park")
 public class Park extends Pay {
 
     /**

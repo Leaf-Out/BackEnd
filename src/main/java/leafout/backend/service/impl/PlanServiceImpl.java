@@ -28,15 +28,15 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<Plan> getAllPlans()  {
-        return planRepository.getAllPlans();
+        return planRepository.findAll();
     }
 
     @Override
     public void savePlan(Plan plan) throws LeafoutPersistenceException {
-        if(!planRepository.existsPlanById(plan.getId())){
+        if(planRepository.existsPlanById(plan.getId())){
             throw new LeafoutPersistenceException();
         }
-        planRepository.registerPlan(plan);
+        planRepository.save(plan);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class PlanServiceImpl implements PlanService {
         if(!planRepository.existsPlanById(plan.getId())){
             throw new LeafoutPersistenceException();
         }
-        planRepository.updatePlan(plan);
+        planRepository.save(plan);
     }
 
     @Override

@@ -8,8 +8,13 @@ import lombok.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
+/**
+ * This class represent the activity for the client
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
 @Builder
 @Getter
 @Setter
@@ -17,10 +22,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ActivityRequest {
 
-    /**
-     * ID of the payable item
-     */
-    private UUID id;
 
     /**
      * Name of the payable item

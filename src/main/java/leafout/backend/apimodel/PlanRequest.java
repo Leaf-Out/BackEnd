@@ -8,46 +8,48 @@ import lombok.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 
+/**
+ * This class represent the plan for the client
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlanRequest {
-    /**
-     * ID of the payable item
-     */
-    private UUID id;
+
 
     /**
-     * Name of the payable item
+     * Name of the payable Plan
      */
     private String name;
 
     /**
-     * Description of the payable item
+     * Description of the payable Plan
      */
     private String description;
 
     /**
-     * Price of the item depending on the population segment
+     * Price of the Plan depending on the population segment
      */
     private Map<Population,Double > prices;
 
     /**
-     * Key words that represent the item
+     * Key words that represent the Plan
      */
     private List<Tag> tags;
 
     /**
-     * Reviews given by the users about the item
+     * Reviews given by the users about the Plan
      */
     private Feedback feedback;
     /**
-     * List of activities of a park
+     * List of activities of a Plan
      */
     List<Activity> activitiesList;
 }

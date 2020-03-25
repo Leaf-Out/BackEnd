@@ -28,6 +28,10 @@ public class ActivityController {
     @Autowired
     private ActivityService activityServices;
 
+    /**
+     * This method returns all activities create
+     * @return
+     */
     @GetMapping
     public ResponseEntity<?> getAllActivities(){
         final ResponseEntity response;
@@ -36,7 +40,11 @@ public class ActivityController {
 
     }
 
-
+    /**
+     * This method returns a http response with the activity of the id
+     * @param activityId id of the conrresponsive activity
+     * @return http response
+     */
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getActivityById(@PathVariable("id") UUID activityId){
         final ResponseEntity response;
@@ -45,7 +53,11 @@ public class ActivityController {
     }
 
 
-
+    /**
+     * This method create a new activity
+     * @param activity the activity that would be create
+     * @return http reponse
+     */
     @PostMapping
     public ResponseEntity<?> addNewActivity(@RequestBody ActivityRequest activity){
         try{
@@ -53,7 +65,7 @@ public class ActivityController {
         }catch (LeafoutPersistenceException ex){
             ex.printStackTrace();
         }
-        final ResponseEntity response = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
         return response;
     }
 
@@ -65,7 +77,7 @@ public class ActivityController {
      * @return A plan object
      */
     private Activity mapActivity(final ActivityRequest planRequest) {
-        Activity activity = Activity.builder().id(planRequest.getId())
+        Activity activity = Activity.builder().id(UUID.randomUUID())
                 .description(planRequest.getDescription())
                 .feedback(planRequest.getFeedback())
                 .name(planRequest.getName())
@@ -81,7 +93,7 @@ public class ActivityController {
      * @return A plan object
      */
     private ActivityRequest mapActivityResponse(final Activity activity) {
-        ActivityRequest activityRe = ActivityRequest.builder().id(activity.getId())
+        ActivityRequest activityRe = ActivityRequest.builder()
                 .description(activity.getDescription())
                 .feedback(activity.getFeedback())
                 .name(activity.getName())
@@ -100,7 +112,7 @@ public class ActivityController {
         List<ActivityRequest> Activities = new ArrayList<>();
         for (Activity activity : allActivities) {
             Activities.add(
-                    ActivityRequest.builder().id(activity.getId())
+                    ActivityRequest.builder()
                             .description(activity.getDescription())
                             .feedback(activity.getFeedback())
                             .name(activity.getName())

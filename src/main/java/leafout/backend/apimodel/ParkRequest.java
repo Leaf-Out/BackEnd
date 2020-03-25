@@ -2,13 +2,17 @@ package leafout.backend.apimodel;
 
 import leafout.backend.model.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
+
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-
+/**
+ * This class represent the park for the client
+ *
+ * @author Juan Pablo Ospina Henao
+ * @since 0.0.1
+ */
 @Builder
 @Getter
 @Setter
@@ -18,32 +22,27 @@ public class ParkRequest {
 
 
     /**
-     * ID of the payable item
-     */
-    private UUID id;
-
-    /**
-     * Name of the payable item
+     * Name of the Park item
      */
     private String name;
 
     /**
-     * Description of the payable item
+     * Description of the Park item
      */
     private String description;
 
     /**
-     * Price of the item depending on the population segment
+     * Price of the Park depending on the population segment
      */
     private Map<Population,Double > prices;
 
     /**
-     * Key words that represent the item
+     * Key words that represent the Park
      */
     private List<Tag> tags;
 
     /**
-     * Reviews given by the users about the item
+     * Reviews given by the users about the Park
      */
     private Feedback feedback;
     /**

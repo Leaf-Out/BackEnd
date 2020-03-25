@@ -1,11 +1,6 @@
 package leafout.backend.service.impl;
 
-import leafout.backend.model.PaymentResponse;
-import leafout.backend.model.PaymentResponseCode;
-import leafout.backend.model.Purchase;
-import leafout.backend.model.Refund;
-import leafout.backend.model.Transaction;
-import leafout.backend.model.User;
+import leafout.backend.model.*;
 import leafout.backend.model.exception.NoPayableFoundException;
 import leafout.backend.model.exception.NoTransactionFoundException;
 import leafout.backend.model.exception.NoUserFoundException;
@@ -14,7 +9,10 @@ import leafout.backend.model.exception.TransactionErrorException;
 import leafout.backend.model.exception.PaymentPlatformException;
 import leafout.backend.model.exception.UnsuccessfulTransactionException;
 import leafout.backend.restclient.PaymentRestClient;
+import leafout.backend.service.ActivityService;
+import leafout.backend.service.ParkService;
 import leafout.backend.service.PaymentService;
+import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,20 +39,20 @@ public class PaymentServiceImpl implements PaymentService {
 	/**
 	 * Injected ParkServices object
 	 */
-	//@Autowired
-	//private ParkServices parkServices;
+	@Autowired
+	private ParkService parkService;
 
 	/**
 	 * Injected PlanServices object
 	 */
-	//@Autowired
-	//private PlanServices planServices;
+	@Autowired
+	private PlanService planService;
 
 	/**
 	 * Injected ActivityServices object
 	 */
-	//@Autowired
-	//private ActivityServices activityServices;
+	@Autowired
+	private ActivityService activityService;
 
 	/**
 	 * Injected ShippingCartServices object
@@ -74,12 +72,12 @@ public class PaymentServiceImpl implements PaymentService {
 	@Autowired
 	private PaymentRestClient restClient;
 
-	@Override public void pay(Purchase purchase, UUID userId) throws PaymentPlatformException, NoPayableFoundException, NoUserFoundException {
-		/*final User user = userServices.getUserById(userId);
+	@Override public void pay(Purchase purchase, UUID userId) throws PaymentPlatformException, NoPayableFoundException, NoUserFoundException, UnsuccessfulTransactionException, TransactionErrorException {
+		/**final User user = userServices.getUserById(userId);
 		if (user != null) {
-			final Park park = parkServices.getParkById(purchase.getTicket().getPaying().getId());
-			final Plan plan = planServices.getPlanById(purchase.getTicket().getPaying().getId());
-			final Activity activity = activityServices.getActivityById(purchase.getTicket().getPaying().getId());
+			final Park park = parkService.getParkById(purchase.getTicket().getPaying().getId());
+			final Plan plan = planService.getPlanById(purchase.getTicket().getPaying().getId());
+			final Activity activity = activityService.getActivityById(purchase.getTicket().getPaying().getId());
 			if (park != null || plan != null || activity != null) {
 				final PaymentResponse paymentResponse = restClient.pay(purchase, user);
 				paymentProcess(paymentResponse,purchase,user);

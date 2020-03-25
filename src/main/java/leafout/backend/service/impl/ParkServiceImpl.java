@@ -32,15 +32,15 @@ public class ParkServiceImpl implements ParkService {
     @Override
     public List getAllParks() {
 
-        return parkRepository.getAllParks();
+        return parkRepository.findAll();
     }
 
     @Override
     public void savePark(Park park) throws LeafoutPersistenceException {
-        if(!parkRepository.existsParkById(park.getId())){
+        if(parkRepository.existsParkById(park.getId())){
             throw new LeafoutPersistenceException();
         }
-        parkRepository.registerPark(park);
+        parkRepository.save(park);
     }
 
 
@@ -55,7 +55,7 @@ public class ParkServiceImpl implements ParkService {
         if(!parkRepository.existsParkById(park.getId())){
             throw new LeafoutPersistenceException();
         }
-        parkRepository.updatePark(park);
+        parkRepository.save(park);
     }
 
     @Override

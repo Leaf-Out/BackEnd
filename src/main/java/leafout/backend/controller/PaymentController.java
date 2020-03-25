@@ -22,6 +22,7 @@ import leafout.backend.model.exception.NotRefundableTransactionException;
 import leafout.backend.model.exception.PaymentPlatformException;
 import leafout.backend.model.exception.TransactionErrorException;
 import leafout.backend.model.exception.UnsuccessfulTransactionException;
+import leafout.backend.service.ParkService;
 import leafout.backend.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,8 +59,8 @@ public class PaymentController {
 	/**
 	 * ParckService injected object
 	 */
-	//@Autowired
-	//private ParkService parkService;
+	@Autowired
+	private ParkService parkService;
 
 	/**
 	 * PlanService injected object
