@@ -5,6 +5,7 @@ import leafout.backend.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAll(){
         try {
-            List<User> users =  userService.getAll();
+            List<User> users = new ArrayList<User>();
+            users = userService.getAll();
             return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
         }catch (Exception e){
             return  new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
