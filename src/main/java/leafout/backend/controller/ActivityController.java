@@ -2,6 +2,7 @@ package leafout.backend.controller;
 
 
 import leafout.backend.apimodel.ActivityRequest;
+import leafout.backend.apimodel.ActivityResponse;
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.service.ActivityService;
@@ -77,7 +78,7 @@ public class ActivityController {
      * @return A plan object
      */
     private Activity mapActivity(final ActivityRequest planRequest) {
-        Activity activity = Activity.builder().id(UUID.randomUUID())
+        Activity activity = Activity.builder().id(UUID.randomUUID().toString())
                 .description(planRequest.getDescription())
                 .feedback(planRequest.getFeedback())
                 .name(planRequest.getName())
@@ -92,15 +93,15 @@ public class ActivityController {
      * @param activity Rest park object to be transformed
      * @return A plan object
      */
-    private ActivityRequest mapActivityResponse(final Activity activity) {
-        ActivityRequest activityRe = ActivityRequest.builder()
+    private ActivityResponse mapActivityResponse(final Activity activity) {
+        ActivityResponse activityResponse = ActivityResponse.builder().id(activity.getId())
                 .description(activity.getDescription())
                 .feedback(activity.getFeedback())
                 .name(activity.getName())
                 .prices(activity.getPrices())
                 .tags(activity.getTags())
                 .build();
-        return activityRe;
+        return activityResponse;
     }
     /**
      * This method transforms a lists of  activities object into the response  list activities object
@@ -108,11 +109,11 @@ public class ActivityController {
      * @param allActivities Rest park object to be transformed
      * @return A List<Activities>  object
      */
-    private List<ActivityRequest> mapActivitiesResponse(final List<Activity> allActivities) {
-        List<ActivityRequest> Activities = new ArrayList<>();
+    private List<ActivityResponse> mapActivitiesResponse(final List<Activity> allActivities) {
+        List<ActivityResponse> Activities = new ArrayList<>();
         for (Activity activity : allActivities) {
             Activities.add(
-                    ActivityRequest.builder()
+                    ActivityResponse.builder().id(activity.getId())
                             .description(activity.getDescription())
                             .feedback(activity.getFeedback())
                             .name(activity.getName())

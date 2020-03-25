@@ -17,7 +17,7 @@ import java.util.UUID;
  * @since 0.0.1
  */
 @Repository
-public interface ParkRepository extends MongoRepository<Park, UUID> {
+public interface ParkRepository extends MongoRepository<Park, String> {
     /**
      * find all Parks created
      * @return list<Park>
@@ -34,7 +34,7 @@ public interface ParkRepository extends MongoRepository<Park, UUID> {
      * @param parkId the id of Park
      * @return optional<Park>
      **/
-    Optional<Park> getParkById(UUID parkId);
+    Optional<Park> getParkById(String parkId);
     /**
      * Save a Park
      * @param park the Park would be save
@@ -47,7 +47,7 @@ public interface ParkRepository extends MongoRepository<Park, UUID> {
      * @param parkId the id of Park
      * @return boolean
      */
-    boolean existsParkById(UUID parkId);
+    boolean existsParkById(String parkId);
 
     /**
      * if the Park exisist

@@ -9,7 +9,7 @@ import java.util.UUID;
  * @since 0.0.1
  */
 public class NoTransactionFoundException extends Exception {
-	public NoTransactionFoundException(UUID transaction) {
+	public NoTransactionFoundException(String transaction) {
 		super("There is no transaction with the ID " + transaction);
 	}
 }

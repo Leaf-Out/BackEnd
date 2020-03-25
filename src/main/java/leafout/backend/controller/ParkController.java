@@ -1,8 +1,6 @@
 package leafout.backend.controller;
 
-import leafout.backend.apimodel.ActivityRequest;
-import leafout.backend.apimodel.ParkRequest;
-import leafout.backend.apimodel.PlanRequest;
+import leafout.backend.apimodel.*;
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Park;
@@ -103,7 +101,7 @@ public class ParkController{
      * @return A Park object
      */
     private Park mapPark(final ParkRequest parkRequest) {
-        Park park = Park.builder().id(UUID.randomUUID())
+        Park park = Park.builder().id(UUID.randomUUID().toString())
                 .activitiesList(parkRequest.getActivitiesList())
                 .description(parkRequest.getDescription())
                 .feedback(parkRequest.getFeedback())
@@ -121,8 +119,8 @@ public class ParkController{
      * @param parkRequest Rest park object to be transformed
      * @return A Park object
      */
-    private ParkRequest mapParkResponse(final Park parkRequest) {
-        ParkRequest park = ParkRequest.builder()
+    private ParkResponse mapParkResponse(final Park parkRequest) {
+        ParkResponse park = ParkResponse.builder().id(parkRequest.getId())
                 .activitiesList(parkRequest.getActivitiesList())
                 .description(parkRequest.getDescription())
                 .feedback(parkRequest.getFeedback())
@@ -139,11 +137,11 @@ public class ParkController{
      * @param allparks Rest park object to be transformed
      * @return A Park object
      */
-    private List<ParkRequest> mapParks(final List<Park> allparks) {
-        List<ParkRequest> parks = new ArrayList<>();
+    private List<ParkResponse> mapParks(final List<Park> allparks) {
+        List<ParkResponse> parks = new ArrayList<>();
         for (Park park : allparks) {
             parks.add(
-                    ParkRequest.builder()
+                    ParkResponse.builder().id(park.getId())
                             .activitiesList(park.getActivitiesList())
                             .description(park.getDescription())
                             .feedback(park.getFeedback())
@@ -163,11 +161,11 @@ public class ParkController{
      * @param allplans Rest park object to be transformed
      * @return A List<Plan> object
      */
-    private List<PlanRequest> mapPlansResponse(final List<Plan> allplans) {
-        final List<PlanRequest> plans = new ArrayList<>();
+    private List<PlanResponse> mapPlansResponse(final List<Plan> allplans) {
+        final List<PlanResponse> plans = new ArrayList<>();
         for (Plan plan : allplans) {
             plans.add(
-                    PlanRequest.builder()
+                    PlanResponse.builder().id(plan.getId())
                             .activitiesList(plan.getActivitiesList())
                             .description(plan.getDescription())
                             .feedback(plan.getFeedback())
@@ -186,11 +184,11 @@ public class ParkController{
      * @param allActivities Rest park object to be transformed
      * @return A List<Activities>  object
      */
-    private List<ActivityRequest> mapActivitiesResponse(final List<Activity> allActivities) {
-        final List<ActivityRequest> Activities = new ArrayList<>();
+    private List<ActivityResponse> mapActivitiesResponse(final List<Activity> allActivities) {
+        final List<ActivityResponse> Activities = new ArrayList<>();
         for (Activity activity : allActivities) {
             Activities.add(
-                    ActivityRequest.builder()
+                    ActivityResponse.builder().id(activity.getId())
                             .description(activity.getDescription())
                             .feedback(activity.getFeedback())
                             .name(activity.getName())

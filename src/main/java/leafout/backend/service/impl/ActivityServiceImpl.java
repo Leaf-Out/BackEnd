@@ -43,7 +43,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public Activity getActivityById(UUID activityId) {
+    public Activity getActivityById(String activityId) {
         Optional<Activity> optionalPay = activityRepository.getActivityById(activityId);
         return optionalPay.get();
     }

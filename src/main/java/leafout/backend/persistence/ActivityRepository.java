@@ -15,7 +15,7 @@ import java.util.UUID;
  * @since 0.0.1
  */
 @Repository
-public interface ActivityRepository extends MongoRepository<Activity, UUID> {
+public interface ActivityRepository extends MongoRepository<Activity, String> {
 
     /**
      * find all activities created
@@ -34,7 +34,7 @@ public interface ActivityRepository extends MongoRepository<Activity, UUID> {
      * @param activitiesId the id of activity
      * @return optional<Activity>
      **/
-    Optional<Activity> getActivityById(UUID activitiesId);
+    Optional<Activity> getActivityById(String activitiesId);
 
     /**
      * Save a activity
@@ -48,7 +48,7 @@ public interface ActivityRepository extends MongoRepository<Activity, UUID> {
      * @param activityId the id of activity
      * @return boolean
      */
-    boolean existsActivityById(UUID activityId);
+    boolean existsActivityById(String activityId);
 
     /**
      * if the acivity exisist

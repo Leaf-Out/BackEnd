@@ -45,7 +45,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Plan getPlanById(UUID planId) {
+    public Plan getPlanById(String planId) {
         Optional<Plan> optionalPay = planRepository.getPlanById(planId);
         return optionalPay.get();
     }

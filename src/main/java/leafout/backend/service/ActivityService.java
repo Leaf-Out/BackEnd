@@ -31,7 +31,7 @@ public interface ActivityService <A extends Activity> {
      * This method get a activity
      * @param activityId id of the activity
      */
-    A getActivityById(UUID activityId) ;
+    A getActivityById(String activityId) ;
 
     /**
      * This method update a Activity

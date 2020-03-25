@@ -29,7 +29,7 @@ public class Plan extends Pay{
     List<Activity> activitiesList;
 
     @Builder
-    public Plan(UUID id, String name, String description, Map< Population,Double > prices, List<Tag> tags, Feedback feedback,List<Activity> activitiesList) {
+    public Plan(String id, String name, String description, Map< Population,Double > prices, List<Tag> tags, Feedback feedback,List<Activity> activitiesList) {
         super(id,name,description,prices,tags,feedback);
         this.activitiesList = activitiesList;
     }

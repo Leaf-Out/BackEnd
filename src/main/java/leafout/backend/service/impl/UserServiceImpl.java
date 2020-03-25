@@ -26,7 +26,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Optional<User> getById(UUID userId) {
+    public Optional<User> getById(String userId) {
         return userRepository.findById(userId);
     }
 
@@ -36,7 +36,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void delete(UUID userId) {
+    public void delete(String userId) {
         userRepository.deleteById(userId);
     }
 }

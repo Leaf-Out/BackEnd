@@ -20,7 +20,7 @@ public class Refund {
 	/**
 	 * UUID of the transaction to be refunded
 	 */
-	private UUID transactionId;
+	private String transactionId;
 
 	/**
 	 * ID of the order to be refunded

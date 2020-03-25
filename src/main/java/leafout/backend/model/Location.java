@@ -21,7 +21,7 @@ public class Location {
     /**
      * ID of the payable item
      */
-    UUID id;
+    String id;
     /**
      *
      */

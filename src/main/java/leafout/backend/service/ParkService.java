@@ -29,7 +29,7 @@ public interface ParkService <P extends Park> {
      * This method get a Park
      * @param parkId id of the Park
      */
-    P getParkById(UUID parkId) ;
+    P getParkById(String parkId) ;
 
     /**
      * This method update a pay

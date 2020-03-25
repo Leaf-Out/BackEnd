@@ -7,5 +7,8 @@ package leafout.backend.model;
  * @since 0.0.1
  */
 public enum Population {
-	//TODO add kinds of population
+    FOREIGN_ADULTS,
+    LOCALS_ADULTS,
+    FOREIGN_CHILDREN,
+    LOCALS_CHILDREN
 }

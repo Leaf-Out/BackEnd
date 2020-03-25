@@ -51,7 +51,7 @@ public class ParkServiceImpl implements ParkService {
     }
 
     @Override
-    public Park getParkById(UUID parkId) {
+    public Park getParkById(String parkId) {
         Optional<Park> optionalPay = parkRepository.getParkById(parkId);
         return optionalPay.get();
     }

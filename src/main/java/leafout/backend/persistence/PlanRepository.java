@@ -17,7 +17,7 @@ import java.util.UUID;
  * @since 0.0.1
  */
 @Repository
-public interface PlanRepository  extends MongoRepository<Plan, UUID> {
+public interface PlanRepository  extends MongoRepository<Plan, String> {
     /**
      * find all Plans created
      * @return list<Plan>
@@ -34,7 +34,7 @@ public interface PlanRepository  extends MongoRepository<Plan, UUID> {
      * @param planId the id of Plan
      * @return optional<Plan>
      **/
-    Optional<Plan> getPlanById(UUID planId);
+    Optional<Plan> getPlanById(String planId);
     /**
      * Save a Plan
      * @param plan the Plan would be save
@@ -47,7 +47,7 @@ public interface PlanRepository  extends MongoRepository<Plan, UUID> {
      * @param planId the id of Plan
      * @return boolean
      */
-    boolean existsPlanById(UUID planId);
+    boolean existsPlanById(String planId);
     /**
      * if the Plan exisist
      * @param activityName the id of Plan

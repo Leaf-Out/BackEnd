@@ -36,7 +36,7 @@ public class Park extends Pay {
 
 
     @Builder
-    public Park(UUID id, String name, String description, Map< Population,Double > prices, List<Tag> tags,Feedback feedback,List<Plan> planList, List<Activity> activitiesList) {
+    public Park(String id, String name, String description, Map< Population,Double > prices, List<Tag> tags,Feedback feedback,List<Plan> planList, List<Activity> activitiesList) {
         super(id,name,description,prices,tags,feedback);
         this.planList = planList;
         this.activitiesList = activitiesList;

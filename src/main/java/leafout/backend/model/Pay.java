@@ -32,7 +32,7 @@ public abstract class Pay {
 	 * ID of the payable item
 	 */
 	@Id
-	protected UUID id;
+	protected String id;
 
 	/**
 	 * Name of the payable item

@@ -23,7 +23,7 @@ import java.util.UUID;
 public class Activity extends Pay{
 
     @Builder
-    public Activity(UUID id, String name, String description, Map< Population,Double > prices, List<Tag> tags, Feedback feedback) {
+    public Activity(String id, String name, String description, Map< Population,Double > prices, List<Tag> tags, Feedback feedback) {
         super(id,name,description,prices,tags,feedback);
     }
 }

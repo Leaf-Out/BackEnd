@@ -33,7 +33,7 @@ public interface PaymentService {
 	 * @throws TransactionErrorException When the transaction results in an error
 	 * @throws UnsuccessfulTransactionException When the transaction is unsuccessful
 	 */
-	void pay(Purchase purchase, UUID user) throws PaymentPlatformException, NoPayableFoundException,
+	void pay(Purchase purchase, String user) throws PaymentPlatformException, NoPayableFoundException,
 												  NoUserFoundException, TransactionErrorException,
 												  UnsuccessfulTransactionException;
 
@@ -63,7 +63,7 @@ public interface PaymentService {
 	 * @param user UUID of the user
 	 * @return A list with the transactions of a user
 	 */
-	List<Transaction> getTransactionsByUser(UUID user);
+	List<Transaction> getTransactionsByUser(String user);
 
 	/**
 	 * This method returns a transaction given its ID
@@ -71,5 +71,5 @@ public interface PaymentService {
 	 * @param id UUID of the transaction
 	 * @return An object of type Transaction
 	 */
-	Transaction getTransactionById(UUID id);
+	Transaction getTransactionById(String id);
 }

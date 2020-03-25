@@ -16,7 +16,7 @@ import java.util.UUID;
  * @since 0.0.1
  */
 @Repository
-public interface TransactionRepository extends MongoRepository<Transaction, UUID> {
+public interface TransactionRepository extends MongoRepository<Transaction, String> {
 
     /**
      * find all Transactions created
@@ -28,14 +28,14 @@ public interface TransactionRepository extends MongoRepository<Transaction, UUID
      * @param transactionId the name of Transaction
      * @return optional<Transaction>
      **/
-    Optional<Transaction> getTransactionById(UUID transactionId);
+    Optional<Transaction> getTransactionById(String transactionId);
 
     /**
      * find an Transaction by user
      * @param transactionUser the name of Transaction
      * @return optional<Transaction>
      **/
-    List<Transaction> getTransactionsByUserId(UUID transactionUser);
+    List<Transaction> getTransactionsByUserId(String transactionUser);
     /**
      * Save a Transaction
      * @param transaction the Plan would be save
@@ -48,6 +48,6 @@ public interface TransactionRepository extends MongoRepository<Transaction, UUID
      * @param transactionId the id of Transaction
      * @return boolean
      */
-    boolean existsTransactionById(UUID transactionId);
+    boolean existsTransactionById(String transactionId);
 
 }

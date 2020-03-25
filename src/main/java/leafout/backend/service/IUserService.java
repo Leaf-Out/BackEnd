@@ -15,8 +15,8 @@ import java.util.UUID;
 public interface IUserService {
 
     List<User> getAll();
-    Optional<User> getById(UUID userId);
+    Optional<User> getById(String userId);
     void save(User user);
-    void delete(UUID userId);
+    void delete(String userId);
 
 }

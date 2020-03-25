@@ -25,7 +25,7 @@ public class User {
 	/**
 	 * ID of the user in the business
 	 */
-	private UUID id;
+	private String id;
 
 	/**
 	 * Name of the user

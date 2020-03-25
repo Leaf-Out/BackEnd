@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/{Id}")
-    public ResponseEntity<?> getById(@PathVariable("Id") UUID userId){
+    public ResponseEntity<?> getById(@PathVariable("Id") String userId){
         try {
             Optional<User> user = userService.getById(userId);
             return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{Id}")
-    public ResponseEntity<?> delete(@PathVariable("Id") UUID userId){
+    public ResponseEntity<?> delete(@PathVariable("Id") String userId){
         try {
             userService.delete(userId);
             return new ResponseEntity<>(userId, HttpStatus.OK);

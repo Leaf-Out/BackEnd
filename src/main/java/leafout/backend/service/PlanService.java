@@ -29,7 +29,7 @@ public interface PlanService <P extends Plan>{
      * This method get a Plan
      * @param planId id of the Plan
      */
-    P getPlanById(UUID planId) ;
+    P getPlanById(String planId) ;
 
     /**
      * This method update a Plan

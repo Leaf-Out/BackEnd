@@ -22,8 +22,10 @@ import leafout.backend.model.exception.NotRefundableTransactionException;
 import leafout.backend.model.exception.PaymentPlatformException;
 import leafout.backend.model.exception.TransactionErrorException;
 import leafout.backend.model.exception.UnsuccessfulTransactionException;
+import leafout.backend.service.ActivityService;
 import leafout.backend.service.ParkService;
 import leafout.backend.service.PaymentService;
+import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,14 +67,14 @@ public class PaymentController {
 	/**
 	 * PlanService injected object
 	 */
-	//@Autowired
-	//private PlanService planService;
+	@Autowired
+	private PlanService planService;
 
 	/**
 	 * ActivityService injected object
 	 */
-	//@Autowired
-	//private ActivityService activityService;
+	@Autowired
+	private ActivityService activityService;
 
 	/**
 	 * This method returns all transactions made
@@ -93,7 +95,7 @@ public class PaymentController {
 	 * @return A list of transactions
 	 */
 	@GetMapping("/user/{id}")
-	public ResponseEntity<List<TransactionResponse>> getTransactionsByCustomer(final @PathVariable("id") UUID user) {
+	public ResponseEntity<List<TransactionResponse>> getTransactionsByCustomer(final @PathVariable("id") String user) {
 		final ResponseEntity response;
 			response = new ResponseEntity<>(mapTransactionsResponse(paymentService.getTransactionsByUser(user)), HttpStatus.ACCEPTED);
 
@@ -107,7 +109,7 @@ public class PaymentController {
 	 * @return A list of transactions
 	 */
 	@GetMapping("/id/{id}")
-	public ResponseEntity<TransactionResponse> getTransactionById(final @PathVariable("id") UUID id) {
+	public ResponseEntity<TransactionResponse> getTransactionById(final @PathVariable("id") String id) {
 		final ResponseEntity response;
 			final TransactionResponse transaction = mapTransactionResponse(paymentService.getTransactionById(id));
 			response = new ResponseEntity<>(transaction, HttpStatus.ACCEPTED);
@@ -123,7 +125,7 @@ public class PaymentController {
 	 * @return HTTP Response
 	 */
 	@PostMapping("/pay/user/{user}")
-	public ResponseEntity<HttpStatus> pay(final @RequestBody PurchaseRequest purchase, final @PathVariable("user") UUID user) {
+	public ResponseEntity<HttpStatus> pay(final @RequestBody PurchaseRequest purchase, final @PathVariable("user") String user) {
 
 		try {
 			paymentService.pay(mapPurchase(purchase), user);
@@ -195,21 +197,18 @@ public class PaymentController {
 	private Ticket generateTicket(final PurchaseRequest purchaseRequest) {
 		final Pay pay;
 		if (PayRequest.PARK.equals(purchaseRequest.getPay())) {
-			//TODO get park from park service
-			pay = null;
+			pay = parkService.getParkById(purchaseRequest.getPayId());
 		} else if (PayRequest.PLAN.equals(purchaseRequest.getPay())) {
-			//TODO get plan from plan service
-			pay = null;
+			pay = planService.getPlanById(purchaseRequest.getPayId());
 		} else {
-			//TODO get activity from activity service
-			pay = null;
+			pay = activityService.getActivityById(purchaseRequest.getPayId());
 		}
 		final double totalPrice = purchaseRequest.getUnits() * pay.getPrices().get(purchaseRequest.getPopulation());
 		final Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MONTH, 3);
 		final Date expirationDate = new Date(calendar.getTime().getTime());
 		return Ticket.builder()
-					 .id(UUID.randomUUID())
+					 .id(UUID.randomUUID().toString())
 					 .population(purchaseRequest.getPopulation())
 					 .units(purchaseRequest.getUnits())
 					 .totalPrice(totalPrice)

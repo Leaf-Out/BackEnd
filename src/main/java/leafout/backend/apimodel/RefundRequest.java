@@ -24,7 +24,7 @@ public class RefundRequest {
 	/**
 	 * UUID of the transaction to be refunded
 	 */
-	private UUID transactionId;
+	private String transactionId;
 
 	/**
 	 * Reason why the customer wants the transaction refund
