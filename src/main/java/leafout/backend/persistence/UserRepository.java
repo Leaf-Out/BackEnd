@@ -11,6 +11,6 @@ import java.util.UUID;
  * @author <a href=sergio.ruiz-p@mail.escuelaing.edu.co> Sergio Hernando Ruiz Paez </a>
  * @since 0.0.1
  */
-public interface UserRepository extends MongoRepository<User, UUID> {
+public interface UserRepository extends MongoRepository<User, String> {
 
 }

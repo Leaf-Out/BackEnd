@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,12 +22,15 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
+@Document(collation = "Users")
 public class User {
 
 	/**
 	 * ID of the user in the business
 	 */
-	private UUID id;
+	@Id
+	private String id;
 
 	/**
 	 * Name of the user
