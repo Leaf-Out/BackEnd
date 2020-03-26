@@ -6,6 +6,7 @@
 
 package leafout.backend.security;
 
+import leafout.backend.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,6 +15,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
@@ -30,15 +33,19 @@ import java.util.ArrayList;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
-    //@Autowired
-    //DataSource dataSource;
+    @Bean
+    public CustomerDetailsService mongoUserDetails() {
+        return new CustomerDetailsService();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/login").permitAll().anyRequest().authenticated()
+            .antMatchers("/login").permitAll()
+            .antMatchers("/activities").hasAuthority("USER")
+            //.anyRequest().authenticated()
             .and()
             .addFilter(new JwtAuthenticationFilter(authenticationManager()))
             .addFilter(new JwtAuthorizationFilter(authenticationManager()))
@@ -48,17 +55,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        /*auth.jdbcAuthentication()
-            .dataSource(dataSource)
-            .usersByUsernameQuery(
-                    "SELECT email,password,active FROM users where email = ?"
-                                 )
-            .authoritiesByUsernameQuery(
-                    "SELECT email,role FROM users where email = ?"
-                                       );*/
+        UserDetailsService userDetailsService = mongoUserDetails();
+        auth.userDetailsService(userDetailsService);
+        /**
         auth.inMemoryAuthentication()
             .withUser("user")
             .password("$2a$10$zHop86KlE8gdwdLOIc9ZD.fq7FCHNNgTlL7epdYPKX9eQQoOJx24e").authorities(new ArrayList<>());
+        */
     }
 
     @Bean

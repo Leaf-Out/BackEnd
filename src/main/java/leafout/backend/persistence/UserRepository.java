@@ -22,6 +22,9 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     Optional<User> getUserByName(String userName);
 
+    Optional<User> getUserByEmail(String userEmail);
+
+
     Optional<User> getUserById(String userId);
 
     User save(User user);
