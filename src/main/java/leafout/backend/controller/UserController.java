@@ -1,6 +1,8 @@
 package leafout.backend.controller;
 
 import leafout.backend.model.User;
+import leafout.backend.model.exception.NoUserFoundException;
+import leafout.backend.model.exception.UserAlreadyExistsException;
 import leafout.backend.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,37 +23,39 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> getAll(){
+        List<User> users = new ArrayList<User>();
+
         try {
-            List<User> users = new ArrayList<User>();
-            users = userService.getAll();
+            users= userService.getAll();
             return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
-        }catch (Exception e){
+        }catch (NoUserFoundException e){
             return  new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping(path = "/{Id}")
     public ResponseEntity<?> getById(@PathVariable("Id") String userId){
+        Optional<User> user = null;
         try {
-            Optional<User> user = userService.getById(userId);
-            return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
-        } catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            user = userService.getById(userId);
+        } catch (NoUserFoundException e) {
+            e.printStackTrace();
         }
+        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 
     @GetMapping(path = "/{tickets}/Id")
     public ResponseEntity<?> getTicketsById(){return null;}
 
     @GetMapping(path = "/{feedbacks}/Id")
-    public ResponseEntity<?> getFeedbacksById(){return null;}
+    public ResponseEntity<?> getFeedbackById(){return null;}
 
     @PostMapping
     public ResponseEntity<?> add(@RequestBody User user){
         try {
             userService.save(user);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (Exception e){
+        } catch (UserAlreadyExistsException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -61,7 +65,7 @@ public class UserController {
         try {
             userService.delete(userId);
             return new ResponseEntity<>(userId, HttpStatus.OK);
-        } catch (Exception e){
+        } catch (NoUserFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }

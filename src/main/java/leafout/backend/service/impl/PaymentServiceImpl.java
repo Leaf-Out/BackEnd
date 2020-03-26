@@ -33,7 +33,7 @@ public class PaymentServiceImpl implements PaymentService {
 	 * Injected UserServices object
 	 */
 	@Autowired
-	private IUserService userServices;
+	private UserService userServices;
 
 	/**
 	 * Injected ParkServices object
