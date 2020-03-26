@@ -20,21 +20,25 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+
 import javax.sql.DataSource;
+import java.util.ArrayList;
+
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    DataSource dataSource;
+
+    //@Autowired
+    //DataSource dataSource;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/**").permitAll()
+            .antMatchers("/login").permitAll().anyRequest().authenticated()
             .and()
             .addFilter(new JwtAuthenticationFilter(authenticationManager()))
             .addFilter(new JwtAuthorizationFilter(authenticationManager()))
@@ -54,12 +58,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                        );*/
         auth.inMemoryAuthentication()
             .withUser("user")
-            .password("pass");
+            .password("$2a$10$zHop86KlE8gdwdLOIc9ZD.fq7FCHNNgTlL7epdYPKX9eQQoOJx24e").authorities(new ArrayList<>());
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+
     }
 
     @Bean
