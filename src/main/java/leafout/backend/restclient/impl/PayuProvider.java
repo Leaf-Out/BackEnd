@@ -15,7 +15,7 @@ import leafout.backend.payumodel.PayuTransactionResponse;
 import leafout.backend.payumodel.PayuTransactionState;
 import leafout.backend.payumodel.RefundRequest;
 import leafout.backend.payumodel.RequestGenerator;
-import leafout.backend.restclient.PaymentRestClient;
+import leafout.backend.restclient.PaymentProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -36,7 +36,7 @@ import java.io.UnsupportedEncodingException;
  * @since 0.0.1
  */
 @Service
-public class PayuRestClient implements PaymentRestClient {
+public class PayuProvider implements PaymentProvider {
 
 	/**
 	 * String with the url of the PayU payments API
@@ -45,7 +45,7 @@ public class PayuRestClient implements PaymentRestClient {
 
 	private Config config;
 
-	public PayuRestClient(){
+	public PayuProvider(){
 		this.config = ConfigFactory.load();
 		this.url = config.getString("payuPaymentsApi.url");
 	}
@@ -56,6 +56,7 @@ public class PayuRestClient implements PaymentRestClient {
 		final HttpPost httpPost = new HttpPost(url);
 		final PayRequest payRequest = RequestGenerator.generatePayRequest(purchase,user);
 		final String json = new Gson().toJson(payRequest);
+		System.err.println(json);
 		StringEntity entity = null;
 		try {
 			entity = new StringEntity(json);
@@ -85,6 +86,7 @@ public class PayuRestClient implements PaymentRestClient {
 		final HttpPost httpPost = new HttpPost(url);
 		final RefundRequest refundRequest = RequestGenerator.generateRefundRequest(refund);
 		final String json = new Gson().toJson(refundRequest);
+		System.err.println(json);
 		StringEntity entity = null;
 		try {
 			entity = new StringEntity(json);
@@ -92,6 +94,7 @@ public class PayuRestClient implements PaymentRestClient {
 			throw new PaymentPlatformException(e.getMessage());
 		}
 		httpPost.setEntity(entity);
+		System.err.println(httpPost.toString());
 		httpPost.setHeader("Accept", "application/json");
 		httpPost.setHeader("Content-type", "application/json");
 		final CloseableHttpResponse response;

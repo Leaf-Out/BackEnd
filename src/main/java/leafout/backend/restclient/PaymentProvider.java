@@ -12,7 +12,7 @@ import leafout.backend.model.exception.PaymentPlatformException;
  * @author <a href=alejoguzm07@gmail.com> José Alejandro Naranjo Guzmán </a>
  * @since 0.0.1
  */
-public interface PaymentRestClient {
+public interface PaymentProvider {
 
 	/**
 	 * This method creates a post request to make a payment with payment platform

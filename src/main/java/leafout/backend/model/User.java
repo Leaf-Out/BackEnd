@@ -1,5 +1,6 @@
 package leafout.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
-import java.util.UUID;
+
 
 /**
  * This class represents an user in the business
@@ -22,8 +23,8 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
-@Document(collation = "Users")
+@Document(collection = "Users")
+@JsonTypeName("user")
 public class User {
 
 	/**

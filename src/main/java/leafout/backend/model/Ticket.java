@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -25,7 +25,7 @@ public class Ticket {
 	/**
 	 * ID of the ticket to be payed
 	 */
-	private UUID id;
+	private String id;
 
 	/**
 	 * Date when the ticket starts being valid

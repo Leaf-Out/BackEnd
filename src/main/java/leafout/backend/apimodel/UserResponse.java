@@ -16,6 +16,8 @@ import java.util.List;
 @Getter
 public class UserResponse {
 
+    private String id;
+
     /**
      * User's name
      */
@@ -25,11 +27,6 @@ public class UserResponse {
      * User's email
      */
     private String email;
-
-    /**
-     * User's password
-     */
-    private String password;
 
     /**
      * Feedback that User write

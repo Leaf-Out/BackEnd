@@ -1,11 +1,6 @@
 package leafout.backend.service.impl;
 
-import leafout.backend.model.PaymentResponse;
-import leafout.backend.model.PaymentResponseCode;
-import leafout.backend.model.Purchase;
-import leafout.backend.model.Refund;
-import leafout.backend.model.Transaction;
-import leafout.backend.model.User;
+import leafout.backend.model.*;
 import leafout.backend.model.exception.NoPayableFoundException;
 import leafout.backend.model.exception.NoTransactionFoundException;
 import leafout.backend.model.exception.NoUserFoundException;
@@ -13,14 +8,16 @@ import leafout.backend.model.exception.NotRefundableTransactionException;
 import leafout.backend.model.exception.TransactionErrorException;
 import leafout.backend.model.exception.PaymentPlatformException;
 import leafout.backend.model.exception.UnsuccessfulTransactionException;
-import leafout.backend.restclient.PaymentRestClient;
-import leafout.backend.service.PaymentService;
+import leafout.backend.persistence.TransactionRepository;
+import leafout.backend.restclient.PaymentProvider;
+import leafout.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -35,26 +32,26 @@ public class PaymentServiceImpl implements PaymentService {
 	/**
 	 * Injected UserServices object
 	 */
-	//@Autowired
-	//private UserServices userServices;
+	@Autowired
+	private UserService userServices;
 
 	/**
 	 * Injected ParkServices object
 	 */
-	//@Autowired
-	//private ParkServices parkServices;
+	@Autowired
+	private ParkService parkService;
 
 	/**
 	 * Injected PlanServices object
 	 */
-	//@Autowired
-	//private PlanServices planServices;
+	@Autowired
+	private PlanService planService;
 
 	/**
 	 * Injected ActivityServices object
 	 */
-	//@Autowired
-	//private ActivityServices activityServices;
+	@Autowired
+	private ActivityService activityService;
 
 	/**
 	 * Injected ShippingCartServices object
@@ -65,30 +62,25 @@ public class PaymentServiceImpl implements PaymentService {
 	/**
 	 * Injected PaymentPersistence object
 	 */
-	//@Autowired
-	//private PaymentPersistence paymentPersistence;
+	@Autowired
+	private TransactionRepository transactionRepository;
 
 	/**
 	 * Injected PaymentRestClient object
 	 */
 	@Autowired
-	private PaymentRestClient restClient;
+	private PaymentProvider restClient;
 
-	@Override public void pay(Purchase purchase, UUID userId) throws PaymentPlatformException, NoPayableFoundException, NoUserFoundException {
-		/*final User user = userServices.getUserById(userId);
+	@Override public void pay(Purchase purchase, String userId) throws PaymentPlatformException, NoPayableFoundException, NoUserFoundException, UnsuccessfulTransactionException, TransactionErrorException {
+		Optional<User> userOptional = userServices.getById(userId);
+		final User user = userOptional.get();
 		if (user != null) {
-			final Park park = parkServices.getParkById(purchase.getTicket().getPaying().getId());
-			final Plan plan = planServices.getPlanById(purchase.getTicket().getPaying().getId());
-			final Activity activity = activityServices.getActivityById(purchase.getTicket().getPaying().getId());
-			if (park != null || plan != null || activity != null) {
-				final PaymentResponse paymentResponse = restClient.pay(purchase, user);
-				paymentProcess(paymentResponse,purchase,user);
-			} else {
-				throw new NoPayableFoundException(purchase.getTicket().getPaying().getId());
-			}
+			final PaymentResponse paymentResponse = restClient.pay(purchase, user);
+			paymentProcess(paymentResponse,purchase,user);
+
 		} else {
 			throw new NoUserFoundException(userId);
-		}*/
+		}
 	}
 
 	/**
@@ -103,14 +95,14 @@ public class PaymentServiceImpl implements PaymentService {
 	private void paymentProcess(PaymentResponse response, Purchase purchase, User user)
 			throws TransactionErrorException, UnsuccessfulTransactionException {
 		final Transaction transaction = Transaction.builder()
-												   .id(UUID.fromString(response.getTransactionId()))
+												   .id(response.getTransactionId())
 												   .orderId(response.getOrderId())
 												   .date(new Date(Calendar.getInstance().getTime().getTime()))
 												   .paymentMethod(purchase.getPaymentMethod())
 												   .state(response.getPaymentResult().getPaymentResponseCode())
-												   .ticket(purchase.getTicket())
+												   .ticket(purchase.getTicket()).user(user)
 												   .build();
-		//TODO register transaction
+		transactionRepository.save(transaction);
 		if (PaymentResponseCode.TRANSACTION_ERROR.equals(response.getPaymentResult().getPaymentResponseCode())) {
 			throw new TransactionErrorException(response.getPaymentResult().getReason());
 		} else if (PaymentResponseCode.UNSUCCESSFUL_TRANSACTION.equals(response.getPaymentResult().getPaymentResponseCode())) {
@@ -132,7 +124,9 @@ public class PaymentServiceImpl implements PaymentService {
 				final PaymentResponse paymentResponse = restClient.refund(refund);
 				if (PaymentResponseCode.SUCCESSFUL_TRANSACTION
 						.equals(paymentResponse.getPaymentResult().getPaymentResponseCode())) {
-					//TODO update transaction state
+					transaction.setState(PaymentResponseCode.REFUNDED);
+					transaction.setUpdateDate(new Date(Calendar.getInstance().getTime().getTime()));
+					transactionRepository.save(transaction);
 				} else {
 					throw new UnsuccessfulTransactionException(paymentResponse.getPaymentResult().getReason());
 				}
@@ -145,17 +139,16 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override public List<Transaction> getAllTransactions() {
-		//TODO get transactions
-		return null;
+
+		return transactionRepository.findAll();
 	}
 
-	@Override public List<Transaction> getTransactionsByUser(UUID user) {
-		//TODO get transactions
-		return null;
+	@Override public List<Transaction> getTransactionsByUser(String user) {
+		return transactionRepository.getTransactionsByUserId(user);
 	}
 
-	@Override public Transaction getTransactionById(UUID id) {
-		//TODO get transaction
-		return null;
+	@Override public Transaction getTransactionById(String transactionId) {
+		Optional<Transaction> optionalTransaction = transactionRepository.getTransactionById(transactionId);
+		return optionalTransaction.get();
 	}
 }

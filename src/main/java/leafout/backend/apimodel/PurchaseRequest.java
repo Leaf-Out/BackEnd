@@ -2,14 +2,13 @@ package leafout.backend.apimodel;
 
 import leafout.backend.model.PaymentMethod;
 import leafout.backend.model.Population;
-import leafout.backend.model.Ticket;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
+
 
 /**
  * This class represents a payment request
@@ -72,6 +71,6 @@ public class PurchaseRequest {
 	/**
 	 * ID of the payable
 	 */
-	private UUID payId;
+	private String payId;
 
 }
