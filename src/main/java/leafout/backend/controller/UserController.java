@@ -4,6 +4,7 @@ import leafout.backend.apimodel.PlanRequest;
 import leafout.backend.apimodel.PlanResponse;
 import leafout.backend.apimodel.UserRequest;
 import leafout.backend.apimodel.UserResponse;
+import leafout.backend.model.Feedback;
 import leafout.backend.model.Plan;
 import leafout.backend.model.User;
 import leafout.backend.model.exception.NoUserFoundException;
@@ -12,6 +13,7 @@ import leafout.backend.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -59,7 +61,7 @@ public class UserController {
     public ResponseEntity<?> add(@RequestBody UserRequest user){
         try {
             userService.save(mapUser(user));
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (UserAlreadyExistsException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -81,9 +83,10 @@ public class UserController {
      * @return A user object
      */
     private User mapUser(final UserRequest userRequest) {
+        String encoded = new BCryptPasswordEncoder().encode(userRequest.getPassword());
         User user = User.builder().id(UUID.randomUUID().toString()).email(userRequest.getEmail())
-                .givenFeedback(userRequest.getFeedback()).name(userRequest.getName())
-                .password(userRequest.getPassword()).phone(userRequest.getPhone()).role(userRequest.getPhone())
+                .name(userRequest.getName()).shoppingCart(new ArrayList<>()).givenFeedback(new Feedback())
+                .password(encoded).phone(userRequest.getPhone()).role("USER")
                 .build();
         return user;
     }
@@ -94,6 +97,7 @@ public class UserController {
      * @return A user object
      */
     private UserResponse mapUserResponse(final User user) {
+
         UserResponse userResponse = UserResponse.builder().id(user.getId())
                 .email(user.getEmail()).feedback(user.getGivenFeedback()).name(user.getName())
                 .shoppingCart(user.getShoppingCart())

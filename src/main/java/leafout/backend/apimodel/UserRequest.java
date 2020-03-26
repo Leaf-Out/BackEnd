@@ -34,9 +34,6 @@ public class UserRequest {
      */
     private String phone;
 
-    /**
-     * Feedback that the user write in some Activities, Plans or Parks
-     */
-    private Feedback feedback;
+
 
 }
