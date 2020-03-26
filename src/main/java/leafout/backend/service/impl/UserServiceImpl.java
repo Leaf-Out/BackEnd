@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     @Override
 
     public Optional<User> getById(String userId) throws NoUserFoundException {
-        return userRepository.findById(userId);
+        return userRepository.getUserById(userId);
     }
 
     @Override

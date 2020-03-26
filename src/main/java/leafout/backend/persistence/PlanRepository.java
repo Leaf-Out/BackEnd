@@ -50,10 +50,10 @@ public interface PlanRepository  extends MongoRepository<Plan, String> {
     boolean existsPlanById(String planId);
     /**
      * if the Plan exisist
-     * @param activityName the id of Plan
+     * @param planName the id of Plan
      * @return boolean
      */
-    boolean existsPlanByName(String activityName);
+    boolean existsPlanByName(String planName);
 
 
 }

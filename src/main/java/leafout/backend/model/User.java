@@ -23,8 +23,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collation = "Users")
-@JsonTypeName("User")
+@Document(collection = "Users")
+@JsonTypeName("user")
 public class User {
 
 	/**
