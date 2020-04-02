@@ -64,7 +64,7 @@ public interface ParkRepository extends MongoRepository<Park, String> {
     boolean existsParkByName(String parkName);
 
 
-    List<Park> getAllByTags(List<Tag> tags);
+    List<Park> getAllByTagsContaining(List<Tag> tags);
 
 
     List<Park> getAllByLocation_Region(String region);

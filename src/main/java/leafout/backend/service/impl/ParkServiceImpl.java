@@ -97,7 +97,7 @@ public class ParkServiceImpl implements ParkService {
 
     @Override
     public List<Park> getParksByTags(List<Tag> tags) {
-        return parkRepository.getAllByTags(tags);
+        return parkRepository.getAllByTagsContaining(tags);
     }
 
     @Override
