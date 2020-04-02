@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 
 /**
@@ -34,6 +33,24 @@ public class ActivityServiceImpl implements ActivityService {
             throw new ActivityException(activity.getName());
         }
         activityRepository.save(activity);
+    }
+
+    @Override
+    public void saveActivities(List<Activity> activities) throws ActivityException {
+        for (Activity activity: activities){
+            if(activityRepository.existsActivityByName(activity.getName())){
+                throw new ActivityException(activity.getName());
+            }
+            activityRepository.save(activity);
+        }
+
+    }
+
+    @Override
+    public void updateActivities(List<Activity> activities)  {
+        for (Activity activity: activities){
+            activityRepository.save(activity);
+        }
     }
 
     @Override
@@ -62,5 +79,12 @@ public class ActivityServiceImpl implements ActivityService {
             throw new ActivityException(activity.getId());
         }
         activityRepository.delete(activity);
+    }
+
+    @Override
+    public List getAllPopulateActivities() {
+        List<Activity> allPopularActivities = activityRepository.findAllByOrderByFeedbackDesc();
+        List<Activity> allPopular = allPopularActivities.subList(0,allPopularActivities.size());
+        return allPopular;
     }
 }

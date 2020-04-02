@@ -42,6 +42,19 @@ public class ActivityController {
     }
 
     /**
+     * This method returns all Plans Popular
+     * @return
+     */
+    @GetMapping(path = "/popular")
+    public ResponseEntity<?> getAllPopularActivities(){
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapActivitiesResponse(activityServices.getAllPopulateActivities()), HttpStatus.ACCEPTED);
+        return response;
+
+    }
+
+
+    /**
      * This method returns a http response with the activity of the id
      * @param activityName id of the conrresponsive activity
      * @return http response
@@ -77,7 +90,7 @@ public class ActivityController {
      * @param planRequest Rest park object to be transformed
      * @return A plan object
      */
-    private Activity mapActivity(final ActivityRequest planRequest) {
+    public Activity mapActivity(final ActivityRequest planRequest) {
         Activity activity = Activity.builder().id(UUID.randomUUID().toString())
                 .description(planRequest.getDescription())
                 .feedback(planRequest.getFeedback())
@@ -93,7 +106,7 @@ public class ActivityController {
      * @param activity Rest park object to be transformed
      * @return A plan object
      */
-    private ActivityResponse mapActivityResponse(final Activity activity) {
+    public ActivityResponse mapActivityResponse(final Activity activity) {
         ActivityResponse activityResponse = ActivityResponse.builder().id(activity.getId())
                 .description(activity.getDescription())
                 .feedback(activity.getFeedback())
@@ -109,18 +122,43 @@ public class ActivityController {
      * @param allActivities Rest park object to be transformed
      * @return A List<Activities>  object
      */
-    private List<ActivityResponse> mapActivitiesResponse(final List<Activity> allActivities) {
+    public List<ActivityResponse> mapActivitiesResponse(final List<Activity> allActivities) {
         List<ActivityResponse> Activities = new ArrayList<>();
-        for (Activity activity : allActivities) {
-            Activities.add(
-                    ActivityResponse.builder().id(activity.getId())
-                            .description(activity.getDescription())
-                            .feedback(activity.getFeedback())
-                            .name(activity.getName())
-                            .prices(activity.getPrices())
-                            .tags(activity.getTags())
-                            .build()
-            );
+        if(!(allActivities == null)){
+            for (Activity activity : allActivities) {
+                Activities.add(
+                        ActivityResponse.builder().id(activity.getId())
+                                .description(activity.getDescription())
+                                .feedback(activity.getFeedback())
+                                .name(activity.getName())
+                                .prices(activity.getPrices())
+                                .tags(activity.getTags())
+                                .build()
+                );
+            }
+        }
+        return Activities;
+    }
+    /**
+     * This method transforms a lists of  activities object into the response  list activities object
+     *
+     * @param allActivitiesRequest Rest park object to be transformed
+     * @return A List<Activities>  object
+     */
+    public List<Activity> mapActivitiesRequiest(final List<ActivityRequest> allActivitiesRequest) {
+        List<Activity> Activities = new ArrayList<>();
+        if (!(allActivitiesRequest == null)){
+            for (ActivityRequest activity : allActivitiesRequest) {
+                Activities.add(
+                        Activity.builder().id(UUID.randomUUID().toString())
+                                .description(activity.getDescription())
+                                .feedback(activity.getFeedback())
+                                .name(activity.getName())
+                                .prices(activity.getPrices())
+                                .tags(activity.getTags())
+                                .build()
+                );
+            }
         }
 
         return Activities;

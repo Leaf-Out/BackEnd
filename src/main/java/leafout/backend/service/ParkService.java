@@ -1,46 +1,53 @@
 package leafout.backend.service;
 
+import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
+import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Park;
 
 
 import java.util.List;
-import java.util.UUID;
 
-public interface ParkService <P extends Park> {
+
+public interface ParkService  {
     /**
      * This method get all pays
      */
-    List<P> getAllParks() ;
+    List<Park> getAllParks() ;
 
     /**
      * This method save a pay
      * @param park to save
      */
-    void savePark(P park) throws  ParkException;
+    void savePark(Park park) throws ParkException, PlanException, ActivityException;
 
     /**
      * This method get a pay
      * @param parkName name of the park
      */
 
-    P getParkByName(String parkName) ;
+    Park getParkByName(String parkName) ;
     /**
      * This method get a Park
      * @param parkId id of the Park
      */
-    P getParkById(String parkId) ;
+    Park getParkById(String parkId) ;
 
     /**
      * This method update a pay
      * @param park that gonna get an update pay
      */
 
-    void updatePark(P park) throws  ParkException;
+    void updatePark(Park park) throws ParkException, ActivityException, PlanException;
 
     /**
      * This method remove  a pay
      * @param park UUID of the pay
      */
-    void remove(P park) throws  ParkException;
+    void remove(Park park) throws  ParkException;
+
+    /**
+     * This method get all Plans
+     */
+    List<Park> getAllPopulateParks();
 }

@@ -1,18 +1,23 @@
 package leafout.backend.service.impl;
 
+import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
+import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Park;
 
 
+
 import leafout.backend.persistence.ParkRepository;
+import leafout.backend.service.ActivityService;
 import leafout.backend.service.ParkService;
 
+import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 
 /**
@@ -27,6 +32,10 @@ public class ParkServiceImpl implements ParkService {
 
     @Autowired
     private ParkRepository parkRepository;
+    @Autowired
+    private PlanService planService;
+    @Autowired
+    private ActivityService activityService;
 
     @Override
     public List getAllParks() {
@@ -35,12 +44,14 @@ public class ParkServiceImpl implements ParkService {
     }
 
     @Override
-    public void savePark(Park park) throws  ParkException {
+    public void savePark(Park park) throws ParkException, PlanException, ActivityException {
         if(parkRepository.existsParkByName(park.getName())){
 
             throw new ParkException(park.getName());
         }
         parkRepository.save(park);
+        planService.savePlans(park.getPlanList());
+        activityService.saveActivities(park.getActivitiesList());
     }
 
 
@@ -57,11 +68,13 @@ public class ParkServiceImpl implements ParkService {
     }
 
     @Override
-    public void updatePark(Park park) throws ParkException {
+    public void updatePark(Park park) throws ParkException, ActivityException, PlanException {
         if(!parkRepository.existsParkById(park.getId())){
             throw new ParkException(park.getId());
         }
         parkRepository.save(park);
+        planService.updatePlans(park.getPlanList());
+        activityService.updateActivities(park.getActivitiesList());
     }
 
     @Override
@@ -70,5 +83,12 @@ public class ParkServiceImpl implements ParkService {
             throw new ParkException(park.getId());
         }
         parkRepository.delete(park);
+    }
+
+    @Override
+    public List getAllPopulateParks() {
+        List<Park> allPopularParks = parkRepository.findAllByOrderByFeedbackDesc();
+        List<Park> allPopular = allPopularParks.subList(0,allPopularParks.size());
+        return allPopular;
     }
 }

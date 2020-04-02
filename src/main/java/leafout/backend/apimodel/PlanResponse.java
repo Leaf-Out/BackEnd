@@ -1,5 +1,7 @@
 package leafout.backend.apimodel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import leafout.backend.model.Activity;
 import leafout.backend.model.Feedback;
 import leafout.backend.model.Population;
@@ -15,6 +17,7 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonTypeName("PlanResponse")
 public class PlanResponse {
     private String id;
     /**
@@ -44,5 +47,6 @@ public class PlanResponse {
     /**
      * List of activities of a Plan
      */
-    List<Activity> activitiesList;
+
+    List<ActivityResponse> activitiesList;
 }

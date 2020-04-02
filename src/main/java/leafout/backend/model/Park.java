@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 
 /**
@@ -35,11 +34,15 @@ public class Park extends Pay {
     List<Activity> activitiesList;
 
 
+    Location location;
+
+
     @Builder
-    public Park(String id, String name, String description, Map< Population,Double > prices, List<Tag> tags,Feedback feedback,List<Plan> planList, List<Activity> activitiesList) {
+    public Park(String id, String name, String description, Map< Population,Double > prices, List<Tag> tags,Feedback feedback,List<Plan> planList, List<Activity> activitiesList,Location location) {
         super(id,name,description,prices,tags,feedback);
         this.planList = planList;
         this.activitiesList = activitiesList;
+        this.location =location;
     }
 
 

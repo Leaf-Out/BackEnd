@@ -1,16 +1,19 @@
 package leafout.backend.service.impl;
 
 
+import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Plan;
 import leafout.backend.persistence.PlanRepository;
+import leafout.backend.service.ActivityService;
 import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 /**
  * This class represent the implementation of the services of plans
@@ -25,17 +28,41 @@ public class PlanServiceImpl implements PlanService {
     @Autowired
     private PlanRepository planRepository;
 
+    @Autowired
+    private ActivityService activityService;
+
     @Override
     public List<Plan> getAllPlans()  {
         return planRepository.findAll();
     }
 
     @Override
-    public void savePlan(Plan plan) throws  PlanException {
+    public void savePlan(Plan plan) throws PlanException, ActivityException {
         if(planRepository.existsPlanByName(plan.getName())){
             throw new PlanException(plan.getName());
         }
         planRepository.save(plan);
+        activityService.saveActivities(plan.getActivitiesList());
+
+    }
+
+    @Override
+    public void savePlans(List<Plan> plans) throws PlanException, ActivityException {
+        for(Plan plan : plans){
+            if(planRepository.existsPlanByName(plan.getName())){
+                throw new PlanException(plan.getName());
+            }
+            planRepository.save(plan);
+            activityService.saveActivities(plan.getActivitiesList());
+        }
+    }
+
+    @Override
+    public void updatePlans(List<Plan> plans) {
+        for(Plan plan : plans){
+            planRepository.save(plan);
+            activityService.updateActivities(plan.getActivitiesList());
+        }
     }
 
     @Override
@@ -51,11 +78,12 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public void updatePlan(Plan plan) throws  PlanException {
+    public void updatePlan(Plan plan) throws PlanException, ActivityException {
         if(!planRepository.existsPlanById(plan.getId())){
             throw new PlanException(plan.getId());
         }
         planRepository.save(plan);
+        activityService.saveActivities(plan.getActivitiesList());
     }
 
     @Override
@@ -64,6 +92,13 @@ public class PlanServiceImpl implements PlanService {
             throw new PlanException(plan.getId());
         }
         planRepository.delete(plan);
+    }
+
+    @Override
+    public List getAllPopulatePlans() {
+        List<Plan> allPopularPlans = planRepository.findAllByOrderByFeedbackDesc();
+        List<Plan> allPopular = allPopularPlans.subList(0,allPopularPlans.size());
+        return allPopular;
     }
 }
 
