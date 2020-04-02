@@ -1,15 +1,16 @@
 package leafout.backend.persistence;
 
 
-
 import leafout.backend.model.Park;
 
 
-
+import leafout.backend.model.Population;
+import leafout.backend.model.Tag;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -62,6 +63,13 @@ public interface ParkRepository extends MongoRepository<Park, String> {
      */
     boolean existsParkByName(String parkName);
 
+
+    List<Park> getAllByTags(List<Tag> tags);
+
+
+    List<Park> getAllByLocation_Region(String region);
+
+    List<Park> getAllByPricesLessThanEqual(Map<Population,Double> price);
 
 
 }

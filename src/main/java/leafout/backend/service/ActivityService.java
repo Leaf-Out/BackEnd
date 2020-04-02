@@ -2,6 +2,7 @@ package leafout.backend.service;
 
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Tag;
 
 
 import java.util.List;
@@ -54,5 +55,7 @@ public interface ActivityService {
      * This method get all popular activities
      */
     List<Activity> getAllPopulateActivities();
+
+    List<Activity> getActivityByTags(List<Tag> tags);
 
 }

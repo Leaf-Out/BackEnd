@@ -4,12 +4,10 @@ import leafout.backend.apimodel.ActivityRequest;
 import leafout.backend.apimodel.ActivityResponse;
 import leafout.backend.apimodel.PlanRequest;
 import leafout.backend.apimodel.PlanResponse;
-import leafout.backend.model.Activity;
+import leafout.backend.model.*;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
-import leafout.backend.model.Park;
-import leafout.backend.model.Plan;
 import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -101,6 +99,17 @@ public class PlanController {
         response = new ResponseEntity<>(activityController.mapActivitiesResponse(planServices.getPlanByName(planName).getActivitiesList()), HttpStatus.ACCEPTED);
         return response;
     }
+    /**
+     * This method get all the park by a list of tags
+     * @return list<Park></>
+     */
+
+    @GetMapping(path = "/tags")
+    public ResponseEntity<?> getParksByTags(@RequestBody List<Tag> tagList) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapPlansResponse(planServices.getPlansByTags(tagList)), HttpStatus.ACCEPTED);
+        return response;
+    }
 
     /**
      * This method get all the plans by a park
@@ -122,6 +131,29 @@ public class PlanController {
         }
         final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
         return response;
+    }
+
+
+    /**
+     * This method rating a plan
+     * @param planName the name of a plan
+     *
+     */
+    @PostMapping(path = "/{name}/rating")
+    public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String planName) {
+        Plan plan = planServices.getPlanByName(planName);
+        Feedback feedback = plan.getFeedback();
+        feedback.setRating((feedback.getRating()+rating)/2);
+        plan.setFeedback(feedback);
+        System.err.println(plan.getFeedback().getRating());
+        try {
+            planServices.updatePlan(plan);
+        } catch (ActivityException | PlanException ex) {
+            ex.printStackTrace();
+        }
+        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
+        return response;
+
     }
 
     /**

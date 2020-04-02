@@ -2,6 +2,7 @@ package leafout.backend.service.impl;
 
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Tag;
 import leafout.backend.persistence.ActivityRepository;
 import leafout.backend.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,5 +87,10 @@ public class ActivityServiceImpl implements ActivityService {
         List<Activity> allPopularActivities = activityRepository.findAllByOrderByFeedbackDesc();
         List<Activity> allPopular = allPopularActivities.subList(0,allPopularActivities.size());
         return allPopular;
+    }
+
+    @Override
+    public List<Activity> getActivityByTags(List<Tag> tags) {
+        return activityRepository.getAllByTags(tags);
     }
 }

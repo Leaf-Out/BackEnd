@@ -5,6 +5,10 @@ import leafout.backend.apimodel.ActivityRequest;
 import leafout.backend.apimodel.ActivityResponse;
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Exception.PlanException;
+import leafout.backend.model.Feedback;
+import leafout.backend.model.Plan;
+import leafout.backend.model.Tag;
 import leafout.backend.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,6 +85,40 @@ public class ActivityController {
         }
         final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
         return response;
+    }
+
+    /**
+     * This method get all the park by a list of tags
+     * @return list<Park></>
+     */
+
+    @GetMapping(path = "/tags")
+    public ResponseEntity<?> getParksByTags(@RequestBody List<Tag> tagList) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapActivitiesResponse(activityServices.getActivityByTags(tagList)), HttpStatus.ACCEPTED);
+        return response;
+    }
+
+    /**
+     * This method rating a activity
+     * @param activityName the name of a activity
+     *
+     */
+    @PostMapping(path = "/{name}/rating")
+    public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String activityName) {
+        Activity activity = activityServices.getActivityByName(activityName);
+        Feedback feedback = activity.getFeedback();
+        feedback.setRating((feedback.getRating()+rating)/2);
+        activity.setFeedback(feedback);
+        System.err.println(activity.getFeedback().getRating());
+        try {
+            activityServices.updateActivity(activity);
+        } catch (ActivityException ex) {
+            ex.printStackTrace();
+        }
+        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
+        return response;
+
     }
 
 

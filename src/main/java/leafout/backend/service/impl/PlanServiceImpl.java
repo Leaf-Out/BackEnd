@@ -4,6 +4,7 @@ package leafout.backend.service.impl;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Plan;
+import leafout.backend.model.Tag;
 import leafout.backend.persistence.PlanRepository;
 import leafout.backend.service.ActivityService;
 import leafout.backend.service.PlanService;
@@ -49,9 +50,6 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public void savePlans(List<Plan> plans) throws PlanException, ActivityException {
         for(Plan plan : plans){
-            if(planRepository.existsPlanByName(plan.getName())){
-                throw new PlanException(plan.getName());
-            }
             planRepository.save(plan);
             activityService.saveActivities(plan.getActivitiesList());
         }
@@ -99,6 +97,11 @@ public class PlanServiceImpl implements PlanService {
         List<Plan> allPopularPlans = planRepository.findAllByOrderByFeedbackDesc();
         List<Plan> allPopular = allPopularPlans.subList(0,allPopularPlans.size());
         return allPopular;
+    }
+
+    @Override
+    public List<Plan> getPlansByTags(List<Tag> tags) {
+        return planRepository.getAllByTags(tags);
     }
 }
 

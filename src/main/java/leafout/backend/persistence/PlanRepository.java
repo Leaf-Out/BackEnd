@@ -2,8 +2,8 @@ package leafout.backend.persistence;
 
 
 
-
 import leafout.backend.model.Plan;
+import leafout.backend.model.Tag;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -58,6 +58,10 @@ public interface PlanRepository  extends MongoRepository<Plan, String> {
      * @return boolean
      */
     boolean existsPlanByName(String planName);
+
+
+    List<Plan> getAllByTags(List<Tag> tags);
+
 
 
 }

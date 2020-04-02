@@ -11,5 +11,7 @@ package leafout.backend.model;
 
 
 public enum Tag {
-	//TODO add tags
+    AVISTAMIENTO_PERROS,
+    PARAISO
+
 }

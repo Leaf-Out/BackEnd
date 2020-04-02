@@ -3,6 +3,7 @@ package leafout.backend.service;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Plan;
+import leafout.backend.model.Tag;
 
 import java.util.List;
 
@@ -53,4 +54,6 @@ public interface PlanService {
      * This method get all Plans
      */
     List<Plan> getAllPopulatePlans();
+
+    List<Plan> getPlansByTags(List<Tag> tag);
 }

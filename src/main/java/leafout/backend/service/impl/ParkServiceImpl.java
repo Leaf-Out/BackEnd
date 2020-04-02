@@ -3,10 +3,12 @@ package leafout.backend.service.impl;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
+import leafout.backend.model.Location;
 import leafout.backend.model.Park;
 
 
-
+import leafout.backend.model.Population;
+import leafout.backend.model.Tag;
 import leafout.backend.persistence.ParkRepository;
 import leafout.backend.service.ActivityService;
 import leafout.backend.service.ParkService;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -90,5 +93,20 @@ public class ParkServiceImpl implements ParkService {
         List<Park> allPopularParks = parkRepository.findAllByOrderByFeedbackDesc();
         List<Park> allPopular = allPopularParks.subList(0,allPopularParks.size());
         return allPopular;
+    }
+
+    @Override
+    public List<Park> getParksByTags(List<Tag> tags) {
+        return parkRepository.getAllByTags(tags);
+    }
+
+    @Override
+    public List<Park> getParksByRegion(String region) {
+        return parkRepository.getAllByLocation_Region(region);
+    }
+
+    @Override
+    public List<Park> getParksByPopulationAndPrice(Map<Population,Double> price) {
+        return parkRepository.getAllByPricesLessThanEqual(price);
     }
 }

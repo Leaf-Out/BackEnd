@@ -4,9 +4,12 @@ import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Park;
+import leafout.backend.model.Population;
+import leafout.backend.model.Tag;
 
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface ParkService  {
@@ -50,4 +53,11 @@ public interface ParkService  {
      * This method get all Plans
      */
     List<Park> getAllPopulateParks();
+
+
+    List<Park> getParksByTags(List<Tag> tag);
+
+    List<Park> getParksByRegion(String region);
+
+    List<Park> getParksByPopulationAndPrice(Map<Population,Double> price);
 }

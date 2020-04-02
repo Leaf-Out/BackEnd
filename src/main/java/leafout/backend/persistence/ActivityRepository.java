@@ -1,7 +1,9 @@
 package leafout.backend.persistence;
 
 import leafout.backend.model.Activity;
+import leafout.backend.model.Park;
 import leafout.backend.model.Plan;
+import leafout.backend.model.Tag;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -61,6 +63,8 @@ public interface ActivityRepository extends MongoRepository<Activity, String> {
      */
     boolean existsActivityByName(String activityName);
 
+
+    List<Activity> getAllByTags(List<Tag> tags);
 
 
 }

@@ -1,14 +1,12 @@
 package leafout.backend.controller;
 
 import leafout.backend.apimodel.*;
-import leafout.backend.model.Activity;
+import leafout.backend.model.*;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
-import leafout.backend.model.Park;
 
 
-import leafout.backend.model.Plan;
 import leafout.backend.service.ParkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -69,17 +68,19 @@ public class ParkController{
      */
     @PostMapping
     public ResponseEntity<?> addNewPark(@RequestBody ParkRequest park) {
-
+        ResponseEntity response = null;
         try {
             parkService.savePark(mapPark(park));
+            response = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (ParkException ex) {
             ex.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
         } catch (ActivityException e) {
             e.printStackTrace();
         } catch (PlanException e) {
             e.printStackTrace();
         }
-        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
+
         return response;
     }
 
@@ -152,6 +153,55 @@ public class ParkController{
 
     }
 
+
+    /**
+     * This method get all the park by a list of tags
+     * @return list<Park></>
+     */
+
+    @GetMapping(path = "/tags")
+    public ResponseEntity<?> getParksByTags(@RequestBody List<Tag> tagList) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapParksResponse(parkService.getParksByTags(tagList)), HttpStatus.ACCEPTED);
+        return response;
+    }
+
+    /**
+     * This method get all the park by a list of tags
+     * @return list<Park></>
+     */
+
+    @GetMapping(path = "/region/{region}")
+    public ResponseEntity<?> getParksByRegion( @PathVariable("region") String regionName) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapParksResponse(parkService.getParksByRegion(regionName)), HttpStatus.ACCEPTED);
+        return response;
+    }
+
+
+    /**
+     * This method rating a park
+     * @param parkName the name of a park
+     *
+     */
+    @PostMapping(path = "/{name}/rating")
+    public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String parkName) {
+        Park park = parkService.getParkByName(parkName);
+        Feedback feedback = park.getFeedback();
+        feedback.setRating((feedback.getRating()+rating)/2);
+        park.setFeedback(feedback);
+        System.err.println(park.getFeedback().getRating());
+        try {
+            parkService.updatePark(park);
+        } catch (ParkException | ActivityException | PlanException ex) {
+            ex.printStackTrace();
+        }
+        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
+        return response;
+
+    }
+
+
     /**
      * This method transforms a Rest Park object into the business park object
      *
@@ -171,6 +221,18 @@ public class ParkController{
                 .location(parkRequest.getLocation())
                 .build();
         return park;
+    }
+
+    /**
+     * This method get all the park by a list of tags
+     * @return list<Park></>
+     */
+
+    @GetMapping(path = "/population/price")
+    public ResponseEntity<?> getParksByPopulationAndPrice( @RequestBody Map<Population,Double> price) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapParksResponse(parkService.getParksByPopulationAndPrice(price)), HttpStatus.ACCEPTED);
+        return response;
     }
     /**
      * This method transforms a Rest Park object into the business park object
