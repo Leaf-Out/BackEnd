@@ -2,7 +2,8 @@ package leafout.backend.apimodel;
 
 import leafout.backend.model.Feedback;
 import leafout.backend.model.Ticket;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
 @Getter
 public class UserResponse {
 
+    private String id;
+
     /**
      * User's name
      */
@@ -25,11 +28,6 @@ public class UserResponse {
      * User's email
      */
     private String email;
-
-    /**
-     * User's password
-     */
-    private String password;
 
     /**
      * Feedback that User write

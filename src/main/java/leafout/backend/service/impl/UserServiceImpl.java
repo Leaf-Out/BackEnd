@@ -8,10 +8,9 @@ import leafout.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,14 +21,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() throws NoUserFoundException {
-        List<User> users = new ArrayList<User>();
-        userRepository.findAll().forEach(user -> users.add(user));
-        return users;
+        return userRepository.findAll();
     }
 
     @Override
+
     public Optional<User> getById(String userId) throws NoUserFoundException {
-        return userRepository.findById(userId);
+        return userRepository.getUserById(userId);
     }
 
     @Override
@@ -39,6 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(String userId) throws NoUserFoundException{
+
         userRepository.deleteById(userId);
     }
 }

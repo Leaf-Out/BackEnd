@@ -1,13 +1,8 @@
 package leafout.backend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.sql.Date;
-import java.util.UUID;
+import java.util.Date;
 
 /**
  * This class represents a ticket to be payed, to access to a park plan or activity
@@ -22,10 +17,10 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Ticket {
 
-	/**
-	 * ID of the ticket to be payed
-	 */
-	private UUID id;
+    /**
+     * ID of the ticket to be payed
+     */
+    private String id;
 
 	/**
 	 * Date when the ticket starts being valid

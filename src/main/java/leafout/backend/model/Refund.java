@@ -2,8 +2,6 @@ package leafout.backend.model;
 
 import lombok.*;
 
-import java.util.UUID;
-
 /**
  * This class contains all data needed to create a refund request
  *
@@ -18,9 +16,9 @@ import java.util.UUID;
 public class Refund {
 
 	/**
-	 * UUID of the transaction to be refunded
-	 */
-	private UUID transactionId;
+     * UUID of the transaction to be refunded
+     */
+    private String transactionId;
 
 	/**
 	 * ID of the order to be refunded

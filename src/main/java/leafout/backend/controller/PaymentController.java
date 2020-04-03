@@ -1,37 +1,16 @@
 package leafout.backend.controller;
 
-import leafout.backend.apimodel.ApiPaymentResponseCode;
-import leafout.backend.apimodel.PayRequest;
-import leafout.backend.apimodel.PurchaseRequest;
-import leafout.backend.apimodel.RefundRequest;
-import leafout.backend.apimodel.TicketResponse;
-import leafout.backend.apimodel.TransactionResponse;
-import leafout.backend.model.Activity;
-import leafout.backend.model.Park;
-import leafout.backend.model.Pay;
-import leafout.backend.model.PaymentResponseCode;
-import leafout.backend.model.Plan;
-import leafout.backend.model.Purchase;
-import leafout.backend.model.Refund;
-import leafout.backend.model.Ticket;
-import leafout.backend.model.Transaction;
-import leafout.backend.model.exception.NoPayableFoundException;
-import leafout.backend.model.exception.NoTransactionFoundException;
-import leafout.backend.model.exception.NoUserFoundException;
-import leafout.backend.model.exception.NotRefundableTransactionException;
-import leafout.backend.model.exception.PaymentPlatformException;
-import leafout.backend.model.exception.TransactionErrorException;
-import leafout.backend.model.exception.UnsuccessfulTransactionException;
+import leafout.backend.apimodel.*;
+import leafout.backend.model.*;
+import leafout.backend.model.exception.*;
+import leafout.backend.service.ActivityService;
+import leafout.backend.service.ParkService;
 import leafout.backend.service.PaymentService;
+import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -55,23 +34,23 @@ public class PaymentController {
 	@Autowired
 	private PaymentService paymentService;
 
-	/**
-	 * ParckService injected object
-	 */
-	//@Autowired
-	//private ParkService parkService;
+    /**
+     * ParckService injected object
+     */
+    @Autowired
+    private ParkService parkService;
 
-	/**
-	 * PlanService injected object
-	 */
-	//@Autowired
-	//private PlanService planService;
+    /**
+     * PlanService injected object
+     */
+    @Autowired
+    private PlanService planService;
 
-	/**
-	 * ActivityService injected object
-	 */
-	//@Autowired
-	//private ActivityService activityService;
+    /**
+     * ActivityService injected object
+     */
+    @Autowired
+    private ActivityService activityService;
 
 	/**
 	 * This method returns all transactions made
@@ -83,55 +62,55 @@ public class PaymentController {
 		final ResponseEntity response;
 			response = new ResponseEntity<>(mapTransactionsResponse(paymentService.getAllTransactions()), HttpStatus.ACCEPTED);
 		return response;
-	}
+    }
 
-	/**
-	 * This method returns all transactions made by a user
-	 *
-	 * @param user UUID of the user
-	 * @return A list of transactions
-	 */
-	@GetMapping("/user/{id}")
-	public ResponseEntity<List<TransactionResponse>> getTransactionsByCustomer(final @PathVariable("id") UUID user) {
-		final ResponseEntity response;
-			response = new ResponseEntity<>(mapTransactionsResponse(paymentService.getTransactionsByUser(user)), HttpStatus.ACCEPTED);
+    /**
+     * This method returns all transactions made by a user
+     *
+     * @param user UUID of the user
+     * @return A list of transactions
+     */
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<TransactionResponse>> getTransactionsByCustomer(final @PathVariable("id") String user) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapTransactionsResponse(paymentService.getTransactionsByUser(user)), HttpStatus.ACCEPTED);
 
-		return response;
-	}
+        return response;
+    }
 
-	/**
-	 * This method returns a transaction given its ID
-	 *
-	 * @param id UUID of the transaction
-	 * @return A list of transactions
-	 */
-	@GetMapping("/id/{id}")
-	public ResponseEntity<TransactionResponse> getTransactionById(final @PathVariable("id") UUID id) {
-		final ResponseEntity response;
-			final TransactionResponse transaction = mapTransactionResponse(paymentService.getTransactionById(id));
-			response = new ResponseEntity<>(transaction, HttpStatus.ACCEPTED);
+    /**
+     * This method returns a transaction given its ID
+     *
+     * @param id UUID of the transaction
+     * @return A list of transactions
+     */
+    @GetMapping("/id/{id}")
+    public ResponseEntity<TransactionResponse> getTransactionById(final @PathVariable("id") String id) {
+        final ResponseEntity response;
+        final TransactionResponse transaction = mapTransactionResponse(paymentService.getTransactionById(id));
+        response = new ResponseEntity<>(transaction, HttpStatus.ACCEPTED);
 
-		return response;
-	}
+        return response;
+    }
 
-	/**
-	 * This method makes a payment with the data received
-	 *
-	 * @param user UUID of the user
-	 * @param purchase Purchase request object with the necessary information to make a payment
-	 * @return HTTP Response
-	 */
-	@PostMapping("/pay/user/{user}")
-	public ResponseEntity<HttpStatus> pay(final @RequestBody PurchaseRequest purchase, final @PathVariable("user") UUID user) {
+    /**
+     * This method makes a payment with the data received
+     *
+     * @param user     UUID of the user
+     * @param purchase Purchase request object with the necessary information to make a payment
+     * @return HTTP Response
+     */
+    @PostMapping("/pay/user/{user}")
+    public ResponseEntity<HttpStatus> pay(final @RequestBody PurchaseRequest purchase, final @PathVariable("user") String user) {
 
-		try {
-			paymentService.pay(mapPurchase(purchase), user);
-		} catch (PaymentPlatformException e) {
-			e.printStackTrace();
-		} catch (NoPayableFoundException e) {
-			e.printStackTrace();
-		} catch (NoUserFoundException e) {
-			e.printStackTrace();
+        try {
+            paymentService.pay(mapPurchase(purchase), user);
+        } catch (PaymentPlatformException e) {
+            e.printStackTrace();
+        } catch (NoPayableFoundException e) {
+            e.printStackTrace();
+        } catch (NoUserFoundException e) {
+            e.printStackTrace();
 		} catch (TransactionErrorException e) {
 			e.printStackTrace();
 		} catch (UnsuccessfulTransactionException e) {
@@ -191,24 +170,21 @@ public class PaymentController {
 	 * @param purchaseRequest Rest purchase object with necessary information to create a ticket
 	 * @return The ticket generated
 	 */
-	private Ticket generateTicket(final PurchaseRequest purchaseRequest) {
-		final Pay pay;
-		if (PayRequest.PARK.equals(purchaseRequest.getPay())) {
-			//TODO get park from park service
-			pay = null;
-		} else if (PayRequest.PLAN.equals(purchaseRequest.getPay())) {
-			//TODO get plan from plan service
-			pay = null;
-		} else {
-			//TODO get activity from activity service
-			pay = null;
-		}
-		final double totalPrice = purchaseRequest.getUnits() * pay.getPrices().get(purchaseRequest.getPopulation());
-		final Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MONTH, 3);
-		final Date expirationDate = new Date(calendar.getTime().getTime());
-		return Ticket.builder()
-					 .id(UUID.randomUUID())
+    private Ticket generateTicket(final PurchaseRequest purchaseRequest) {
+        final Pay pay;
+        if (PayTypes.PARK.equals(purchaseRequest.getPay())) {
+            pay = parkService.getParkById(purchaseRequest.getPayId());
+        } else if (PayTypes.PLAN.equals(purchaseRequest.getPay())) {
+            pay = planService.getPlanById(purchaseRequest.getPayId());
+        } else {
+            pay = activityService.getActivityById(purchaseRequest.getPayId());
+        }
+        final double totalPrice = purchaseRequest.getUnits() * pay.getPrices().get(purchaseRequest.getPopulation());
+        final Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 3);
+        final Date expirationDate = new Date(calendar.getTime().getTime());
+        return Ticket.builder()
+                .id(UUID.randomUUID().toString())
 					 .population(purchaseRequest.getPopulation())
 					 .units(purchaseRequest.getUnits())
 					 .totalPrice(totalPrice)

@@ -1,10 +1,7 @@
 package leafout.backend.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,8 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 public class Cart {
     private String Id;
-    private List<Pay> items;
-    private double total;
+    private List<CartItem> items;
 }

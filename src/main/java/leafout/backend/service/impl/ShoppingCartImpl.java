@@ -1,109 +1,100 @@
 package leafout.backend.service.impl;
 
+import leafout.backend.apimodel.PayTypes;
 import leafout.backend.model.Cart;
+import leafout.backend.model.CartItem;
 import leafout.backend.model.Pay;
+import leafout.backend.model.User;
+import leafout.backend.model.exception.NoUserFoundException;
 import leafout.backend.persistence.CartRespository;
-import leafout.backend.service.ShoppingCartService;
+import leafout.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ShoppingCartImpl implements ShoppingCartService {
 
     @Autowired
     CartRespository cartRepository;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    ParkService parkService;
+
+    @Autowired
+    PlanService planService;
+
+    @Autowired
+    ActivityService activityService;
+
     /**
      * This method returns the shopping cart.
      *
+     * @param id
      * @return Shopping cart object
      */
     @Override
-    public Cart getCart() {
-        String currentUser;
-        Cart cart = null;
-        /*if(!cartRepository.findById(currentUser).ifPresent()){
-            cartRepository.save(new Cart(currentUser,null,-1));
-        }
-        else{
-            cart = cartRepository.findById(currentUser).get();
-        }
-         */
-        return cart;
-    }
+    public Cart getCart(String id) {
+        final Optional<Cart> cart = cartRepository.findById(id);
+        if (cart.isPresent()) {
+            return cart.get();
+        } else {
 
-    /**
-     * This method returns a specific item from the cart
-     *
-     * @param pay identifier for the item to be searched
-     * @return A pay object
-     */
-    @Override
-    public Pay getById(String pay) {
-        List<Pay> cartItems = getCart().getItems();
-        Pay payable = null;
-        for (Pay item : cartItems) {
-            if (item.getId().equals(pay)) {
-                return payable;
-            }
+            return Cart.builder().Id(id).build();
         }
-        return payable;
     }
 
     /**
      * This method adds a new item to the cart
      *
+     * @param id
      * @param pay pay item to be added
      */
     @Override
-    public void add(Pay pay) {
-        Cart cart = getCart();
+    public void add(String id, CartItem pay) throws NoUserFoundException {
+        final User user = userService.getById(id).get();
+        if (PayTypes.PARK.equals(pay.getType())) {
+            final Pay park = parkService.getParkById(pay.getItem().getId());
+        } else if (PayTypes.PLAN.equals(pay.getType())) {
+            final Pay plan = planService.getPlanById(pay.getItem().getId());
+        } else {
+            final Pay activity = activityService.getActivityById(pay.getItem().getId());
+        }
 
+        final Cart cart = getCart(id);
         cart.getItems().add(pay);
-        cart.setItems(cart.getItems());
         cartRepository.save(cart);
     }
 
     /**
-     * This method updates the cart state
+     * This method removes an item from the cart
      *
-     * @param cart A list with the new items; i.e. the new state of the cart
+     * @param id
+     * @param pay item identifier for the object to be removed.
      */
     @Override
-    public void update(Cart cart) {
+    public void remove(String id, String pay) {
+        Cart cart = getCart(id);
+        List<CartItem> items = cart.getItems();
+        for (CartItem item :
+                items) {
+            if (pay.equals(item.getItem().getId())) {
+                items.remove(item);
+            }
+        }
         cartRepository.insert(cart);
     }
 
     /**
-     * This method removes an item from the cart
-     *
-     * @param pay item identifier for the object to be removed.
-     */
-    @Override
-    public void remove(String pay) {
-        cartRepository.delete(getCart());
-    }
-
-    /**
-     * This method removes an item from the cart
-     *
-     * @param Pay item to be removed
-     */
-    @Override
-    public void remove(Pay Pay) {
-        Cart cart = getCart();
-        cart.getItems().remove(Pay);
-        cart.setItems(cart.getItems());
-        cartRepository.save(cart);
-    }
-
-    /**
      * This method removes all items from the cart
+     *
+     * @param id
      */
     @Override
-    public void clear() {
-        // get the logged in user
-        String currentUser = null;
-        cartRepository.deleteById(currentUser);
+    public void clear(String id) {
+        cartRepository.insert(Cart.builder().Id(id).build());
     }
 }
