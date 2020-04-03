@@ -4,9 +4,6 @@ import leafout.backend.model.Cart;
 import leafout.backend.model.Pay;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
-
 @Service
 public interface ShoppingCartService {
 
@@ -23,7 +20,7 @@ public interface ShoppingCartService {
      * @param pay identifier for the item to be searched
      * @return A pay object
      */
-    Pay getById(UUID pay);
+    Pay getById(String pay);
 
     /**
      * This method adds a new item to the cart
@@ -35,16 +32,16 @@ public interface ShoppingCartService {
     /**
      * This method updates the cart state
      *
-     * @param items A list with the new items; i.e. the new state of the cart
+     * @param cart A list with the new items; i.e. the new state of the cart
      */
-    void update(List<Pay> items);
+    void update(Cart cart);
 
     /**
      * This method removes an item from the cart
      *
      * @param pay item identifier for the object to be removed.
      */
-    void remove(UUID pay);
+    void remove(String pay);
 
     /**
      * This method removes an item from the cart

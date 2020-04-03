@@ -2,12 +2,17 @@ package leafout.backend.service.impl;
 
 import leafout.backend.model.Cart;
 import leafout.backend.model.Pay;
+import leafout.backend.persistence.CartRespository;
 import leafout.backend.service.ShoppingCartService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.UUID;
 
 public class ShoppingCartImpl implements ShoppingCartService {
+
+    @Autowired
+    CartRespository cartRepository;
+
     /**
      * This method returns the shopping cart.
      *
@@ -15,7 +20,16 @@ public class ShoppingCartImpl implements ShoppingCartService {
      */
     @Override
     public Cart getCart() {
-        return null;
+        String currentUser;
+        Cart cart = null;
+        /*if(!cartRepository.findById(currentUser).ifPresent()){
+            cartRepository.save(new Cart(currentUser,null,-1));
+        }
+        else{
+            cart = cartRepository.findById(currentUser).get();
+        }
+         */
+        return cart;
     }
 
     /**
@@ -25,8 +39,15 @@ public class ShoppingCartImpl implements ShoppingCartService {
      * @return A pay object
      */
     @Override
-    public Pay getById(UUID pay) {
-        return null;
+    public Pay getById(String pay) {
+        List<Pay> cartItems = getCart().getItems();
+        Pay payable = null;
+        for (Pay item : cartItems) {
+            if (item.getId().equals(pay)) {
+                return payable;
+            }
+        }
+        return payable;
     }
 
     /**
@@ -36,17 +57,21 @@ public class ShoppingCartImpl implements ShoppingCartService {
      */
     @Override
     public void add(Pay pay) {
+        Cart cart = getCart();
 
+        cart.getItems().add(pay);
+        cart.setItems(cart.getItems());
+        cartRepository.save(cart);
     }
 
     /**
      * This method updates the cart state
      *
-     * @param items A list with the new items; i.e. the new state of the cart
+     * @param cart A list with the new items; i.e. the new state of the cart
      */
     @Override
-    public void update(List<Pay> items) {
-
+    public void update(Cart cart) {
+        cartRepository.insert(cart);
     }
 
     /**
@@ -55,8 +80,8 @@ public class ShoppingCartImpl implements ShoppingCartService {
      * @param pay item identifier for the object to be removed.
      */
     @Override
-    public void remove(UUID pay) {
-
+    public void remove(String pay) {
+        cartRepository.delete(getCart());
     }
 
     /**
@@ -66,7 +91,10 @@ public class ShoppingCartImpl implements ShoppingCartService {
      */
     @Override
     public void remove(Pay Pay) {
-
+        Cart cart = getCart();
+        cart.getItems().remove(Pay);
+        cart.setItems(cart.getItems());
+        cartRepository.save(cart);
     }
 
     /**
@@ -74,6 +102,8 @@ public class ShoppingCartImpl implements ShoppingCartService {
      */
     @Override
     public void clear() {
-
+        // get the logged in user
+        String currentUser = null;
+        cartRepository.deleteById(currentUser);
     }
 }

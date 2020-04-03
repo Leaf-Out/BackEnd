@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/cart")
 public class CartController {
@@ -26,33 +24,27 @@ public class CartController {
         return response;
     }
 
-    @GetMapping("/{id")
-    public ResponseEntity<Cart> getByID(final @PathVariable UUID id) {
-        //TODO
-        return null;
-    }
-
     @PostMapping()
-    public ResponseEntity<Pay> add(@RequestBody Pay payable) {
-        //TODO
-        return null;
+    public ResponseEntity<?> add(@RequestBody Pay payable) {
+        cartService.add(payable);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @PutMapping()
-    public ResponseEntity<Pay> update(final @RequestBody Pay payable) {
-        //TODO
-        return null;
+    public ResponseEntity<?> update(final @RequestBody Cart newCart) {
+        cartService.update(newCart);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @DeleteMapping()
     public ResponseEntity<Pay> clear() {
-        //TODO
-        return null;
+        cartService.clear();
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Pay> removeItem(final @PathVariable("id") UUID Pay) {
-        //TODO
-        return null;
+    public ResponseEntity<Pay> removeItem(final @PathVariable("id") String pay) {
+        cartService.remove(pay);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
