@@ -44,8 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .authorizeRequests()
             .antMatchers("/login").permitAll()
-            .antMatchers("/activities/**").hasAuthority("USER")
-            .antMatchers("/**/**").hasAuthority("USER")
+                //Todo security
             .anyRequest().authenticated()
             .and()
             .addFilter(new JwtAuthenticationFilter(authenticationManager()))
