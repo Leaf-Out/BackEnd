@@ -1,12 +1,15 @@
 package leafout.backend.persistence;
 
 import leafout.backend.model.Activity;
+import leafout.backend.model.Park;
+import leafout.backend.model.Plan;
+import leafout.backend.model.Tag;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 /**
  * This class represent the repository of a Activity
@@ -23,6 +26,7 @@ public interface ActivityRepository extends MongoRepository<Activity, String> {
      */
     List<Activity> findAll();
 
+    List<Activity> findAllByOrderByFeedbackDesc();
     /**
      * find an activity by name
      * @param activitiesName the di of activity
@@ -43,6 +47,8 @@ public interface ActivityRepository extends MongoRepository<Activity, String> {
      */
     Activity save(Activity activity);
 
+
+
     /**
      * if the acivity exisist
      * @param activityId the id of activity
@@ -57,6 +63,8 @@ public interface ActivityRepository extends MongoRepository<Activity, String> {
      */
     boolean existsActivityByName(String activityName);
 
+
+    List<Activity> getAllByTags(List<Tag> tags);
 
 
 }

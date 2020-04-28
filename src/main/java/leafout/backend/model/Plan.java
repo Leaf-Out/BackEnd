@@ -28,10 +28,13 @@ public class Plan extends Pay{
      */
     List<Activity> activitiesList;
 
+    String parkName;
+
     @Builder
-    public Plan(String id, String name, String description, Map< Population,Double > prices, List<Tag> tags, Feedback feedback,List<Activity> activitiesList) {
+    public Plan(String id,String parkName, String name, String description, Map< Population,Double > prices, List<Tag> tags, Feedback feedback,List<Activity> activitiesList) {
         super(id,name,description,prices,tags,feedback);
         this.activitiesList = activitiesList;
+        this.parkName = parkName;
     }
 
 }

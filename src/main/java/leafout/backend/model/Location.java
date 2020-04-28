@@ -19,10 +19,6 @@ import java.util.UUID;
 public class Location {
 
     /**
-     * ID of the payable item
-     */
-    String id;
-    /**
      *
      */
     Integer longitud;
@@ -37,5 +33,10 @@ public class Location {
      *
      */
     Region region;
+
+    /**
+     *
+     */
+    String description;
 
 }

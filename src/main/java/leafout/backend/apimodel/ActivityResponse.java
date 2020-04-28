@@ -1,5 +1,6 @@
 package leafout.backend.apimodel;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import leafout.backend.model.Feedback;
 import leafout.backend.model.Population;
 import leafout.backend.model.Tag;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonTypeName("ActivityResponse")
 public class ActivityResponse {
 
     /**
@@ -47,4 +49,8 @@ public class ActivityResponse {
      * Reviews given by the users about the item
      */
     protected Feedback feedback;
+
+    private String parkName;
+
+    private String planName;
 }

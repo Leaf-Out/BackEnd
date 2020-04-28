@@ -26,6 +26,7 @@ import leafout.backend.service.ActivityService;
 import leafout.backend.service.ParkService;
 import leafout.backend.service.PaymentService;
 import leafout.backend.service.PlanService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -194,6 +195,7 @@ public class PaymentController {
 	 * @param purchaseRequest Rest purchase object with necessary information to create a ticket
 	 * @return The ticket generated
 	 */
+	@SneakyThrows
 	private Ticket generateTicket(final PurchaseRequest purchaseRequest) {
 		final Pay pay;
 		if (PayRequest.PARK.equals(purchaseRequest.getPay())) {

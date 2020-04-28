@@ -12,7 +12,7 @@ import leafout.backend.model.exception.PaymentPlatformException;
 import leafout.backend.model.exception.UnsuccessfulTransactionException;
 
 import java.util.List;
-import java.util.UUID;
+
 
 /**
  * This class offers the basic CRUD methods of a payment
