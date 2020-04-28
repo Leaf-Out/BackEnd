@@ -5,11 +5,13 @@ import leafout.backend.apimodel.ActivityRequest;
 import leafout.backend.apimodel.ActivityResponse;
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Feedback;
 import leafout.backend.model.Plan;
 import leafout.backend.model.Tag;
 import leafout.backend.service.ActivityService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,8 +67,13 @@ public class ActivityController {
      */
     @GetMapping(path = "/{name}")
     public ResponseEntity<?> getActivityById(@PathVariable("name") String activityName){
-        final ResponseEntity response;
-        response = new ResponseEntity<>(mapActivityResponse(activityServices.getActivityByName(activityName)), HttpStatus.ACCEPTED);
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(mapActivityResponse(activityServices.getActivityByName(activityName)), HttpStatus.ACCEPTED);
+        } catch (ActivityException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return response;
     }
 
@@ -78,12 +85,14 @@ public class ActivityController {
      */
     @PostMapping
     public ResponseEntity<?> addNewActivity(@RequestBody ActivityRequest activity){
+        ResponseEntity response;
         try{
             activityServices.saveActivity(mapActivity(activity));
-        }catch (ActivityException ex){
+            response = new ResponseEntity<>(HttpStatus.CREATED);
+        }catch (ActivityException | ParkException | PlanException ex){
             ex.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
-        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
         return response;
     }
 
@@ -104,6 +113,7 @@ public class ActivityController {
      * @param activityName the name of a activity
      *
      */
+    @SneakyThrows
     @PostMapping(path = "/{name}/rating")
     public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String activityName) {
         Activity activity = activityServices.getActivityByName(activityName);
@@ -125,16 +135,18 @@ public class ActivityController {
     /**
      * This method transforms a Rest activity object into the business activity object
      *
-     * @param planRequest Rest park object to be transformed
+     * @param activityRequest Rest park object to be transformed
      * @return A plan object
      */
-    public Activity mapActivity(final ActivityRequest planRequest) {
+    public Activity mapActivity(final ActivityRequest activityRequest) {
         Activity activity = Activity.builder().id(UUID.randomUUID().toString())
-                .description(planRequest.getDescription())
-                .feedback(planRequest.getFeedback())
-                .name(planRequest.getName())
-                .prices(planRequest.getPrices())
-                .tags(planRequest.getTags())
+                .description(activityRequest.getDescription())
+                .feedback(activityRequest.getFeedback())
+                .name(activityRequest.getName())
+                .prices(activityRequest.getPrices())
+                .tags(activityRequest.getTags())
+                .parkName(activityRequest.getParkName())
+                .planName(activityRequest.getPlanName())
                 .build();
         return activity;
     }
@@ -151,6 +163,8 @@ public class ActivityController {
                 .name(activity.getName())
                 .prices(activity.getPrices())
                 .tags(activity.getTags())
+                .parkName(activity.getParkName())
+                .planName(activity.getPlanName())
                 .build();
         return activityResponse;
     }
@@ -171,6 +185,8 @@ public class ActivityController {
                                 .name(activity.getName())
                                 .prices(activity.getPrices())
                                 .tags(activity.getTags())
+                                .parkName(activity.getParkName())
+                                .planName(activity.getPlanName())
                                 .build()
                 );
             }
@@ -186,14 +202,16 @@ public class ActivityController {
     public List<Activity> mapActivitiesRequiest(final List<ActivityRequest> allActivitiesRequest) {
         List<Activity> Activities = new ArrayList<>();
         if (!(allActivitiesRequest == null)){
-            for (ActivityRequest activity : allActivitiesRequest) {
+            for (ActivityRequest activityRequest : allActivitiesRequest) {
                 Activities.add(
                         Activity.builder().id(UUID.randomUUID().toString())
-                                .description(activity.getDescription())
-                                .feedback(activity.getFeedback())
-                                .name(activity.getName())
-                                .prices(activity.getPrices())
-                                .tags(activity.getTags())
+                                .description(activityRequest.getDescription())
+                                .feedback(activityRequest.getFeedback())
+                                .name(activityRequest.getName())
+                                .prices(activityRequest.getPrices())
+                                .tags(activityRequest.getTags())
+                                .parkName(activityRequest.getParkName())
+                                .planName(activityRequest.getPlanName())
                                 .build()
                 );
             }

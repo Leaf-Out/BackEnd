@@ -1,6 +1,7 @@
 package leafout.backend.service;
 
 import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Plan;
 import leafout.backend.model.Tag;
@@ -19,9 +20,9 @@ public interface PlanService {
      * This method save a Plan
      * @param plan to save
      */
-    void savePlan(Plan plan) throws PlanException, ActivityException;
+    void savePlan(Plan plan) throws PlanException, ActivityException, ParkException;
 
-    void savePlans(List<Plan> plans) throws PlanException, ActivityException;
+    void savePlans(List<Plan> plans) throws PlanException, ActivityException, ParkException;
 
     void updatePlans(List<Plan> plans) ;
 
@@ -30,19 +31,19 @@ public interface PlanService {
      * @param planName name of the Plan
      */
 
-    Plan getPlanByName(String planName) ;
+    Plan getPlanByName(String planName) throws ParkException;
     /**
      * This method get a Plan
      * @param planId id of the Plan
      */
-    Plan getPlanById(String planId) ;
+    Plan getPlanById(String planId) throws ParkException;
 
     /**
      * This method update a Plan
      * @param plan that gonna get an update Plan
      */
 
-    void updatePlan(Plan plan) throws PlanException, ActivityException;
+    void updatePlan(Plan plan) throws PlanException, ActivityException, ParkException;
 
     /**
      * This method remove  a Plan

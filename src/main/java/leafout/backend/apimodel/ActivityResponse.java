@@ -49,4 +49,8 @@ public class ActivityResponse {
      * Reviews given by the users about the item
      */
     protected Feedback feedback;
+
+    private String parkName;
+
+    private String planName;
 }

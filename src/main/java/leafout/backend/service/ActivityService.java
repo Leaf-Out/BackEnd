@@ -2,6 +2,8 @@ package leafout.backend.service;
 
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Exception.ParkException;
+import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Tag;
 
 
@@ -20,9 +22,9 @@ public interface ActivityService {
      * This method save a Activity
      * @param activity to save
      */
-    void saveActivity(Activity activity) throws ActivityException;
+    void saveActivity(Activity activity) throws ActivityException, ParkException, PlanException;
 
-    void saveActivities(List<Activity> activities) throws ActivityException;
+    void saveActivities(List<Activity> activities) throws ActivityException, ParkException, PlanException;
 
     void updateActivities(List<Activity> activities) ;
 
@@ -31,13 +33,13 @@ public interface ActivityService {
      * @param activityName name of the Activity
      */
 
-    Activity getActivityByName(String activityName) ;
+    Activity getActivityByName(String activityName) throws ActivityException;
 
     /**
      * This method get a activity
      * @param activityId id of the activity
      */
-    Activity getActivityById(String activityId) ;
+    Activity getActivityById(String activityId) throws ActivityException;
 
     /**
      * This method update a Activity

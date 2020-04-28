@@ -8,6 +8,7 @@ import leafout.backend.model.Exception.PlanException;
 
 
 import leafout.backend.service.ParkService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,8 +57,13 @@ public class ParkController{
      */
     @GetMapping(path = "/{name}")
     public ResponseEntity<?> getParkByName(@PathVariable("name") String parkName) {
-        final ResponseEntity response;
-        response = new ResponseEntity<>(mapParkResponse(parkService.getParkByName(parkName)), HttpStatus.ACCEPTED);
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(mapParkResponse(parkService.getParkByName(parkName)), HttpStatus.ACCEPTED);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
         return response;
 
     }
@@ -91,8 +97,13 @@ public class ParkController{
      */
     @GetMapping(path = "/{name}/plans")
     public ResponseEntity<?> getPlansByPark(@PathVariable("name") String parkName) {
-        final ResponseEntity response;
-        response = new ResponseEntity<>(planController.mapPlansResponse(parkService.getParkByName(parkName).getPlanList()), HttpStatus.ACCEPTED);
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(planController.mapPlansResponse(parkService.getParkByName(parkName).getPlanList()), HttpStatus.ACCEPTED);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity( HttpStatus.NOT_FOUND);
+        }
         return response;
 
     }
@@ -101,6 +112,7 @@ public class ParkController{
      * @param parkName the name of a park
      * @return list<Plan></>
      */
+    @SneakyThrows
     @PostMapping(path = "/{name}/plans")
     public ResponseEntity<?> addPlansByPark(@RequestBody List<PlanRequest> allPlanRequest,@PathVariable("name") String parkName) {
         Park park = parkService.getParkByName(parkName);
@@ -126,8 +138,12 @@ public class ParkController{
 
     @GetMapping(path = "/{name}/activities")
     public ResponseEntity<?> getActivitiesByPark(@PathVariable("name") String parkName) {
-        final ResponseEntity response;
-        response = new ResponseEntity<>(activityController.mapActivitiesResponse(parkService.getParkByName(parkName).getActivitiesList()), HttpStatus.ACCEPTED);
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(activityController.mapActivitiesResponse(parkService.getParkByName(parkName).getActivitiesList()), HttpStatus.ACCEPTED);
+        } catch (ParkException e) {
+            response = new ResponseEntity<>( HttpStatus.NOT_FOUND);
+        }
         return response;
     }
     /**
@@ -135,6 +151,7 @@ public class ParkController{
      * @param parkName the name of a park
      * @return list<Plan></>
      */
+    @SneakyThrows
     @PostMapping(path = "/{name}/activities")
     public ResponseEntity<?> addActivitiesByPark(@RequestBody List<ActivityRequest> allActivityRequest, @PathVariable("name") String parkName) {
         Park park = parkService.getParkByName(parkName);
@@ -184,6 +201,7 @@ public class ParkController{
      * @param parkName the name of a park
      *
      */
+    @SneakyThrows
     @PostMapping(path = "/{name}/rating")
     public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String parkName) {
         Park park = parkService.getParkByName(parkName);

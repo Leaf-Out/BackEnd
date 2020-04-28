@@ -49,4 +49,8 @@ public class ActivityRequest {
      * Reviews given by the users about the item
      */
     private Feedback feedback;
+
+    private String parkName;
+
+    private String planName;
 }

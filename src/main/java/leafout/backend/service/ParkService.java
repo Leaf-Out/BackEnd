@@ -29,12 +29,12 @@ public interface ParkService  {
      * @param parkName name of the park
      */
 
-    Park getParkByName(String parkName) ;
+    Park getParkByName(String parkName) throws ParkException;
     /**
      * This method get a Park
      * @param parkId id of the Park
      */
-    Park getParkById(String parkId) ;
+    Park getParkById(String parkId) throws ParkException;
 
     /**
      * This method update a pay

@@ -9,6 +9,7 @@ import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
 import leafout.backend.service.PlanService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,8 +65,13 @@ public class PlanController {
      */
     @GetMapping(path = "/{name}")
     public ResponseEntity<?> getPlanById(@PathVariable("name") String planName){
-        final ResponseEntity response;
-        response = new ResponseEntity<>(mapPlanResponse(planServices.getPlanByName(planName)), HttpStatus.ACCEPTED);
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(mapPlanResponse(planServices.getPlanByName(planName)), HttpStatus.ACCEPTED);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>( HttpStatus.NOT_FOUND);
+        }
         return response;
     }
 
@@ -81,7 +87,7 @@ public class PlanController {
         try{
             planServices.savePlan(mapPlan(plan));
             response = new ResponseEntity<>(HttpStatus.CREATED);
-        }catch (PlanException | ActivityException ex){
+        }catch (PlanException | ActivityException | ParkException ex){
             ex.printStackTrace();
             response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -95,8 +101,13 @@ public class PlanController {
      */
     @GetMapping(path = "/{name}/activities")
     public ResponseEntity<?> getActivitiesByPlan(@PathVariable("name") String planName) {
-        final ResponseEntity response;
-        response = new ResponseEntity<>(activityController.mapActivitiesResponse(planServices.getPlanByName(planName).getActivitiesList()), HttpStatus.ACCEPTED);
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(activityController.mapActivitiesResponse(planServices.getPlanByName(planName).getActivitiesList()), HttpStatus.ACCEPTED);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return response;
     }
     /**
@@ -116,6 +127,7 @@ public class PlanController {
      * @param planName the name of a park
      * @return list<Plan></>
      */
+    @SneakyThrows
     @PostMapping(path = "/{name}/activities")
     public ResponseEntity<?> addActivitiesByPark(@RequestBody List<ActivityRequest> allActivityRequest, @PathVariable("name") String planName) {
         Plan plan = planServices.getPlanByName(planName);
@@ -139,6 +151,7 @@ public class PlanController {
      * @param planName the name of a plan
      *
      */
+    @SneakyThrows
     @PostMapping(path = "/{name}/rating")
     public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String planName) {
         Plan plan = planServices.getPlanByName(planName);
@@ -170,6 +183,7 @@ public class PlanController {
                 .name(planRequest.getName())
                 .prices(planRequest.getPrices())
                 .tags(planRequest.getTags())
+                .parkName(planRequest.getParkName())
                 .build();
         return plan;
     }
@@ -187,6 +201,7 @@ public class PlanController {
                 .name(plan.getName())
                 .prices(plan.getPrices())
                 .tags(plan.getTags())
+                .parkName(plan.getParkName())
                 .build();
         return planResponse;
     }
@@ -209,6 +224,7 @@ public class PlanController {
                                 .name(planRequest.getName())
                                 .prices(planRequest.getPrices())
                                 .tags(planRequest.getTags())
+                                .parkName(planRequest.getParkName())
                                 .build()
 
                 );
@@ -235,6 +251,7 @@ public class PlanController {
                                 .name(plan.getName())
                                 .prices(plan.getPrices())
                                 .tags(plan.getTags())
+                                .parkName(plan.getParkName())
                                 .build()
                 );
             }

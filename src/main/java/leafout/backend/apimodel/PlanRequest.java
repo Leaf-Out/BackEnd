@@ -56,4 +56,6 @@ public class PlanRequest {
      */
     List<ActivityRequest> activitiesList;
 
+    String parkName;
+
 }

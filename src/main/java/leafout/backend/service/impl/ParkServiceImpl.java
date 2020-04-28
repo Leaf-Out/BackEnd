@@ -17,6 +17,7 @@ import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,14 +60,20 @@ public class ParkServiceImpl implements ParkService {
 
 
     @Override
-    public Park  getParkByName(String parkName) {
+    public Park  getParkByName(String parkName) throws ParkException {
         Optional<Park> optionalPay = parkRepository.getParkByName(parkName);
+        if(!optionalPay.isPresent()){
+            throw new ParkException(parkName);
+        }
         return optionalPay.get();
     }
 
     @Override
-    public Park getParkById(String parkId) {
+    public Park getParkById(String parkId) throws ParkException {
         Optional<Park> optionalPay = parkRepository.getParkById(parkId);
+        if(!optionalPay.isPresent()){
+            throw new ParkException(parkId);
+        }
         return optionalPay.get();
     }
 
