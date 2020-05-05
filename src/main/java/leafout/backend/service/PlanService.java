@@ -1,51 +1,60 @@
 package leafout.backend.service;
 
+import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Plan;
+import leafout.backend.model.Tag;
 
 import java.util.List;
 
-public interface PlanService<P extends Plan> {
+
+public interface PlanService {
 
     /**
      * This method get all Plans
      */
-    List<P> getAllPlans();
+    List<Plan> getAllPlans();
 
     /**
      * This method save a Plan
-     *
      * @param plan to save
      */
-    void savePlan(P plan) throws PlanException;
+    void savePlan(Plan plan) throws PlanException, ActivityException, ParkException;
+
+    void savePlans(List<Plan> plans) throws PlanException, ActivityException, ParkException;
+
+    void updatePlans(List<Plan> plans) ;
 
     /**
      * This method get a Plan
-     *
      * @param planName name of the Plan
      */
 
-    P getPlanByName(String planName);
-
+    Plan getPlanByName(String planName) throws ParkException;
     /**
      * This method get a Plan
-     *
      * @param planId id of the Plan
      */
-    P getPlanById(String planId);
+    Plan getPlanById(String planId) throws ParkException;
 
     /**
      * This method update a Plan
-     *
      * @param plan that gonna get an update Plan
      */
 
-    void updatePlan(P plan) throws PlanException;
+    void updatePlan(Plan plan) throws PlanException, ActivityException, ParkException;
 
     /**
      * This method remove  a Plan
-     *
      * @param plan UUID of the Plan
      */
-    void remove(P plan) throws PlanException;
+    void remove(Plan plan) throws  PlanException;
+
+    /**
+     * This method get all Plans
+     */
+    List<Plan> getAllPopulatePlans();
+
+    List<Plan> getPlansByTags(List<Tag> tag);
 }

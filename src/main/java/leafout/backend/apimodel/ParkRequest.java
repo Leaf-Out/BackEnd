@@ -1,5 +1,7 @@
 package leafout.backend.apimodel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import leafout.backend.model.*;
 import lombok.*;
 
@@ -17,6 +19,7 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonTypeName("ParkRequest")
 public class ParkRequest {
 
 
@@ -47,10 +50,14 @@ public class ParkRequest {
     /**
      * List of plans of a park
      */
-    List<Plan> planList;
+    List<PlanRequest> planList;
 
     /**
      * List of activities of a park
      */
-    List<Activity> activitiesList;
+
+    List<ActivityRequest> activitiesList;
+
+
+    Location location;
 }

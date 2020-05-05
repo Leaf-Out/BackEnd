@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class represents a plan
@@ -21,16 +22,19 @@ import java.util.Map;
 @Setter
 @Document(collection = "Plans")
 @JsonTypeName("Plan")
-public class Plan extends Pay {
+public class Plan extends Pay{
     /**
      * List of activities of a park
      */
     List<Activity> activitiesList;
 
+    String parkName;
+
     @Builder
-    public Plan(String id, String name, String description, Map<Population, Double> prices, List<Tag> tags, Feedback feedback, List<Activity> activitiesList) {
-        super(id, name, description, prices, tags, feedback);
+    public Plan(String id,String parkName, String name, String description, Map< Population,Double > prices, List<Tag> tags, Feedback feedback,List<Activity> activitiesList) {
+        super(id,name,description,prices,tags,feedback);
         this.activitiesList = activitiesList;
+        this.parkName = parkName;
     }
 
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -33,11 +34,15 @@ public class Park extends Pay {
     List<Activity> activitiesList;
 
 
+    Location location;
+
+
     @Builder
-    public Park(String id, String name, String description, Map<Population, Double> prices, List<Tag> tags, Feedback feedback, List<Plan> planList, List<Activity> activitiesList) {
-        super(id, name, description, prices, tags, feedback);
+    public Park(String id, String name, String description, Map< Population,Double > prices, List<Tag> tags,Feedback feedback,List<Plan> planList, List<Activity> activitiesList,Location location) {
+        super(id,name,description,prices,tags,feedback);
         this.planList = planList;
         this.activitiesList = activitiesList;
+        this.location =location;
     }
 
 
