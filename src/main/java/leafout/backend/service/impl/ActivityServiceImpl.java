@@ -46,59 +46,24 @@ public class ActivityServiceImpl implements ActivityService {
             throw new ActivityException(activity.getName());
         }
         activityRepository.save(activity);
-        Optional<Park> park = parkRepository.getParkByName(activity.getParkName());
-        Optional<Plan> plan = planRepository.getPlanByName(activity.getPlanName());
-        if (park.isPresent()){
-            List<Activity> activityP = park.get().getActivitiesList();
-            activityP.add(activity);
-            park.get().setActivitiesList(activityP);
-            parkRepository.save(park.get());
-        }else {
-            throw new ParkException(activity.getParkName());
-        }
-        if (park.isPresent()){
-            List<Activity> activityPl = plan.get().getActivitiesList();
-            activityPl.add(activity);
-            plan.get().setActivitiesList(activityPl);
-            planRepository.save(plan.get());
-        }else {
-            throw new PlanException(activity.getPlanName());
-        }
+        AlreadyActivityInPark(activity);
+        AlreadyActivityInPlan(activity);
+
     }
 
     @Override
     public void saveActivities(List<Activity> activities) throws ActivityException, ParkException, PlanException {
         for (Activity activity: activities){
-            if(activityRepository.existsActivityByName(activity.getName())){
-                throw new ActivityException(activity.getName());
-            }
-            activityRepository.save(activity);
-            Optional<Park> park = parkRepository.getParkByName(activity.getParkName());
-            Optional<Plan> plan = planRepository.getPlanByName(activity.getPlanName());
-            if (park.isPresent()){
-                List<Activity> activityP = park.get().getActivitiesList();
-                activityP.add(activity);
-                park.get().setActivitiesList(activityP);
-                parkRepository.save(park.get());
-            }else {
-                throw new ParkException(activity.getParkName());
-            }
-            if (park.isPresent()){
-                List<Activity> activityPl = plan.get().getActivitiesList();
-                activityPl.add(activity);
-                plan.get().setActivitiesList(activityPl);
-                planRepository.save(plan.get());
-            }else {
-                throw new PlanException(activity.getPlanName());
-            }
+            saveActivity(activity);
         }
 
     }
 
     @Override
-    public void updateActivities(List<Activity> activities)  {
+    public void updateActivities(List<Activity> activities) throws ParkException, PlanException, ActivityException {
+
         for (Activity activity: activities){
-            activityRepository.save(activity);
+           updateActivity(activity);
         }
     }
 
@@ -121,19 +86,105 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void updateActivity(Activity activity) throws ActivityException {
-        if(!activityRepository.existsActivityById(activity.getId())){
-            throw new ActivityException(activity.getId());
-        }
+    public Activity updateActivity(Activity activity) throws ActivityException, ParkException, PlanException {
+
         activityRepository.save(activity);
+        AlreadyActivityInPark(activity);
+        AlreadyActivityInPlan(activity);
+
+        return activity;
+    }
+
+    private void AlreadyActivityInPark(Activity activity) throws ParkException, PlanException {
+        if (activity.getParkName() != null){
+            Optional<Park> park = parkRepository.getParkByName(activity.getParkName());
+            if (park.isPresent()){
+                List<Activity> activityP = park.get().getActivitiesList();
+                if(!isInArray(activityP,activity)){
+                    activityP.add(activity);
+                    park.get().setActivitiesList(activityP);
+                    parkRepository.save(park.get());
+                }
+            }else {
+                throw new ParkException(activity.getParkName());
+            }
+        }
+
+    }
+
+    private void AlreadyActivityInPlan(Activity activity) throws PlanException {
+        if (activity.getPlanName() != null){
+            Optional<Plan> plan = planRepository.getPlanByName(activity.getPlanName());
+            if (plan.isPresent()){
+                List<Activity> activityPl = plan.get().getActivitiesList();
+                if(!isInArray(activityPl,activity)){
+                    activityPl.add(activity);
+                    plan.get().setActivitiesList(activityPl);
+                    planRepository.save(plan.get());
+                }
+            }else {
+                throw new PlanException(activity.getPlanName());
+            }
+        }
+    }
+    private Boolean isInArray(List<Activity> activities, Activity activity){
+        Boolean b = false;
+        for (Activity a : activities){
+            if (a.getName().equals(activity.getName())){
+                b = true;
+            }
+        }
+        return b;
     }
 
     @Override
-    public void remove(Activity activity) throws ActivityException {
+    public void remove(Activity activity) throws ActivityException{
         if(!activityRepository.existsActivityById(activity.getId())){
-            throw new ActivityException(activity.getId());
+            throw new ActivityException(activity.getName());
         }
+        if (activity.getPlanName() != null){
+            Optional<Plan> plan = planRepository.getPlanByName(activity.getPlanName());
+            if (plan.isPresent()){
+                List<Activity> activityPl = plan.get().getActivitiesList();
+                if(isInArray(activityPl,activity)){
+                    activityPl.remove(removeElement(activityPl,activity));
+                    plan.get().setActivitiesList(activityPl);
+                    planRepository.save(plan.get());
+                }
+            }
+        }
+        if (activity.getParkName() != null){
+            Optional<Park> park = parkRepository.getParkByName(activity.getParkName());
+            if (park.isPresent()){
+                List<Activity> activityP = park.get().getActivitiesList();
+                if(isInArray(activityP,activity)){
+                    activityP.remove(removeElement(activityP,activity));
+                    park.get().setActivitiesList(activityP);
+                    parkRepository.save(park.get());
+                }
+            }
+        }
+
         activityRepository.delete(activity);
+    }
+    private int removeElement(List<Activity> activities, Activity activity){
+        int indexF = 0 ;
+        int index=0;
+        for (Activity currentActivity : activities){
+
+            if (currentActivity.getName().equals(activity.getName())){
+                indexF = index;
+            }
+            index+=1;
+        }
+        return indexF;
+    }
+
+    @Override
+    public void removeActivities(List<Activity> activities) {
+        for (Activity activity: activities){
+            activityRepository.delete(activity);
+        }
     }
 
     @Override

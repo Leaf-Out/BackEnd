@@ -53,5 +53,9 @@ public class ParkResponse {
 
     List<ActivityResponse> activitiesList;
 
+    String planDescription;
+
+    String activityDescription;
+
     Location location;
 }

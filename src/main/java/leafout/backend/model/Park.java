@@ -28,21 +28,26 @@ public class Park extends Pay {
      */
     List<Plan> planList;
 
+    String planDescription;
+
     /**
      * List of activities of a park
      */
     List<Activity> activitiesList;
 
+    String activitiyDescription;
 
     Location location;
 
 
     @Builder
-    public Park(String id, String name, String description, Map< Population,Double > prices, List<Tag> tags,Feedback feedback,List<Plan> planList, List<Activity> activitiesList,Location location) {
+    public Park(String id, String planDescription,String activitiyDescription,String name, String description, Map< Population,Double > prices, List<Tag> tags,Feedback feedback,List<Plan> planList, List<Activity> activitiesList,Location location) {
         super(id,name,description,prices,tags,feedback);
         this.planList = planList;
         this.activitiesList = activitiesList;
         this.location =location;
+        this.planDescription=planDescription;
+        this.activitiyDescription=activitiyDescription;
     }
 
 

@@ -41,13 +41,13 @@ public interface ParkService  {
      * @param park that gonna get an update pay
      */
 
-    void updatePark(Park park) throws ParkException, ActivityException, PlanException;
+    Park updatePark(Park park) throws ParkException, ActivityException, PlanException;
 
     /**
      * This method remove  a pay
      * @param park UUID of the pay
      */
-    void remove(Park park) throws  ParkException;
+    void remove(Park park) throws ParkException, PlanException;
 
     /**
      * This method get all Plans

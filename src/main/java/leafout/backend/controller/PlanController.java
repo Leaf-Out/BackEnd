@@ -1,9 +1,6 @@
 package leafout.backend.controller;
 
-import leafout.backend.apimodel.ActivityRequest;
-import leafout.backend.apimodel.ActivityResponse;
-import leafout.backend.apimodel.PlanRequest;
-import leafout.backend.apimodel.PlanResponse;
+import leafout.backend.apimodel.*;
 import leafout.backend.model.*;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
@@ -127,10 +124,16 @@ public class PlanController {
      * @param planName the name of a park
      * @return list<Plan></>
      */
-    @SneakyThrows
+
     @PostMapping(path = "/{name}/activities")
     public ResponseEntity<?> addActivitiesByPark(@RequestBody List<ActivityRequest> allActivityRequest, @PathVariable("name") String planName) {
-        Plan plan = planServices.getPlanByName(planName);
+        Plan plan = null;
+        try {
+            plan = planServices.getPlanByName(planName);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         List<Activity> activities = plan.getActivitiesList();
         for (ActivityRequest activityRequest : allActivityRequest) {
             activities.add(activityController.mapActivity(activityRequest));
@@ -138,7 +141,7 @@ public class PlanController {
         plan.setActivitiesList(activities);
         try {
             planServices.updatePlan(plan);
-        } catch (ActivityException | PlanException ex) {
+        } catch (ActivityException | PlanException | ParkException ex) {
             ex.printStackTrace();
         }
         final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
@@ -151,22 +154,60 @@ public class PlanController {
      * @param planName the name of a plan
      *
      */
-    @SneakyThrows
+
     @PostMapping(path = "/{name}/rating")
     public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String planName) {
-        Plan plan = planServices.getPlanByName(planName);
+        Plan plan = null;
+        try {
+            plan = planServices.getPlanByName(planName);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Feedback feedback = plan.getFeedback();
         feedback.setRating((feedback.getRating()+rating)/2);
         plan.setFeedback(feedback);
         System.err.println(plan.getFeedback().getRating());
         try {
             planServices.updatePlan(plan);
-        } catch (ActivityException | PlanException ex) {
+        } catch (ActivityException | PlanException | ParkException ex) {
             ex.printStackTrace();
         }
         final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
         return response;
 
+    }
+    @PutMapping
+    public ResponseEntity<?> updatePlan( @RequestBody PlanRequest planRequest) {
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(mapPlanResponse(planServices.updatePlan(mapPlanAlredy(planRequest))),HttpStatus.OK);
+        } catch (ActivityException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (PlanException e) {
+            e.printStackTrace();
+
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return response;
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> removePark( @RequestBody PlanRequest planRequest) {
+        ResponseEntity response;
+        try {
+            planServices.remove(mapPlanAlredy(planRequest));
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } catch (PlanException | ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
     }
 
     /**
@@ -182,6 +223,27 @@ public class PlanController {
                 .feedback(planRequest.getFeedback())
                 .name(planRequest.getName())
                 .prices(planRequest.getPrices())
+                .activityDescription(planRequest.getActivityDescription())
+                .tags(planRequest.getTags())
+                .parkName(planRequest.getParkName())
+                .build();
+        return plan;
+    }
+    /**
+     * This method transforms a Rest plan object into the business plan object
+     *
+     * @param planRequest Rest park object to be transformed
+     * @return A plan object
+     */
+    public Plan mapPlanAlredy(final PlanRequest planRequest) throws ParkException {
+        Plan planAlredy = planServices.getPlanByName(planRequest.getName());
+        Plan plan = Plan.builder().id(planAlredy.getId())
+                .activitiesList(planAlredy.getActivitiesList())
+                .description(planRequest.getDescription())
+                .feedback(planRequest.getFeedback())
+                .name(planRequest.getName())
+                .prices(planRequest.getPrices())
+                .activityDescription(planRequest.getActivityDescription())
                 .tags(planRequest.getTags())
                 .parkName(planRequest.getParkName())
                 .build();
@@ -201,6 +263,7 @@ public class PlanController {
                 .name(plan.getName())
                 .prices(plan.getPrices())
                 .tags(plan.getTags())
+                .activityDescription(plan.getActivityDescription())
                 .parkName(plan.getParkName())
                 .build();
         return planResponse;
@@ -223,6 +286,7 @@ public class PlanController {
                                 .feedback(planRequest.getFeedback())
                                 .name(planRequest.getName())
                                 .prices(planRequest.getPrices())
+                                .activityDescription(planRequest.getActivityDescription())
                                 .tags(planRequest.getTags())
                                 .parkName(planRequest.getParkName())
                                 .build()
@@ -251,6 +315,7 @@ public class PlanController {
                                 .name(plan.getName())
                                 .prices(plan.getPrices())
                                 .tags(plan.getTags())
+                                .activityDescription(plan.getActivityDescription())
                                 .parkName(plan.getParkName())
                                 .build()
                 );

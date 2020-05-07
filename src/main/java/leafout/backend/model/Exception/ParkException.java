@@ -5,7 +5,7 @@ import java.util.UUID;
 public class ParkException extends Exception {
 
     public ParkException(String nameActivity) {
-        super("There activity exist with the Name " + nameActivity);
+        super("There park exist with the Name " + nameActivity);
     }
     public ParkException(UUID parkId) {
         super("There no an park exist with the ID " + parkId);

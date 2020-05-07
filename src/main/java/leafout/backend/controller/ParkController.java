@@ -112,10 +112,15 @@ public class ParkController{
      * @param parkName the name of a park
      * @return list<Plan></>
      */
-    @SneakyThrows
     @PostMapping(path = "/{name}/plans")
     public ResponseEntity<?> addPlansByPark(@RequestBody List<PlanRequest> allPlanRequest,@PathVariable("name") String parkName) {
-        Park park = parkService.getParkByName(parkName);
+        Park park = null;
+        try {
+            park = parkService.getParkByName(parkName);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         List<Plan> plans = park.getPlanList();
         for (PlanRequest planRequest: allPlanRequest){
             plans.add(planController.mapPlan(planRequest));
@@ -151,10 +156,16 @@ public class ParkController{
      * @param parkName the name of a park
      * @return list<Plan></>
      */
-    @SneakyThrows
+
     @PostMapping(path = "/{name}/activities")
     public ResponseEntity<?> addActivitiesByPark(@RequestBody List<ActivityRequest> allActivityRequest, @PathVariable("name") String parkName) {
-        Park park = parkService.getParkByName(parkName);
+        Park park = null;
+        try {
+            park = parkService.getParkByName(parkName);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         List<Activity> activities = park.getActivitiesList();
         for (ActivityRequest activityRequest: allActivityRequest){
             activities.add(activityController.mapActivity(activityRequest));
@@ -201,10 +212,18 @@ public class ParkController{
      * @param parkName the name of a park
      *
      */
-    @SneakyThrows
+
     @PostMapping(path = "/{name}/rating")
     public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String parkName) {
-        Park park = parkService.getParkByName(parkName);
+        Park park = null;
+        ResponseEntity response;
+        try {
+            park = parkService.getParkByName(parkName);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        }
         Feedback feedback = park.getFeedback();
         feedback.setRating((feedback.getRating()+rating)/2);
         park.setFeedback(feedback);
@@ -214,9 +233,52 @@ public class ParkController{
         } catch (ParkException | ActivityException | PlanException ex) {
             ex.printStackTrace();
         }
-        final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
+        response = new ResponseEntity<>(HttpStatus.CREATED);
         return response;
 
+    }
+    /**
+     * This method get all the park by a list of tags
+     * @return list<Park></>
+     */
+
+    @GetMapping(path = "/population/price")
+    public ResponseEntity<?> getParksByPopulationAndPrice( @RequestBody Map<Population,Double> price) {
+        final ResponseEntity response;
+        response = new ResponseEntity<>(mapParksResponse(parkService.getParksByPopulationAndPrice(price)), HttpStatus.ACCEPTED);
+        return response;
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updatePark( @RequestBody ParkRequest parkRequest) {
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(mapParkResponse(parkService.updatePark(mapParkAlredy(parkRequest))),HttpStatus.OK);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ActivityException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (PlanException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return response;
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> removePark( @RequestBody ParkRequest parkRequest) {
+        ResponseEntity response;
+        try {
+            parkService.remove(mapParkAlredy(parkRequest));
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } catch (ParkException | PlanException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
     }
 
 
@@ -234,6 +296,30 @@ public class ParkController{
                 .feedback(parkRequest.getFeedback())
                 .name(parkRequest.getName())
                 .planList(planController.mapPlansRequest(parkRequest.getPlanList()))
+                .planDescription(parkRequest.getPlanDescription())
+                .activitiyDescription(parkRequest.getActivityDescription())
+                .prices(parkRequest.getPrices())
+                .tags(parkRequest.getTags())
+                .location(parkRequest.getLocation())
+                .build();
+        return park;
+    }
+    /**
+     * This method transforms a Rest Park object into the business park object
+     *
+     * @param parkRequest Rest park object to be transformed
+     * @return A Park object
+     */
+    private Park mapParkAlredy(final ParkRequest parkRequest) throws ParkException {
+        Park parkAlredy = parkService.getParkByName(parkRequest.getName());
+        Park park = Park.builder().id(parkAlredy.getId())
+                .activitiesList(parkAlredy.getActivitiesList())
+                .description(parkRequest.getDescription())
+                .feedback(parkRequest.getFeedback())
+                .name(parkRequest.getName())
+                .planList(parkAlredy.getPlanList())
+                .planDescription(parkRequest.getPlanDescription())
+                .activitiyDescription(parkRequest.getActivityDescription())
                 .prices(parkRequest.getPrices())
                 .tags(parkRequest.getTags())
                 .location(parkRequest.getLocation())
@@ -241,17 +327,7 @@ public class ParkController{
         return park;
     }
 
-    /**
-     * This method get all the park by a list of tags
-     * @return list<Park></>
-     */
 
-    @GetMapping(path = "/population/price")
-    public ResponseEntity<?> getParksByPopulationAndPrice( @RequestBody Map<Population,Double> price) {
-        final ResponseEntity response;
-        response = new ResponseEntity<>(mapParksResponse(parkService.getParksByPopulationAndPrice(price)), HttpStatus.ACCEPTED);
-        return response;
-    }
     /**
      * This method transforms a Rest Park object into the business park object
      *
@@ -265,6 +341,8 @@ public class ParkController{
                 .feedback(park.getFeedback())
                 .name(park.getName())
                 .planList(planController.mapPlansResponse(park.getPlanList()))
+                .planDescription(park.getPlanDescription())
+                .activityDescription(park.getActivitiyDescription())
                 .prices(park.getPrices())
                 .tags(park.getTags())
                 .location(park.getLocation())
@@ -289,6 +367,8 @@ public class ParkController{
                                 .name(park.getName())
                                 .planList(planController.mapPlansResponse(park.getPlanList()))
                                 .prices(park.getPrices())
+                                .planDescription(park.getPlanDescription())
+                                .activityDescription(park.getActivitiyDescription())
                                 .tags(park.getTags())
                                 .location(park.getLocation())
                                 .build()
@@ -317,6 +397,8 @@ public class ParkController{
                                 .name(parkRequest.getName())
                                 .planList(planController.mapPlansRequest(parkRequest.getPlanList()))
                                 .prices(parkRequest.getPrices())
+                                .planDescription(parkRequest.getPlanDescription())
+                                .activitiyDescription(parkRequest.getActivityDescription())
                                 .tags(parkRequest.getTags())
                                 .location(parkRequest.getLocation())
                                 .build()
