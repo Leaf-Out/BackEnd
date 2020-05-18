@@ -138,11 +138,11 @@ public class ActivityController {
         return response;
 
     }
-    @PutMapping
-    public ResponseEntity<?> updateActivity( @RequestBody ActivityRequest activityRequest) {
+    @PutMapping(path = "/{name}")
+    public ResponseEntity<?> updateActivity(@RequestBody ActivityRequest activityRequest, @PathVariable("name") String activityName) {
         ResponseEntity response;
         try {
-            response = new ResponseEntity<>(mapActivityResponse(activityServices.updateActivity(mapActivityAlredy(activityRequest))),HttpStatus.OK);
+            response = new ResponseEntity<>(mapActivityResponse(activityServices.updateActivity(mapActivityAlredy(activityName,activityRequest))),HttpStatus.OK);
         } catch (ActivityException e) {
             e.printStackTrace();
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -161,7 +161,7 @@ public class ActivityController {
     public ResponseEntity<?> removePark( @RequestBody ActivityRequest activityRequest) {
         ResponseEntity response;
         try {
-            activityServices.remove(mapActivityAlredy(activityRequest));
+            activityServices.remove(mapActivityAlredy(activityRequest.getName(),activityRequest));
             response = new ResponseEntity<>(HttpStatus.OK);
         } catch (ActivityException e) {
             e.printStackTrace();
@@ -195,8 +195,8 @@ public class ActivityController {
      * @param activityRequest Rest park object to be transformed
      * @return A plan object
      */
-    public Activity mapActivityAlredy(final ActivityRequest activityRequest) throws ActivityException {
-        Activity activityAlready =  activityServices.getActivityByName(activityRequest.getName());
+    public Activity mapActivityAlredy(String activityName,final ActivityRequest activityRequest) throws ActivityException {
+        Activity activityAlready =  activityServices.getActivityByName(activityName);
         Activity activity = Activity.builder().id(activityAlready.getId())
                 .description(activityRequest.getDescription() == null ? activityAlready.getDescription() : activityRequest.getDescription())
                 .feedback(activityAlready.getFeedback())

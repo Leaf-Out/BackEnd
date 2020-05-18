@@ -213,8 +213,8 @@ public class ParkController{
      *
      */
 
-    @PostMapping(path = "/{name}/rating")
-    public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String parkName) {
+    @PostMapping(path = "/{name}/rating/{rating}")
+    public ResponseEntity<?> ratingPark(@PathVariable("rating") Double rating, @PathVariable("name") String parkName) {
         Park park = null;
         ResponseEntity response;
         try {
@@ -249,11 +249,11 @@ public class ParkController{
         return response;
     }
 
-    @PutMapping
-    public ResponseEntity<?> updatePark( @RequestBody ParkRequest parkRequest) {
+    @PutMapping(path = "/{name}")
+    public ResponseEntity<?> updatePark( @RequestBody ParkRequest parkRequest,@PathVariable("name") String parkName) {
         ResponseEntity response;
         try {
-            response = new ResponseEntity<>(mapParkResponse(parkService.updatePark(mapParkAlredy(parkRequest))),HttpStatus.OK);
+            response = new ResponseEntity<>(mapParkResponse(parkService.updatePark(mapParkAlredy(parkName,parkRequest))),HttpStatus.OK);
         } catch (ParkException e) {
             e.printStackTrace();
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -272,7 +272,7 @@ public class ParkController{
     public ResponseEntity<?> removePark( @RequestBody ParkRequest parkRequest) {
         ResponseEntity response;
         try {
-            parkService.remove(mapParkAlredy(parkRequest));
+            parkService.remove(mapParkAlredy(parkRequest.getName(),parkRequest));
             response = new ResponseEntity<>(HttpStatus.OK);
         } catch (ParkException | PlanException e) {
             e.printStackTrace();
@@ -310,8 +310,8 @@ public class ParkController{
      * @param parkRequest Rest park object to be transformed
      * @return A Park object
      */
-    private Park mapParkAlredy(final ParkRequest parkRequest) throws ParkException {
-        Park parkAlredy = parkService.getParkByName(parkRequest.getName());
+    private Park mapParkAlredy(String parkName,final ParkRequest parkRequest) throws ParkException {
+        Park parkAlredy = parkService.getParkByName(parkName);
         Park park = Park.builder().id(parkAlredy.getId())
                 .activitiesList(parkAlredy.getActivitiesList())
                 .description(parkRequest.getDescription() == null ? parkAlredy.getDescription() : parkRequest.getDescription() )
