@@ -174,7 +174,7 @@ public class PaymentController {
 	 * This method transforms a Rest purchase object into the business purchase object
 	 *
 	 * @param purchaseRequest Rest purchase object to be transformed
-	 * @return A Purchase object
+	 * @return A Purchase objectx
 	 */
 	private Purchase mapPurchase(final PurchaseRequest purchaseRequest) {
 		Purchase purchase = Purchase.builder()

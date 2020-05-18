@@ -4,6 +4,7 @@ package leafout.backend.controller;
 import leafout.backend.apimodel.ActivityRequest;
 import leafout.backend.apimodel.ActivityResponse;
 import leafout.backend.apimodel.PlanRequest;
+import leafout.backend.apimodel.PayRequest;
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
@@ -222,6 +223,7 @@ public class ActivityController {
                 .tags(activity.getTags())
                 .parkName(activity.getParkName())
                 .planName(activity.getPlanName())
+                .type(PayRequest.ACTIVITY)
                 .build();
         return activityResponse;
     }
@@ -244,6 +246,7 @@ public class ActivityController {
                                 .tags(activity.getTags())
                                 .parkName(activity.getParkName())
                                 .planName(activity.getPlanName())
+                                .type(PayRequest.ACTIVITY)
                                 .build()
                 );
             }
