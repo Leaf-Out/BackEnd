@@ -239,13 +239,13 @@ public class PlanController {
         Plan planAlredy = planServices.getPlanByName(planRequest.getName());
         Plan plan = Plan.builder().id(planAlredy.getId())
                 .activitiesList(planAlredy.getActivitiesList())
-                .description(planRequest.getDescription())
-                .feedback(planRequest.getFeedback())
-                .name(planRequest.getName())
-                .prices(planRequest.getPrices())
-                .activityDescription(planRequest.getActivityDescription())
-                .tags(planRequest.getTags())
-                .parkName(planRequest.getParkName())
+                .description(planRequest.getDescription() == null ? planAlredy.getDescription() : planRequest.getDescription())
+                .feedback(planAlredy.getFeedback())
+                .name(planRequest.getName() == null ? planAlredy.getName() : planRequest.getName())
+                .prices(planRequest.getPrices() == null ? planAlredy.getPrices() : planRequest.getPrices())
+                .activityDescription(planRequest.getActivityDescription() == null ? planAlredy.getActivityDescription() : planRequest.getActivityDescription())
+                .tags(planRequest.getTags() == null ? planAlredy.getTags() : planRequest.getTags())
+                .parkName(planRequest.getParkName() == null ? planAlredy.getParkName() : planRequest.getParkName())
                 .build();
         return plan;
     }

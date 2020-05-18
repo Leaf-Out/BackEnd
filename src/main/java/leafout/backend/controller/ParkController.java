@@ -314,15 +314,15 @@ public class ParkController{
         Park parkAlredy = parkService.getParkByName(parkRequest.getName());
         Park park = Park.builder().id(parkAlredy.getId())
                 .activitiesList(parkAlredy.getActivitiesList())
-                .description(parkRequest.getDescription())
-                .feedback(parkRequest.getFeedback())
-                .name(parkRequest.getName())
+                .description(parkRequest.getDescription() == null ? parkAlredy.getDescription() : parkRequest.getDescription() )
+                .feedback(parkAlredy.getFeedback() )
+                .name(parkRequest.getName() == null ? parkAlredy.getName() : parkRequest.getName())
                 .planList(parkAlredy.getPlanList())
-                .planDescription(parkRequest.getPlanDescription())
-                .activitiyDescription(parkRequest.getActivityDescription())
-                .prices(parkRequest.getPrices())
-                .tags(parkRequest.getTags())
-                .location(parkRequest.getLocation())
+                .planDescription(parkRequest.getPlanDescription() == null ? parkAlredy.getPlanDescription() : parkRequest.getPlanDescription() )
+                .activitiyDescription(parkRequest.getActivityDescription() == null ? parkAlredy.getActivitiyDescription() : parkRequest.getActivityDescription())
+                .prices(parkRequest.getPrices() == null ? parkAlredy.getPrices() : parkRequest.getPrices())
+                .tags(parkRequest.getTags() == null ? parkAlredy.getTags() : parkRequest.getTags())
+                .location(parkRequest.getLocation() == null ? parkAlredy.getLocation() : parkRequest.getLocation())
                 .build();
         return park;
     }

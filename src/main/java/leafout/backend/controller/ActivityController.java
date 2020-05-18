@@ -197,13 +197,13 @@ public class ActivityController {
     public Activity mapActivityAlredy(final ActivityRequest activityRequest) throws ActivityException {
         Activity activityAlready =  activityServices.getActivityByName(activityRequest.getName());
         Activity activity = Activity.builder().id(activityAlready.getId())
-                .description(activityRequest.getDescription())
-                .feedback(activityRequest.getFeedback())
-                .name(activityRequest.getName())
-                .prices(activityRequest.getPrices())
-                .tags(activityRequest.getTags())
-                .parkName(activityRequest.getParkName())
-                .planName(activityRequest.getPlanName())
+                .description(activityRequest.getDescription() == null ? activityAlready.getDescription() : activityRequest.getDescription())
+                .feedback(activityAlready.getFeedback())
+                .name(activityRequest.getName() == null ? activityAlready.getName() : activityRequest.getName())
+                .prices(activityRequest.getPrices() == null  ? activityAlready.getPrices() : activityRequest.getPrices())
+                .tags(activityRequest.getTags() == null ? activityAlready.getTags() : activityRequest.getTags())
+                .parkName(activityRequest.getParkName() == null ? activityAlready.getParkName() : activityRequest.getParkName())
+                .planName(activityRequest.getPlanName() == null ? activityAlready.getPlanName() : activityRequest.getPlanName())
                 .build();
         return activity;
     }
