@@ -267,6 +267,7 @@ public class ParkController{
                 .planList(planController.mapPlansResponse(park.getPlanList()))
                 .prices(park.getPrices())
                 .tags(park.getTags())
+                .type(PayRequest.PARK)
                 .location(park.getLocation())
                 .build();
         return parkResponse;
@@ -291,6 +292,7 @@ public class ParkController{
                                 .prices(park.getPrices())
                                 .tags(park.getTags())
                                 .location(park.getLocation())
+                                .type(PayRequest.PARK)
                                 .build()
                 );
             }

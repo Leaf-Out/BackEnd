@@ -2,6 +2,7 @@ package leafout.backend.controller;
 
 import leafout.backend.apimodel.ActivityRequest;
 import leafout.backend.apimodel.ActivityResponse;
+import leafout.backend.apimodel.PayRequest;
 import leafout.backend.apimodel.PlanRequest;
 import leafout.backend.apimodel.PlanResponse;
 import leafout.backend.model.*;
@@ -202,6 +203,7 @@ public class PlanController {
                 .prices(plan.getPrices())
                 .tags(plan.getTags())
                 .parkName(plan.getParkName())
+                .type(PayRequest.PLAN)
                 .build();
         return planResponse;
     }
@@ -252,6 +254,7 @@ public class PlanController {
                                 .prices(plan.getPrices())
                                 .tags(plan.getTags())
                                 .parkName(plan.getParkName())
+                                .type(PayRequest.PLAN)
                                 .build()
                 );
             }

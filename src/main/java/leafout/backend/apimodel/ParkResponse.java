@@ -54,4 +54,6 @@ public class ParkResponse {
     List<ActivityResponse> activitiesList;
 
     Location location;
+
+    PayRequest type;
 }
