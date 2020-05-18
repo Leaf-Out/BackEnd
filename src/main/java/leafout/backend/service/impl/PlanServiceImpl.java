@@ -1,6 +1,7 @@
 package leafout.backend.service.impl;
 
 
+import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
@@ -47,43 +48,23 @@ public class PlanServiceImpl implements PlanService {
         if(planRepository.existsPlanByName(plan.getName())){
             throw new PlanException(plan.getName());
         }
+        AlreadyPlanInPark(plan);
         planRepository.save(plan);
         activityService.saveActivities(plan.getActivitiesList());
-        Optional<Park> park = parkRepository.getParkByName(plan.getParkName());
-        if (park.isPresent()){
-            List<Plan> plansP = park.get().getPlanList();
-            plansP.add(plan);
-            park.get().setPlanList(plansP);
-            parkRepository.save(park.get());
-        }else {
-            throw new ParkException(plan.getParkName());
-        }
-
 
     }
 
     @Override
     public void savePlans(List<Plan> plans) throws PlanException, ActivityException, ParkException {
         for(Plan plan : plans){
-            planRepository.save(plan);
-            activityService.saveActivities(plan.getActivitiesList());
-            Optional<Park> park = parkRepository.getParkByName(plan.getParkName());
-            if (park.isPresent()){
-                List<Plan> plansP = park.get().getPlanList();
-                plansP.add(plan);
-                park.get().setPlanList(plansP);
-                parkRepository.save(park.get());
-            }else {
-                throw new ParkException(plan.getParkName());
-            }
+            savePlan(plan);
         }
     }
 
     @Override
-    public void updatePlans(List<Plan> plans) {
+    public void updatePlans(List<Plan> plans) throws ParkException, ActivityException, PlanException {
         for(Plan plan : plans){
-            planRepository.save(plan);
-            activityService.updateActivities(plan.getActivitiesList());
+            updatePlan(plan);
         }
     }
 
@@ -107,20 +88,65 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public void updatePlan(Plan plan) throws PlanException, ActivityException, ParkException {
-        if(!planRepository.existsPlanById(plan.getId())){
-            throw new PlanException(plan.getId());
-        }
+    public Plan updatePlan(Plan plan) throws ParkException, PlanException, ActivityException {
         planRepository.save(plan);
-        activityService.saveActivities(plan.getActivitiesList());
+        activityService.updateActivities(plan.getActivitiesList());
+        AlreadyPlanInPark(plan);
+        return plan;
     }
 
+    private void AlreadyPlanInPark(Plan plan) throws ParkException {
+        if (plan.getParkName() != null) {
+            Optional<Park> park = parkRepository.getParkByName(plan.getParkName());
+            if (park.isPresent()) {
+                List<Plan> plansP = park.get().getPlanList();
+                System.err.println(isInArray(plansP,plan));
+                if (!isInArray(plansP,plan)){
+                    plansP.add(plan);
+                    park.get().setPlanList(plansP);
+                    parkRepository.save(park.get());
+                }
+            } else {
+                throw new ParkException(plan.getParkName());
+            }
+        }
+    }
+
+
+    private Boolean isInArray(List<Plan> plans, Plan plan){
+        Boolean b = false;
+        for (Plan p : plans){
+            if (p.getName().equals(plan.getName())){
+                b = true;
+            }
+        }
+        return b;
+    }
     @Override
     public void remove(Plan plan) throws  PlanException {
         if(!planRepository.existsPlanById(plan.getId())){
-            throw new PlanException(plan.getId());
+            throw new PlanException(plan.getName());
+        }
+        if (plan.getParkName() != null) {
+            Optional<Park> park = parkRepository.getParkByName(plan.getParkName());
+            if (park.isPresent()) {
+                List<Plan> plansP = park.get().getPlanList();
+                if (isInArray(plansP,plan)){
+                    plansP.remove(removeElement(plansP,plan));
+                    park.get().setPlanList(plansP);
+                    parkRepository.save(park.get());
+                }
+            }
         }
         planRepository.delete(plan);
+        activityService.removeActivities(plan.getActivitiesList());
+    }
+
+    @Override
+    public void removePlans(List<Plan> plans) throws PlanException {
+        for(Plan plan : plans){
+            remove(plan);
+        }
     }
 
     @Override
@@ -133,6 +159,19 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public List<Plan> getPlansByTags(List<Tag> tags) {
         return planRepository.getAllByTags(tags);
+    }
+
+    private int removeElement(List<Plan> plans, Plan plan){
+        int indexF = 0 ;
+        int index=0;
+        for (Plan currentPlan : plans){
+
+            if (currentPlan.getName().equals(plan.getName())){
+                indexF = index;
+            }
+            index+=1;
+        }
+        return indexF;
     }
 }
 

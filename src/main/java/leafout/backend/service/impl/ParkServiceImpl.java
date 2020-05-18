@@ -3,7 +3,6 @@ package leafout.backend.service.impl;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
-import leafout.backend.model.Location;
 import leafout.backend.model.Park;
 
 
@@ -17,7 +16,6 @@ import leafout.backend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -78,21 +76,24 @@ public class ParkServiceImpl implements ParkService {
     }
 
     @Override
-    public void updatePark(Park park) throws ParkException, ActivityException, PlanException {
+    public Park updatePark(Park park) throws ParkException, ActivityException, PlanException {
         if(!parkRepository.existsParkById(park.getId())){
             throw new ParkException(park.getId());
         }
         parkRepository.save(park);
         planService.updatePlans(park.getPlanList());
         activityService.updateActivities(park.getActivitiesList());
+        return park;
     }
 
     @Override
-    public void remove(Park park) throws  ParkException {
+    public void remove(Park park) throws ParkException, PlanException {
         if(!parkRepository.existsParkById(park.getId())){
             throw new ParkException(park.getId());
         }
         parkRepository.delete(park);
+        planService.removePlans(park.getPlanList());
+        activityService.removeActivities(park.getActivitiesList());
     }
 
     @Override
