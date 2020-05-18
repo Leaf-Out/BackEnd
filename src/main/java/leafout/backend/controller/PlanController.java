@@ -177,11 +177,11 @@ public class PlanController {
         return response;
 
     }
-    @PutMapping
-    public ResponseEntity<?> updatePlan( @RequestBody PlanRequest planRequest) {
+    @PutMapping(path = "/{name}")
+    public ResponseEntity<?> updatePlan(@PathVariable("name") String planName, @RequestBody PlanRequest planRequest) {
         ResponseEntity response;
         try {
-            response = new ResponseEntity<>(mapPlanResponse(planServices.updatePlan(mapPlanAlredy(planRequest))),HttpStatus.OK);
+            response = new ResponseEntity<>(mapPlanResponse(planServices.updatePlan(mapPlanAlredy(planName,planRequest))),HttpStatus.OK);
         } catch (ActivityException e) {
             e.printStackTrace();
             response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -201,7 +201,7 @@ public class PlanController {
     public ResponseEntity<?> removePark( @RequestBody PlanRequest planRequest) {
         ResponseEntity response;
         try {
-            planServices.remove(mapPlanAlredy(planRequest));
+            planServices.remove(mapPlanAlredy(planRequest.getName(),planRequest));
             response = new ResponseEntity<>(HttpStatus.OK);
         } catch (PlanException | ParkException e) {
             e.printStackTrace();
@@ -235,8 +235,8 @@ public class PlanController {
      * @param planRequest Rest park object to be transformed
      * @return A plan object
      */
-    public Plan mapPlanAlredy(final PlanRequest planRequest) throws ParkException {
-        Plan planAlredy = planServices.getPlanByName(planRequest.getName());
+    public Plan mapPlanAlredy(String planName,final PlanRequest planRequest) throws ParkException {
+        Plan planAlredy = planServices.getPlanByName(planName);
         Plan plan = Plan.builder().id(planAlredy.getId())
                 .activitiesList(planAlredy.getActivitiesList())
                 .description(planRequest.getDescription() == null ? planAlredy.getDescription() : planRequest.getDescription())
