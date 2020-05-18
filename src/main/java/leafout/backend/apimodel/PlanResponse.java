@@ -53,4 +53,6 @@ public class PlanResponse {
     String activityDescription;
 
     String parkName;
+
+    PayRequest type;
 }

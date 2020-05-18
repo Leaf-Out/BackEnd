@@ -265,6 +265,7 @@ public class PlanController {
                 .tags(plan.getTags())
                 .activityDescription(plan.getActivityDescription())
                 .parkName(plan.getParkName())
+                .type(PayRequest.PLAN)
                 .build();
         return planResponse;
     }
@@ -317,6 +318,7 @@ public class PlanController {
                                 .tags(plan.getTags())
                                 .activityDescription(plan.getActivityDescription())
                                 .parkName(plan.getParkName())
+                                .type(PayRequest.PLAN)
                                 .build()
                 );
             }

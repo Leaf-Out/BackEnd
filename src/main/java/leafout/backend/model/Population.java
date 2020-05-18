@@ -8,7 +8,9 @@ package leafout.backend.model;
  */
 public enum Population {
     FOREIGN_ADULTS,
-    LOCALS_ADULTS,
+    LOCAL_ADULTS,
     FOREIGN_CHILDREN,
-    LOCALS_CHILDREN
+    LOCAL_CHILDREN,
+    CHILDREN,
+    ADULTS
 }
