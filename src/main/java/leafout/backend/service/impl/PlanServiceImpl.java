@@ -93,9 +93,10 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public Plan updatePlan(Plan plan) throws ParkException, PlanException, ActivityException {
-        planRepository.save(plan);
+
         activityService.updateActivities(plan.getActivitiesList());
         AlreadyPlanInPark(plan);
+        planRepository.save(plan);
         return plan;
     }
 

@@ -83,9 +83,10 @@ public class ParkServiceImpl implements ParkService {
         if(!parkRepository.existsParkById(park.getId())){
             throw new ParkException(park.getId());
         }
-        parkRepository.save(park);
+
         planService.updatePlans(park.getPlanList());
         activityService.updateActivities(park.getActivitiesList());
+        parkRepository.save(park);
         return park;
     }
 

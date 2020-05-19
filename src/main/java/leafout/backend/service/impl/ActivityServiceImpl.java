@@ -91,9 +91,10 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Activity updateActivity(Activity activity) throws ActivityException, ParkException, PlanException {
 
-        activityRepository.save(activity);
+
         AlreadyActivityInPark(activity);
         AlreadyActivityInPlan(activity);
+        activityRepository.save(activity);
 
         return activity;
     }
