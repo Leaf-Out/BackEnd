@@ -1,17 +1,17 @@
 package leafout.backend.service.impl;
 
-import leafout.backend.model.Activity;
+import leafout.backend.model.*;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
-import leafout.backend.model.Park;
-import leafout.backend.model.Plan;
-import leafout.backend.model.Tag;
 import leafout.backend.persistence.ActivityRepository;
 import leafout.backend.persistence.ParkRepository;
 import leafout.backend.persistence.PlanRepository;
 import leafout.backend.service.ActivityService;
+import leafout.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +34,9 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
     private PlanRepository planRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public List getAllActivities() {
@@ -197,5 +200,24 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<Activity> getActivityByTags(List<Tag> tags) {
         return activityRepository.getAllByTags(tags);
+    }
+
+    @Override
+    public void feedComment(String activityName, String userName, String feedbackString) throws leafout.backend.model.exception.NoUserFoundException {
+        Activity activity = null;
+        try {
+            activity = getActivityByName(activityName);
+        } catch (ActivityException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Feedback feedback = activity.getFeedback();
+        List<Comment> comments = feedback.getComments();
+        Comment newComment = Comment.builder().content(feedbackString).user(userService.getByEmail(userName)).build();
+        comments.add(newComment);
+        feedback.setComments(comments);
+        activity.setFeedback(feedback);
+        activityRepository.save(activity);
+
     }
 }

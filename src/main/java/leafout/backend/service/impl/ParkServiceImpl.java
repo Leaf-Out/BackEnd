@@ -1,19 +1,20 @@
 package leafout.backend.service.impl;
 
+import leafout.backend.model.*;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
-import leafout.backend.model.Park;
 
 
-import leafout.backend.model.Population;
-import leafout.backend.model.Tag;
 import leafout.backend.persistence.ParkRepository;
 import leafout.backend.service.ActivityService;
 import leafout.backend.service.ParkService;
 
 import leafout.backend.service.PlanService;
+import leafout.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +39,8 @@ public class ParkServiceImpl implements ParkService {
     private PlanService planService;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public List getAllParks() {
@@ -101,6 +104,24 @@ public class ParkServiceImpl implements ParkService {
         List<Park> allPopularParks = parkRepository.findAllByOrderByFeedbackDesc();
         List<Park> allPopular = allPopularParks.subList(0,allPopularParks.size());
         return allPopular;
+    }
+
+    @Override
+    public void feedComment(String parkName, String userName, String feedbackString) throws leafout.backend.model.exception.NoUserFoundException {
+        Park park = null;
+        try {
+            park = getParkByName(parkName);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Feedback feedback = park.getFeedback();
+        List<Comment> comments = feedback.getComments();
+        Comment newComment = Comment.builder().content(feedbackString).user(userService.getByEmail(userName)).build();
+        comments.add(newComment);
+        feedback.setComments(comments);
+        park.setFeedback(feedback);
+        parkRepository.save(park);
     }
 
     @Override

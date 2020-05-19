@@ -210,6 +210,23 @@ public class PlanController {
         return response;
     }
 
+    @PostMapping(path = "/{name}/feedback/{user}")
+    public ResponseEntity<?> feedbackComment(@PathVariable("name") String planName, @PathVariable("user") String userName, @RequestBody String feedbackString){
+        ResponseEntity response = null;
+        try {
+            planServices.feedComment(planName,userName,feedbackString);
+            response = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (leafout.backend.model.exception.NoUserFoundException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return response;
+
+    }
+
+
+
     /**
      * This method transforms a Rest plan object into the business plan object
      *

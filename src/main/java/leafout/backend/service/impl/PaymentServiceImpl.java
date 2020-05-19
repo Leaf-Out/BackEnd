@@ -71,15 +71,14 @@ public class PaymentServiceImpl implements PaymentService {
 	@Autowired
 	private PaymentProvider restClient;
 
-	@Override public void pay(Purchase purchase, String userId) throws PaymentPlatformException, NoPayableFoundException, NoUserFoundException, UnsuccessfulTransactionException, TransactionErrorException {
-		Optional<User> userOptional = userServices.getById(userId);
-		final User user = userOptional.get();
+	@Override public void pay(Purchase purchase, String userName) throws PaymentPlatformException, NoPayableFoundException, NoUserFoundException, UnsuccessfulTransactionException, TransactionErrorException {
+		User user = userServices.getByEmail(userName);
 		if (user != null) {
 			final PaymentResponse paymentResponse = restClient.pay(purchase, user);
 			paymentProcess(paymentResponse,purchase,user);
 
 		} else {
-			throw new NoUserFoundException(userId);
+			throw new NoUserFoundException(userName);
 		}
 	}
 

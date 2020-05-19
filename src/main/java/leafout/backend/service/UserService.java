@@ -18,6 +18,7 @@ public interface UserService {
 
     List<User> getAll() throws NoUserFoundException;
     Optional<User> getById(String userId) throws NoUserFoundException;
+    User getByEmail(String userName) throws NoUserFoundException;
     void save(User user) throws UserAlreadyExistsException;
     void delete(String userId) throws NoUserFoundException;
 

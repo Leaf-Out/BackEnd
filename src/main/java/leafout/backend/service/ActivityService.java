@@ -62,4 +62,6 @@ public interface ActivityService {
 
     List<Activity> getActivityByTags(List<Tag> tags);
 
+    public void feedComment(String activityName, String userName, String feedbackString) throws leafout.backend.model.exception.NoUserFoundException;
+
 }
