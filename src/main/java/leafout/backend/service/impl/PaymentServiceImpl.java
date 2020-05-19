@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 /**
@@ -101,6 +102,9 @@ public class PaymentServiceImpl implements PaymentService {
 												   .state(response.getPaymentResult().getPaymentResponseCode())
 												   .ticket(purchase.getTicket()).user(user)
 												   .build();
+		if (PaymentResponseCode.TRANSACTION_ERROR.equals(response.getPaymentResult().getPaymentResponseCode())){
+			transaction.setId(UUID.randomUUID().toString());
+		}
 		transactionRepository.save(transaction);
 		if (PaymentResponseCode.TRANSACTION_ERROR.equals(response.getPaymentResult().getPaymentResponseCode())) {
 			throw new TransactionErrorException(response.getPaymentResult().getReason());
@@ -142,8 +146,9 @@ public class PaymentServiceImpl implements PaymentService {
 		return transactionRepository.findAll();
 	}
 
-	@Override public List<Transaction> getTransactionsByUser(String user) {
-		return transactionRepository.getTransactionsByUserId(user);
+	@Override public List<Transaction> getTransactionsByUser(String user) throws NoUserFoundException {
+		User userByEmail = userServices.getByEmail(user);
+		return transactionRepository.getTransactionsByUserId(userByEmail.getId());
 	}
 
 	@Override public Transaction getTransactionById(String transactionId) {
