@@ -40,7 +40,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/{name}")
+    @GetMapping(path = "/email/{name}")
     public ResponseEntity<?> getByName(@PathVariable("name") String userEmail){
         User user = null;
         try {
@@ -51,7 +51,7 @@ public class UserController {
         return new ResponseEntity<>(mapUserResponse(user), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping(path = "/{Id}")
+    @GetMapping(path = "/id/{Id}")
     public ResponseEntity<?> getById(@PathVariable("Id") String userId){
         Optional<User> user = null;
         try {

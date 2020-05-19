@@ -63,7 +63,7 @@ public interface PaymentService {
 	 * @param user UUID of the user
 	 * @return A list with the transactions of a user
 	 */
-	List<Transaction> getTransactionsByUser(String user);
+	List<Transaction> getTransactionsByUser(String user) throws NoUserFoundException;
 
 	/**
 	 * This method returns a transaction given its ID

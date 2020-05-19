@@ -36,6 +36,8 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
      * @return optional<Transaction>
      **/
     List<Transaction> getTransactionsByUserId(String transactionUser);
+
+    List<Transaction> getTransactionByUser_Email(String transactionUserEmail);
     /**
      * Save a Transaction
      * @param transaction the Plan would be save
