@@ -59,4 +59,6 @@ public interface PlanService {
     List<Plan> getAllPopulatePlans();
 
     List<Plan> getPlansByTags(List<Tag> tag);
+
+    void feedComment(String parkName, String userName, String feedbackString) throws leafout.backend.model.exception.NoUserFoundException;
 }

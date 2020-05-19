@@ -7,6 +7,7 @@ import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Exception.PlanException;
 
 
+import leafout.backend.model.exception.NoUserFoundException;
 import leafout.backend.service.ParkService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -237,6 +238,22 @@ public class ParkController{
         return response;
 
     }
+
+    @PostMapping(path = "/{name}/feedback/{user}")
+    public ResponseEntity<?> feedbackComment(@PathVariable("name") String parkName, @PathVariable("user") String userName, @RequestBody String feedbackString){
+        ResponseEntity response = null;
+        try {
+            parkService.feedComment(parkName,userName,feedbackString);
+            response = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (NoUserFoundException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return response;
+
+    }
+
     /**
      * This method get all the park by a list of tags
      * @return list<Park></>
