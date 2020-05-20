@@ -14,4 +14,5 @@ public class CartItemResponse {
     double price;
     double rating;
     Population population;
+    int units;
 }

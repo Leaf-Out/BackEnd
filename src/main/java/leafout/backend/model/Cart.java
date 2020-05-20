@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,5 +16,5 @@ public class Cart {
     @Id
     private String user;
     //private List<Ticket> tickets;
-    private List<CartItem> items;
+    private Map<String,CartItem> items;
 }

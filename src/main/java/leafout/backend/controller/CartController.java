@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/carts")
@@ -55,18 +56,18 @@ public class CartController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    public List<CartItemResponse> mapItems(List<CartItem> payables) {
+    public List<CartItemResponse> mapItems(Map<String,CartItem> payables) {
         final List<CartItemResponse> items = new ArrayList<>();
-
-        for (CartItem payable : payables) {
+        for (Map.Entry<String, CartItem> payable : payables.entrySet()) {
             CartItemResponse newItem = CartItemResponse.builder()
-                    .itemId(payable.getItem().getId())
-                    .population(payable.getPopulation())
-                    .price(payable.getItem().getPrices().get(payable.getPopulation()))
-                    .rating(payable.getItem().getFeedback().getRating())
-                    .type(payable.getType())
+                    .itemId(payable.getValue().getItem().getId())
+                    .population(payable.getValue().getPopulation())
+                    .price(payable.getValue().getItem().getPrices().get(payable.getValue().getPopulation()))
+                    .rating(payable.getValue().getItem().getFeedback().getRating())
+                    .type(payable.getValue().getType())
+                    .units(payable.getValue().getUnits())
                     .build();
-            
+
             items.add(newItem);
         }
         return items;
