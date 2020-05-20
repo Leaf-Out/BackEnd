@@ -155,8 +155,8 @@ public class PlanController {
      *
      */
 
-    @PostMapping(path = "/{name}/rating")
-    public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String planName) {
+    @PostMapping(path = "/{name}/rating/{rating}")
+    public ResponseEntity<?> ratingPark(@PathVariable("rating") Double rating, @PathVariable("name") String planName) {
         Plan plan = null;
         try {
             plan = planServices.getPlanByName(planName);
