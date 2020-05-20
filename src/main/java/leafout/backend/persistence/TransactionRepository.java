@@ -1,13 +1,14 @@
 package leafout.backend.persistence;
 
 
+
 import leafout.backend.model.Transaction;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+import java.util.UUID;
 /**
  * This class represent the repository of a Transactions
  *
@@ -19,14 +20,11 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
     /**
      * find all Transactions created
-     *
      * @return list<Plan>
      */
     List<Transaction> findAll();
-
     /**
      * find an Transaction by id
-     *
      * @param transactionId the name of Transaction
      * @return optional<Transaction>
      **/
@@ -34,15 +32,14 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
     /**
      * find an Transaction by user
-     *
      * @param transactionUser the name of Transaction
      * @return optional<Transaction>
      **/
     List<Transaction> getTransactionsByUserId(String transactionUser);
 
+    List<Transaction> getTransactionByUser_Email(String transactionUserEmail);
     /**
      * Save a Transaction
-     *
      * @param transaction the Plan would be save
      * @return Transaction
      */
@@ -50,7 +47,6 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
     /**
      * if the Transaction exisist
-     *
      * @param transactionId the id of Transaction
      * @return boolean
      */

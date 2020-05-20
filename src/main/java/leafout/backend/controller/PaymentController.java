@@ -92,13 +92,13 @@ public class PaymentController {
 	/**
 	 * This method returns all transactions made by a user
 	 *
-	 * @param user UUID of the user
+	 * @param userEmail UUID of the user
 	 * @return A list of transactions
 	 */
-	@GetMapping("/user/{id}")
-	public ResponseEntity<List<TransactionResponse>> getTransactionsByCustomer(final @PathVariable("id") String user) {
+	@GetMapping("/user/{email}")
+	public ResponseEntity<List<TransactionResponse>> getTransactionsByCustomer(final @PathVariable("email") String userEmail) throws NoUserFoundException {
 		final ResponseEntity response;
-			response = new ResponseEntity<>(mapTransactionsResponse(paymentService.getTransactionsByUser(user)), HttpStatus.ACCEPTED);
+			response = new ResponseEntity<>(mapTransactionsResponse(paymentService.getTransactionsByUser(userEmail)), HttpStatus.ACCEPTED);
 
 		return response;
 	}
@@ -174,7 +174,7 @@ public class PaymentController {
 	 * This method transforms a Rest purchase object into the business purchase object
 	 *
 	 * @param purchaseRequest Rest purchase object to be transformed
-	 * @return A Purchase object
+	 * @return A Purchase objectx
 	 */
 	private Purchase mapPurchase(final PurchaseRequest purchaseRequest) {
 		Purchase purchase = Purchase.builder()

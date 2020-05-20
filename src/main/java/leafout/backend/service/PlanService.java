@@ -24,7 +24,7 @@ public interface PlanService {
 
     void savePlans(List<Plan> plans) throws PlanException, ActivityException, ParkException;
 
-    void updatePlans(List<Plan> plans) ;
+    void updatePlans(String parkName,List<Plan> plans) throws ParkException, ActivityException, PlanException;
 
     /**
      * This method get a Plan
@@ -43,7 +43,7 @@ public interface PlanService {
      * @param plan that gonna get an update Plan
      */
 
-    void updatePlan(Plan plan) throws PlanException, ActivityException, ParkException;
+    Plan updatePlan(Plan plan) throws PlanException, ActivityException, ParkException;
 
     /**
      * This method remove  a Plan
@@ -51,10 +51,14 @@ public interface PlanService {
      */
     void remove(Plan plan) throws  PlanException;
 
+    void removePlans(List<Plan> plans) throws PlanException;
+
     /**
      * This method get all Plans
      */
     List<Plan> getAllPopulatePlans();
 
     List<Plan> getPlansByTags(List<Tag> tag);
+
+    void feedComment(String parkName, String userName, String feedbackString) throws leafout.backend.model.exception.NoUserFoundException;
 }

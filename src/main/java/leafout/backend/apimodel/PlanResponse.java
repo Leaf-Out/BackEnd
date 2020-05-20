@@ -50,5 +50,9 @@ public class PlanResponse {
 
     List<ActivityResponse> activitiesList;
 
+    String activityDescription;
+
     String parkName;
+
+    PayRequest type;
 }

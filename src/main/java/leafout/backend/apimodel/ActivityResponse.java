@@ -52,4 +52,6 @@ public class ActivityResponse {
     private String parkName;
 
     private String planName;
+
+    PayRequest type;
 }

@@ -6,6 +6,8 @@ import leafout.backend.model.Exception.PlanException;
 import leafout.backend.model.Park;
 import leafout.backend.model.Population;
 import leafout.backend.model.Tag;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.List;
@@ -41,18 +43,20 @@ public interface ParkService  {
      * @param park that gonna get an update pay
      */
 
-    void updatePark(Park park) throws ParkException, ActivityException, PlanException;
+    Park updatePark(Park park) throws ParkException, ActivityException, PlanException;
 
     /**
      * This method remove  a pay
      * @param park UUID of the pay
      */
-    void remove(Park park) throws  ParkException;
+    void remove(Park park) throws ParkException, PlanException;
 
     /**
      * This method get all Plans
      */
     List<Park> getAllPopulateParks();
+
+    void feedComment(String parkName, String userName,  String feedbackString) throws leafout.backend.model.exception.NoUserFoundException;
 
 
     List<Park> getParksByTags(List<Tag> tag);

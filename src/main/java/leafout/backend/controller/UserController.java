@@ -37,7 +37,18 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/{Id}")
+    @GetMapping(path = "/email/{name}")
+    public ResponseEntity<?> getByName(@PathVariable("name") String userEmail){
+        User user = null;
+        try {
+            user = userService.getByEmail(userEmail);
+        } catch (NoUserFoundException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(mapUserResponse(user), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping(path = "/id/{Id}")
     public ResponseEntity<?> getById(@PathVariable("Id") String userId){
         Optional<User> user = null;
         try {

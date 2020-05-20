@@ -1,9 +1,6 @@
 package leafout.backend.controller;
 
-import leafout.backend.apimodel.ActivityRequest;
-import leafout.backend.apimodel.ActivityResponse;
-import leafout.backend.apimodel.PlanRequest;
-import leafout.backend.apimodel.PlanResponse;
+import leafout.backend.apimodel.*;
 import leafout.backend.model.*;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
@@ -127,10 +124,16 @@ public class PlanController {
      * @param planName the name of a park
      * @return list<Plan></>
      */
-    @SneakyThrows
+
     @PostMapping(path = "/{name}/activities")
     public ResponseEntity<?> addActivitiesByPark(@RequestBody List<ActivityRequest> allActivityRequest, @PathVariable("name") String planName) {
-        Plan plan = planServices.getPlanByName(planName);
+        Plan plan = null;
+        try {
+            plan = planServices.getPlanByName(planName);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         List<Activity> activities = plan.getActivitiesList();
         for (ActivityRequest activityRequest : allActivityRequest) {
             activities.add(activityController.mapActivity(activityRequest));
@@ -138,7 +141,7 @@ public class PlanController {
         plan.setActivitiesList(activities);
         try {
             planServices.updatePlan(plan);
-        } catch (ActivityException | PlanException ex) {
+        } catch (ActivityException | PlanException | ParkException ex) {
             ex.printStackTrace();
         }
         final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
@@ -151,23 +154,78 @@ public class PlanController {
      * @param planName the name of a plan
      *
      */
-    @SneakyThrows
-    @PostMapping(path = "/{name}/rating")
-    public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String planName) {
-        Plan plan = planServices.getPlanByName(planName);
+
+    @PostMapping(path = "/{name}/rating/{rating}")
+    public ResponseEntity<?> ratingPark(@PathVariable("rating") Double rating, @PathVariable("name") String planName) {
+        Plan plan = null;
+        try {
+            plan = planServices.getPlanByName(planName);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Feedback feedback = plan.getFeedback();
         feedback.setRating((feedback.getRating()+rating)/2);
         plan.setFeedback(feedback);
         System.err.println(plan.getFeedback().getRating());
         try {
             planServices.updatePlan(plan);
-        } catch (ActivityException | PlanException ex) {
+        } catch (ActivityException | PlanException | ParkException ex) {
             ex.printStackTrace();
         }
         final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
         return response;
 
     }
+    @PutMapping(path = "/{name}")
+    public ResponseEntity<?> updatePlan(@PathVariable("name") String planName, @RequestBody PlanRequest planRequest) {
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(mapPlanResponse(planServices.updatePlan(mapPlanAlredy(planName,planRequest))),HttpStatus.OK);
+        } catch (ActivityException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (PlanException e) {
+            e.printStackTrace();
+
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return response;
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> removePark( @RequestBody PlanRequest planRequest) {
+        ResponseEntity response;
+        try {
+            planServices.remove(mapPlanAlredy(planRequest.getName(),planRequest));
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } catch (PlanException | ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
+
+    @PostMapping(path = "/{name}/feedback/{user}/content/{content}")
+    public ResponseEntity<?> feedbackComment(@PathVariable("name") String planName, @PathVariable("user") String userName, @PathVariable("content") String feedbackString){
+        ResponseEntity response = null;
+        try {
+            planServices.feedComment(planName,userName,feedbackString);
+            response = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (leafout.backend.model.exception.NoUserFoundException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return response;
+
+    }
+
+
 
     /**
      * This method transforms a Rest plan object into the business plan object
@@ -182,8 +240,29 @@ public class PlanController {
                 .feedback(planRequest.getFeedback())
                 .name(planRequest.getName())
                 .prices(planRequest.getPrices())
+                .activityDescription(planRequest.getActivityDescription())
                 .tags(planRequest.getTags())
                 .parkName(planRequest.getParkName())
+                .build();
+        return plan;
+    }
+    /**
+     * This method transforms a Rest plan object into the business plan object
+     *
+     * @param planRequest Rest park object to be transformed
+     * @return A plan object
+     */
+    public Plan mapPlanAlredy(String planName,final PlanRequest planRequest) throws ParkException {
+        Plan planAlredy = planServices.getPlanByName(planName);
+        Plan plan = Plan.builder().id(planAlredy.getId())
+                .activitiesList(planAlredy.getActivitiesList())
+                .description(planRequest.getDescription() == null ? planAlredy.getDescription() : planRequest.getDescription())
+                .feedback(planAlredy.getFeedback())
+                .name(planRequest.getName() == null ? planAlredy.getName() : planRequest.getName())
+                .prices(planRequest.getPrices() == null ? planAlredy.getPrices() : planRequest.getPrices())
+                .activityDescription(planRequest.getActivityDescription() == null ? planAlredy.getActivityDescription() : planRequest.getActivityDescription())
+                .tags(planRequest.getTags() == null ? planAlredy.getTags() : planRequest.getTags())
+                .parkName(planRequest.getParkName() == null ? planAlredy.getParkName() : planRequest.getParkName())
                 .build();
         return plan;
     }
@@ -201,7 +280,9 @@ public class PlanController {
                 .name(plan.getName())
                 .prices(plan.getPrices())
                 .tags(plan.getTags())
+                .activityDescription(plan.getActivityDescription())
                 .parkName(plan.getParkName())
+                .type(PayRequest.PLAN)
                 .build();
         return planResponse;
     }
@@ -223,6 +304,7 @@ public class PlanController {
                                 .feedback(planRequest.getFeedback())
                                 .name(planRequest.getName())
                                 .prices(planRequest.getPrices())
+                                .activityDescription(planRequest.getActivityDescription())
                                 .tags(planRequest.getTags())
                                 .parkName(planRequest.getParkName())
                                 .build()
@@ -251,7 +333,9 @@ public class PlanController {
                                 .name(plan.getName())
                                 .prices(plan.getPrices())
                                 .tags(plan.getTags())
+                                .activityDescription(plan.getActivityDescription())
                                 .parkName(plan.getParkName())
+                                .type(PayRequest.PLAN)
                                 .build()
                 );
             }

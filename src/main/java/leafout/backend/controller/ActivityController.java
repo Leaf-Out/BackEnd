@@ -3,6 +3,8 @@ package leafout.backend.controller;
 
 import leafout.backend.apimodel.ActivityRequest;
 import leafout.backend.apimodel.ActivityResponse;
+import leafout.backend.apimodel.PlanRequest;
+import leafout.backend.apimodel.PayRequest;
 import leafout.backend.model.Activity;
 import leafout.backend.model.Exception.ActivityException;
 import leafout.backend.model.Exception.ParkException;
@@ -102,7 +104,7 @@ public class ActivityController {
      */
 
     @GetMapping(path = "/tags")
-    public ResponseEntity<?> getParksByTags(@RequestBody List<Tag> tagList) {
+    public ResponseEntity<?> getActivitiesByTags(@RequestBody List<Tag> tagList) {
         final ResponseEntity response;
         response = new ResponseEntity<>(mapActivitiesResponse(activityServices.getActivityByTags(tagList)), HttpStatus.ACCEPTED);
         return response;
@@ -113,20 +115,72 @@ public class ActivityController {
      * @param activityName the name of a activity
      *
      */
-    @SneakyThrows
-    @PostMapping(path = "/{name}/rating")
-    public ResponseEntity<?> ratingPark(@RequestBody Double rating, @PathVariable("name") String activityName) {
-        Activity activity = activityServices.getActivityByName(activityName);
+
+    @PostMapping(path = "/{name}/rating/{rating}")
+    public ResponseEntity<?> ratingActivity(@PathVariable("rating") Double rating, @PathVariable("name") String activityName) {
+        Activity activity = null;
+        try {
+            activity = activityServices.getActivityByName(activityName);
+        } catch (ActivityException e) {
+            e.printStackTrace();
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Feedback feedback = activity.getFeedback();
         feedback.setRating((feedback.getRating()+rating)/2);
         activity.setFeedback(feedback);
         System.err.println(activity.getFeedback().getRating());
         try {
             activityServices.updateActivity(activity);
-        } catch (ActivityException ex) {
+        } catch (ActivityException | ParkException | PlanException ex) {
             ex.printStackTrace();
         }
         final ResponseEntity response = new ResponseEntity<>(HttpStatus.CREATED);
+        return response;
+
+    }
+    @PutMapping(path = "/{name}")
+    public ResponseEntity<?> updateActivity(@RequestBody ActivityRequest activityRequest, @PathVariable("name") String activityName) {
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity<>(mapActivityResponse(activityServices.updateActivity(mapActivityAlredy(activityName,activityRequest))),HttpStatus.OK);
+        } catch (ActivityException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (PlanException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (ParkException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return response;
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> removePark( @RequestBody ActivityRequest activityRequest) {
+        ResponseEntity response;
+        try {
+            activityServices.remove(mapActivityAlredy(activityRequest.getName(),activityRequest));
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } catch (ActivityException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
+
+    @PostMapping(path = "/{name}/feedback/{user}/content/{content}")
+    public ResponseEntity<?> feedbackComment(@PathVariable("name") String activityName, @PathVariable("user") String userName, @PathVariable("content") String feedbackString){
+        ResponseEntity response = null;
+        try {
+            activityServices.feedComment(activityName,userName,feedbackString);
+            response = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (leafout.backend.model.exception.NoUserFoundException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         return response;
 
     }
@@ -153,6 +207,25 @@ public class ActivityController {
     /**
      * This method transforms a Rest activity object into the business activity object
      *
+     * @param activityRequest Rest park object to be transformed
+     * @return A plan object
+     */
+    public Activity mapActivityAlredy(String activityName,final ActivityRequest activityRequest) throws ActivityException {
+        Activity activityAlready =  activityServices.getActivityByName(activityName);
+        Activity activity = Activity.builder().id(activityAlready.getId())
+                .description(activityRequest.getDescription() == null ? activityAlready.getDescription() : activityRequest.getDescription())
+                .feedback(activityAlready.getFeedback())
+                .name(activityRequest.getName() == null ? activityAlready.getName() : activityRequest.getName())
+                .prices(activityRequest.getPrices() == null  ? activityAlready.getPrices() : activityRequest.getPrices())
+                .tags(activityRequest.getTags() == null ? activityAlready.getTags() : activityRequest.getTags())
+                .parkName(activityRequest.getParkName() == null ? activityAlready.getParkName() : activityRequest.getParkName())
+                .planName(activityRequest.getPlanName() == null ? activityAlready.getPlanName() : activityRequest.getPlanName())
+                .build();
+        return activity;
+    }
+    /**
+     * This method transforms a Rest activity object into the business activity object
+     *
      * @param activity Rest park object to be transformed
      * @return A plan object
      */
@@ -165,6 +238,7 @@ public class ActivityController {
                 .tags(activity.getTags())
                 .parkName(activity.getParkName())
                 .planName(activity.getPlanName())
+                .type(PayRequest.ACTIVITY)
                 .build();
         return activityResponse;
     }
@@ -187,6 +261,7 @@ public class ActivityController {
                                 .tags(activity.getTags())
                                 .parkName(activity.getParkName())
                                 .planName(activity.getPlanName())
+                                .type(PayRequest.ACTIVITY)
                                 .build()
                 );
             }

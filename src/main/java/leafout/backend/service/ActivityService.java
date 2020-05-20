@@ -26,7 +26,9 @@ public interface ActivityService {
 
     void saveActivities(List<Activity> activities) throws ActivityException, ParkException, PlanException;
 
-    void updateActivities(List<Activity> activities) ;
+    void updateActivitiesInPark(String parkName,List<Activity> activities) throws ActivityException, ParkException, PlanException;
+
+    void updateActivitiesInPlan(String planName,List<Activity> activities) throws ActivityException, ParkException, PlanException;
 
     /**
      * This method get a Activity
@@ -46,18 +48,22 @@ public interface ActivityService {
      * @param activity that gonna get an update Activity
      */
 
-    void updateActivity(Activity activity) throws ActivityException;
+    Activity updateActivity(Activity activity) throws ActivityException, ParkException, PlanException;
 
     /**
      * This method remove  a Activity
      * @param activity UUID of the Activity
      */
     void remove(Activity activity) throws ActivityException;
+
+    void removeActivities(List<Activity> activities);
     /**
      * This method get all popular activities
      */
     List<Activity> getAllPopulateActivities();
 
     List<Activity> getActivityByTags(List<Tag> tags);
+
+    public void feedComment(String activityName, String userName, String feedbackString) throws leafout.backend.model.exception.NoUserFoundException;
 
 }

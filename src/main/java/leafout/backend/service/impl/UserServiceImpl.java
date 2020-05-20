@@ -32,6 +32,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getByEmail(String userName) throws NoUserFoundException {
+        Optional<User> user = userRepository.getUserByEmail(userName);
+        if (!user.isPresent()){
+            new NoUserFoundException(userName);
+        }
+        return user.get();
+    }
+
+    @Override
     public void save(User user) throws UserAlreadyExistsException {
         userRepository.save(user);
     }
