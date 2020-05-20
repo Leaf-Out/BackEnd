@@ -24,7 +24,7 @@ public interface PlanService {
 
     void savePlans(List<Plan> plans) throws PlanException, ActivityException, ParkException;
 
-    void updatePlans(List<Plan> plans) throws ParkException, ActivityException, PlanException;
+    void updatePlans(String parkName,List<Plan> plans) throws ParkException, ActivityException, PlanException;
 
     /**
      * This method get a Plan

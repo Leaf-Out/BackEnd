@@ -84,8 +84,9 @@ public class ParkServiceImpl implements ParkService {
             throw new ParkException(park.getId());
         }
 
-        planService.updatePlans(park.getPlanList());
-        activityService.updateActivities(park.getActivitiesList());
+
+        planService.updatePlans(park.getName(),park.getPlanList());
+        activityService.updateActivitiesInPark( park.getName(),park.getActivitiesList());
         parkRepository.save(park);
         return park;
     }
@@ -95,9 +96,10 @@ public class ParkServiceImpl implements ParkService {
         if(!parkRepository.existsParkById(park.getId())){
             throw new ParkException(park.getId());
         }
-        parkRepository.delete(park);
+
         planService.removePlans(park.getPlanList());
         activityService.removeActivities(park.getActivitiesList());
+        parkRepository.delete(park);
     }
 
     @Override

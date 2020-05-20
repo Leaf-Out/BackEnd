@@ -333,7 +333,7 @@ public class ParkController{
                 .activitiesList(parkAlredy.getActivitiesList())
                 .description(parkRequest.getDescription() == null ? parkAlredy.getDescription() : parkRequest.getDescription() )
                 .feedback(parkAlredy.getFeedback() )
-                .name(parkRequest.getName() == null ? parkAlredy.getName() : parkRequest.getName())
+                .name(parkRequest.getName() == null ?  parkAlredy.getName() : parkRequest.getName())
                 .planList(parkAlredy.getPlanList())
                 .planDescription(parkRequest.getPlanDescription() == null ? parkAlredy.getPlanDescription() : parkRequest.getPlanDescription() )
                 .activitiyDescription(parkRequest.getActivityDescription() == null ? parkAlredy.getActivitiyDescription() : parkRequest.getActivityDescription())

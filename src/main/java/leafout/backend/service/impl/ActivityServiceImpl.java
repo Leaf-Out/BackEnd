@@ -63,12 +63,21 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void updateActivities(List<Activity> activities) throws ParkException, PlanException, ActivityException {
-
+    public void updateActivitiesInPark(String parkName, List<Activity> activities) throws ActivityException, ParkException, PlanException {
         for (Activity activity: activities){
-           updateActivity(activity);
+            updateActivity(activity);
+            activity.setParkName(parkName);
         }
     }
+
+    @Override
+    public void updateActivitiesInPlan(String planName, List<Activity> activities) throws ActivityException, ParkException, PlanException {
+        for (Activity activity: activities){
+            updateActivity(activity);
+            activity.setPlanName(planName);
+        }
+    }
+
 
     @Override
     public Activity getActivityByName(String activityName) throws ActivityException {
@@ -106,9 +115,22 @@ public class ActivityServiceImpl implements ActivityService {
                 List<Activity> activityP = park.get().getActivitiesList();
                 if(!isInArray(activityP,activity)){
                     activityP.add(activity);
-                    park.get().setActivitiesList(activityP);
-                    parkRepository.save(park.get());
+
+                }else{
+                    for (Activity a : activityP){
+                        if (a.getId().equals(activity.getId())){
+                            a.setParkName(park.get().getName());
+                            a.setDescription(activity.getDescription());
+                            a.setName(activity.getName());
+                            a.setFeedback(activity.getFeedback());
+                            a.setPrices(activity.getPrices());
+                            a.setTags(activity.getTags());
+                        }
+                    }
                 }
+                park.get().setActivitiesList(activityP);
+                parkRepository.save(park.get());
+
             }else {
                 throw new ParkException(activity.getParkName());
             }
@@ -123,9 +145,21 @@ public class ActivityServiceImpl implements ActivityService {
                 List<Activity> activityPl = plan.get().getActivitiesList();
                 if(!isInArray(activityPl,activity)){
                     activityPl.add(activity);
-                    plan.get().setActivitiesList(activityPl);
-                    planRepository.save(plan.get());
+                }else{
+                    for (Activity a : activityPl){
+                        if (a.getId().equals(activity.getId())){
+                            a.setPlanName(plan.get().getName());
+                            a.setDescription(activity.getDescription());
+                            a.setName(activity.getName());
+                            a.setFeedback(activity.getFeedback());
+                            a.setPrices(activity.getPrices());
+                            a.setTags(activity.getTags());
+
+                        }
+                    }
                 }
+                plan.get().setActivitiesList(activityPl);
+                planRepository.save(plan.get());
             }else {
                 throw new PlanException(activity.getPlanName());
             }
@@ -134,7 +168,7 @@ public class ActivityServiceImpl implements ActivityService {
     private Boolean isInArray(List<Activity> activities, Activity activity){
         Boolean b = false;
         for (Activity a : activities){
-            if (a.getName().equals(activity.getName())){
+            if (a.getId().equals(activity.getId())){
                 b = true;
             }
         }

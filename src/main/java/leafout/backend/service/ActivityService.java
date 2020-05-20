@@ -26,7 +26,9 @@ public interface ActivityService {
 
     void saveActivities(List<Activity> activities) throws ActivityException, ParkException, PlanException;
 
-    void updateActivities(List<Activity> activities) throws ActivityException, ParkException, PlanException;
+    void updateActivitiesInPark(String parkName,List<Activity> activities) throws ActivityException, ParkException, PlanException;
+
+    void updateActivitiesInPlan(String planName,List<Activity> activities) throws ActivityException, ParkException, PlanException;
 
     /**
      * This method get a Activity
