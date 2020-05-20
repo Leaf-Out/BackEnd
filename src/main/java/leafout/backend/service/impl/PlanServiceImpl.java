@@ -66,9 +66,10 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public void updatePlans(List<Plan> plans) throws ParkException, ActivityException, PlanException {
+    public void updatePlans(String parkName,List<Plan> plans) throws ParkException, ActivityException, PlanException {
         for(Plan plan : plans){
             updatePlan(plan);
+            plan.setParkName(parkName);
         }
     }
 
@@ -94,7 +95,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public Plan updatePlan(Plan plan) throws ParkException, PlanException, ActivityException {
 
-        activityService.updateActivities(plan.getActivitiesList());
+        activityService.updateActivitiesInPlan(plan.getName(),plan.getActivitiesList());
         AlreadyPlanInPark(plan);
         planRepository.save(plan);
         return plan;
@@ -108,9 +109,21 @@ public class PlanServiceImpl implements PlanService {
                 System.err.println(isInArray(plansP,plan));
                 if (!isInArray(plansP,plan)){
                     plansP.add(plan);
-                    park.get().setPlanList(plansP);
-                    parkRepository.save(park.get());
+
+                }else{
+                    for (Plan p : plansP){
+                        if (p.getId().equals(plan.getId())){
+                            p.setParkName(park.get().getName());
+                            p.setDescription(plan.getDescription());
+                            p.setName(plan.getName());
+                            p.setFeedback(plan.getFeedback());
+                            p.setPrices(plan.getPrices());
+                            p.setTags(plan.getTags());
+                        }
+                    }
                 }
+                park.get().setPlanList(plansP);
+                parkRepository.save(park.get());
             } else {
                 throw new ParkException(plan.getParkName());
             }
@@ -121,7 +134,7 @@ public class PlanServiceImpl implements PlanService {
     private Boolean isInArray(List<Plan> plans, Plan plan){
         Boolean b = false;
         for (Plan p : plans){
-            if (p.getName().equals(plan.getName())){
+            if (p.getId().equals(plan.getId())){
                 b = true;
             }
         }
