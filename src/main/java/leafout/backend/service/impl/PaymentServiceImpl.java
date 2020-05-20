@@ -56,8 +56,8 @@ public class PaymentServiceImpl implements PaymentService {
 	/**
 	 * Injected ShippingCartServices object
 	 */
-	//@Autowired
-	//private ShoppingCartServices shoppingCartServices;
+	@Autowired
+	private ShoppingCartService shoppingCartServices;
 
 	/**
 	 * Injected PaymentPersistence object
@@ -77,6 +77,8 @@ public class PaymentServiceImpl implements PaymentService {
 		if (user != null) {
 			final PaymentResponse paymentResponse = restClient.pay(purchase, user);
 			paymentProcess(paymentResponse,purchase,user);
+			//FIX
+			shoppingCartServices.remove(userId,purchase.getTicket().getId());
 
 		} else {
 			throw new NoUserFoundException(userId);
@@ -110,6 +112,7 @@ public class PaymentServiceImpl implements PaymentService {
 		} else {
 			if (PaymentResponseCode.SUCCESSFUL_TRANSACTION.equals(response.getPaymentResult().getPaymentResponseCode())) {
 				//TODO remove ticket from the shopping cart
+
 			}
 		}
 	}

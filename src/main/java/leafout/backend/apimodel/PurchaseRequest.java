@@ -49,7 +49,7 @@ public class PurchaseRequest {
 	 */
 	private PaymentMethod paymentMethod;
 
-	/**
+	/**clo
 	 * Units of the product to be bought
 	 */
 	private int units;

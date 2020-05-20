@@ -22,8 +22,14 @@ import java.util.UUID;
 @JsonTypeName("Activity")
 public class Activity extends Pay{
 
+    String parkName;
+
+    String planName;
+
     @Builder
-    public Activity(String id, String name, String description, Map< Population,Double > prices, List<Tag> tags, Feedback feedback) {
+    public Activity(String id,String parkName,String planName, String name, String description, Map< Population,Double > prices, List<Tag> tags, Feedback feedback) {
         super(id,name,description,prices,tags,feedback);
+        this.parkName = parkName;
+        this.planName = planName;
     }
 }

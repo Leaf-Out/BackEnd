@@ -1,7 +1,5 @@
 package leafout.backend.model.exception;
 
-import java.util.UUID;
-
 /**
  * This exception occurs when a no existent transaction is trying to be consulted
  *
@@ -9,7 +7,7 @@ import java.util.UUID;
  * @since 0.0.1
  */
 public class NoTransactionFoundException extends Exception {
-	public NoTransactionFoundException(String transaction) {
-		super("There is no transaction with the ID " + transaction);
-	}
+    public NoTransactionFoundException(String transaction) {
+        super("There is no transaction with the ID " + transaction);
+    }
 }

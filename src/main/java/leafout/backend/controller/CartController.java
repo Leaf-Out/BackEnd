@@ -1,7 +1,11 @@
 package leafout.backend.controller;
 
 import leafout.backend.apimodel.CartItemResponse;
+import leafout.backend.apimodel.CartPayRequest;
+import leafout.backend.apimodel.TicketResponse;
 import leafout.backend.model.CartItem;
+import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.Pay;
 import leafout.backend.model.exception.NoUserFoundException;
 import leafout.backend.service.ShoppingCartService;
@@ -31,8 +35,11 @@ public class CartController {
     }
 
     @PostMapping("/{id}/items")
-    public ResponseEntity<?> add(@PathVariable("id") String id, @RequestBody CartItem payable) throws NoUserFoundException {
-        cartService.add(id, payable);
+    public ResponseEntity<?> add(@PathVariable("id") String userEmail, @RequestBody List<CartPayRequest> payables) throws NoUserFoundException, ParkException, ActivityException {
+        for (CartPayRequest payable:
+             payables ) {
+            cartService.add(userEmail, payable.getItemId(),payable.getType(), payable.getPopulation() );
+        }
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -53,12 +60,13 @@ public class CartController {
 
         for (CartItem payable : payables) {
             CartItemResponse newItem = CartItemResponse.builder()
-                    .id(payable.getItem().getId())
+                    .itemId(payable.getItem().getId())
                     .population(payable.getPopulation())
                     .price(payable.getItem().getPrices().get(payable.getPopulation()))
                     .rating(payable.getItem().getFeedback().getRating())
                     .type(payable.getType())
                     .build();
+            
             items.add(newItem);
         }
         return items;

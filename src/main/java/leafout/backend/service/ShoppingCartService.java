@@ -1,11 +1,13 @@
 package leafout.backend.service;
 
+import leafout.backend.apimodel.PayTypes;
 import leafout.backend.model.Cart;
 import leafout.backend.model.CartItem;
+import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Exception.ParkException;
+import leafout.backend.model.Population;
 import leafout.backend.model.exception.NoUserFoundException;
-import org.springframework.stereotype.Service;
 
-@Service
 public interface ShoppingCartService {
 
     /**
@@ -22,7 +24,16 @@ public interface ShoppingCartService {
      * @param id
      * @param pay pay item to be added
      */
-    void add(String id, CartItem pay) throws NoUserFoundException;
+    void add(String id, CartItem pay) throws NoUserFoundException, ParkException, ActivityException;
+
+    /**
+     * This method adds a new item to the cart
+     * @param userEmail
+     * @param pay pay item to be added
+     * @param type
+     * @param population
+     */
+    void add(String userEmail, String pay, PayTypes type, Population population) throws NoUserFoundException, ParkException, ActivityException;
 
     /**
      * This method removes an item from the cart

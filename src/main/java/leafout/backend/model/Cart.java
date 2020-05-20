@@ -2,6 +2,7 @@ package leafout.backend.model;
 
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ import java.util.List;
 @Getter
 @Builder
 public class Cart {
-    private String Id;
+    @Id
+    private String user;
+    //private List<Ticket> tickets;
     private List<CartItem> items;
 }

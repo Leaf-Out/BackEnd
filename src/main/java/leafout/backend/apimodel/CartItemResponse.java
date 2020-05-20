@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 public class CartItemResponse {
     PayTypes type;
-    String id;
+    String itemId;
     double price;
     double rating;
     Population population;

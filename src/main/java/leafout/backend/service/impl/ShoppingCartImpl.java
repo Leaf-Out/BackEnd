@@ -1,18 +1,20 @@
 package leafout.backend.service.impl;
 
 import leafout.backend.apimodel.PayTypes;
-import leafout.backend.model.Cart;
-import leafout.backend.model.CartItem;
-import leafout.backend.model.Pay;
-import leafout.backend.model.User;
+import leafout.backend.model.*;
+import leafout.backend.model.Exception.ActivityException;
+import leafout.backend.model.Exception.ParkException;
 import leafout.backend.model.exception.NoUserFoundException;
 import leafout.backend.persistence.CartRespository;
 import leafout.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ShoppingCartImpl implements ShoppingCartService {
 
     @Autowired
@@ -42,8 +44,8 @@ public class ShoppingCartImpl implements ShoppingCartService {
         if (cart.isPresent()) {
             return cart.get();
         } else {
-
-            return Cart.builder().Id(id).build();
+            List<CartItem> items = new ArrayList();
+            return Cart.builder().user(id).items(items).build();
         }
     }
 
@@ -54,7 +56,7 @@ public class ShoppingCartImpl implements ShoppingCartService {
      * @param pay pay item to be added
      */
     @Override
-    public void add(String id, CartItem pay) throws NoUserFoundException {
+    public void add(String id, CartItem pay) throws NoUserFoundException, ParkException, ActivityException {
         final User user = userService.getById(id).get();
         if (PayTypes.PARK.equals(pay.getType())) {
             final Pay park = parkService.getParkById(pay.getItem().getId());
@@ -66,6 +68,45 @@ public class ShoppingCartImpl implements ShoppingCartService {
 
         final Cart cart = getCart(id);
         cart.getItems().add(pay);
+        cartRepository.save(cart);
+    }
+
+    /**
+     * This method adds a new item to the cart
+     * given an item id
+     * @param userEmail for the item to be added to the cart
+     * @param pay pay item to be added
+     * @param type
+     * @param population
+     */
+    @Override
+    public void add(String userEmail, String pay, PayTypes type, Population population) throws NoUserFoundException, ParkException, ActivityException {
+        final User user = userService.getById(userEmail).get();
+        final Cart cart = getCart(userEmail);
+        final Pay payItem;
+        if (PayTypes.PARK.equals(type)) {
+            payItem = parkService.getParkById(pay);
+            payItem.getPrices();
+            CartItem cartItem = CartItem.builder()
+                    .item(payItem)
+                    .population(population)
+                    .build();
+            cart.getItems().add(cartItem);
+        } else if (PayTypes.PLAN.equals(type)) {
+            payItem = planService.getPlanById(pay);
+            CartItem cartItem = CartItem.builder()
+                    .item(payItem)
+                    .population(population)
+                    .build();
+            cart.getItems().add(cartItem);
+        } else {
+            payItem = activityService.getActivityById(pay);
+            CartItem cartItem = CartItem.builder()
+                    .item(payItem)
+                    .population(population)
+                    .build();
+            cart.getItems().add(cartItem);
+        }
         cartRepository.save(cart);
     }
 
@@ -95,6 +136,6 @@ public class ShoppingCartImpl implements ShoppingCartService {
      */
     @Override
     public void clear(String id) {
-        cartRepository.insert(Cart.builder().Id(id).build());
+        cartRepository.insert(Cart.builder().user(id).build());
     }
 }
