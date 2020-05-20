@@ -239,8 +239,8 @@ public class ParkController{
 
     }
 
-    @PostMapping(path = "/{name}/feedback/{user}")
-    public ResponseEntity<?> feedbackComment(@PathVariable("name") String parkName, @PathVariable("user") String userName, @RequestBody String feedbackString){
+    @PostMapping(path = "/{name}/feedback/{user}/content/{content}")
+    public ResponseEntity<?> feedbackComment(@PathVariable("name") String parkName, @PathVariable("user") String userName, @PathVariable("content") String feedbackString){
         ResponseEntity response = null;
         try {
             parkService.feedComment(parkName,userName,feedbackString);

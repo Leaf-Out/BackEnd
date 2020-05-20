@@ -170,6 +170,21 @@ public class ActivityController {
         return response;
     }
 
+    @PostMapping(path = "/{name}/feedback/{user}/content/{content}")
+    public ResponseEntity<?> feedbackComment(@PathVariable("name") String activityName, @PathVariable("user") String userName, @PathVariable("content") String feedbackString){
+        ResponseEntity response = null;
+        try {
+            activityServices.feedComment(activityName,userName,feedbackString);
+            response = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (leafout.backend.model.exception.NoUserFoundException e) {
+            e.printStackTrace();
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return response;
+
+    }
+
 
     /**
      * This method transforms a Rest activity object into the business activity object

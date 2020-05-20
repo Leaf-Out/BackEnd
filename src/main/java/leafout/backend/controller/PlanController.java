@@ -210,8 +210,8 @@ public class PlanController {
         return response;
     }
 
-    @PostMapping(path = "/{name}/feedback/{user}")
-    public ResponseEntity<?> feedbackComment(@PathVariable("name") String planName, @PathVariable("user") String userName, @RequestBody String feedbackString){
+    @PostMapping(path = "/{name}/feedback/{user}/content/{content}")
+    public ResponseEntity<?> feedbackComment(@PathVariable("name") String planName, @PathVariable("user") String userName, @PathVariable("content") String feedbackString){
         ResponseEntity response = null;
         try {
             planServices.feedComment(planName,userName,feedbackString);
