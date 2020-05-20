@@ -78,7 +78,7 @@ public class PaymentServiceImpl implements PaymentService {
 			final PaymentResponse paymentResponse = restClient.pay(purchase, user);
 			paymentProcess(paymentResponse,purchase,user);
 			//FIX
-			shoppingCartServices.remove(userId,purchase.getTicket().getId());
+			shoppingCartServices.remove(userName,purchase.getTicket().getId());
 
 		} else {
 			throw new NoUserFoundException(userName);
