@@ -116,8 +116,8 @@ public class ActivityController {
      *
      */
 
-    @PostMapping(path = "/{name}/rating")
-    public ResponseEntity<?> ratingActivity(@RequestBody Double rating, @PathVariable("name") String activityName) {
+    @PostMapping(path = "/{name}/rating/{rating}")
+    public ResponseEntity<?> ratingActivity(@PathVariable("rating") Double rating, @PathVariable("name") String activityName) {
         Activity activity = null;
         try {
             activity = activityServices.getActivityByName(activityName);
