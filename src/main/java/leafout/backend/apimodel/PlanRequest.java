@@ -40,7 +40,7 @@ public class PlanRequest {
     /**
      * Price of the Plan depending on the population segment
      */
-    private Map<Population,Double > prices;
+    private Map<Population, Double> prices;
 
     /**
      * Key words that represent the Plan

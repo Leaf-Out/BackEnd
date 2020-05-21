@@ -9,7 +9,6 @@ import org.springframework.data.annotation.Id;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * This class represents a payable item
@@ -47,7 +46,7 @@ public abstract class Pay {
 	/**
 	 * Price of the item depending on the population segment
 	 */
-	protected Map< Population,Double > prices;
+	protected Map<Population, Double> prices;
 
 	/**
 	 * Key words that represent the item

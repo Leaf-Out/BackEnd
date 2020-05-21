@@ -2,11 +2,7 @@ package leafout.backend.apimodel;
 
 import leafout.backend.model.PaymentMethod;
 import leafout.backend.model.Population;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 
@@ -53,7 +49,7 @@ public class PurchaseRequest {
 	 */
 	private PaymentMethod paymentMethod;
 
-	/**
+	/**clo
 	 * Units of the product to be bought
 	 */
 	private int units;
@@ -63,14 +59,14 @@ public class PurchaseRequest {
 	 */
 	private Population population;
 
-	/**
-	 * Type of payable being payed
-	 */
-	private PayRequest pay;
+    /**
+     * Type of payable being payed
+     */
+    private PayTypes pay;
 
-	/**
-	 * ID of the payable
-	 */
-	private String payId;
+    /**
+     * ID of the payable
+     */
+    private String payId;
 
 }

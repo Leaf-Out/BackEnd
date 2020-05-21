@@ -1,6 +1,6 @@
 package leafout.backend.apimodel;
 
-public enum PayRequest {
+public enum PayTypes {
     PARK,
     PLAN,
     ACTIVITY
