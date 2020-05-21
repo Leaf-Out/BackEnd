@@ -38,7 +38,7 @@ public class ActivityRequest {
     /**
      * Price of the item depending on the population segment
      */
-    private Map<Population,Double > prices;
+    private Map<Population, Double> prices;
 
     /**
      * Key words that represent the item

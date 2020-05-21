@@ -2,8 +2,6 @@ package leafout.backend.model;
 
 import lombok.*;
 
-import java.util.UUID;
-
 
 /**
  * This class represents a location

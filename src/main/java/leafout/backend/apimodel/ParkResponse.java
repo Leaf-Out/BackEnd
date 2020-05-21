@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import leafout.backend.model.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class ParkResponse {
     /**
      * Price of the Park depending on the population segment
      */
-    private Map<Population,Double > prices;
+    private Map<Population, Double> prices;
 
     /**
      * Key words that represent the Park

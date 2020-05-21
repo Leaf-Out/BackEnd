@@ -20,14 +20,14 @@ public class CustomerDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.getUserByEmail(email);
-        if(userOptional.isPresent()) {
+        if (userOptional.isPresent()) {
             final User user = userOptional.get();
             String name = user.getName();
             String password = user.getPassword();
             List<String> roles = new ArrayList<>();
             roles.add(user.getRole());
             List<String> authorities = roles;
-            MongoUserDetails mongoUserDetails = new MongoUserDetails(email,password,authorities.toArray(new String[authorities.size()]));
+            MongoUserDetails mongoUserDetails = new MongoUserDetails(email, password, authorities.toArray(new String[authorities.size()]));
             return mongoUserDetails;
         }
         return null;

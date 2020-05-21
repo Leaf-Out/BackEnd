@@ -14,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -27,49 +26,49 @@ import java.util.stream.Collectors;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-	private final AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-	public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
-		this.authenticationManager = authenticationManager;
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
 
-		setFilterProcessesUrl(SecurityConstants.AUTH_LOGIN_URL);
-	}
+        setFilterProcessesUrl(SecurityConstants.AUTH_LOGIN_URL);
+    }
 
-	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-		var username = request.getParameter("username");
-		var password = request.getParameter("password");
-		var authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+        var username = request.getParameter("username");
+        var password = request.getParameter("password");
+        var authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
 
-		return authenticationManager.authenticate(authenticationToken);
-	}
+        return authenticationManager.authenticate(authenticationToken);
+    }
 
-	@Override
-	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-											FilterChain filterChain, Authentication authentication) {
-		var user = ((UserDetails) authentication.getPrincipal());
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain filterChain, Authentication authentication) {
+        var user = ((UserDetails) authentication.getPrincipal());
 
-		var roles = user.getAuthorities()
-						.stream()
-						.map(GrantedAuthority::getAuthority)
-						.collect(Collectors.toList());
+        var roles = user.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
 
-		var signingKey = SecurityConstants.JWT_SECRET.getBytes();
+        var signingKey = SecurityConstants.JWT_SECRET.getBytes();
 
-		var token = Jwts.builder()
-						.signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
-						.setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
-						.setIssuer("Leaf out")
-						.setSubject(user.getUsername())
-						.setExpiration(new Date(System.currentTimeMillis() + 864000000))
-						.claim("rol", roles)
-						.compact();
+        var token = Jwts.builder()
+                .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
+                .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
+                .setIssuer("Leaf out")
+                .setSubject(user.getUsername())
+                .setExpiration(new Date(System.currentTimeMillis() + 864000000))
+                .claim("rol", roles)
+                .compact();
 
-		response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + token);
-		try {
-			response.getWriter().write("{\"token\": \"" + token + "\"}");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + token);
+        try {
+            response.getWriter().write("{\"token\": \"" + token + "\"}");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

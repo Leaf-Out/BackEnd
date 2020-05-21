@@ -1,14 +1,9 @@
 package leafout.backend.apimodel;
 
 import leafout.backend.model.PaymentMethod;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * This class represents a transaction for the client
@@ -23,10 +18,10 @@ import java.util.UUID;
 @NoArgsConstructor
 public class TransactionResponse {
 
-	/**
-	 * ID of the transaction
-	 */
-	private String id;
+    /**
+     * ID of the transaction
+     */
+    private String id;
 
 	/**
 	 * Date when the transaction was first made

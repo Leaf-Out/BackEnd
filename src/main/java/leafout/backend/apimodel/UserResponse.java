@@ -2,7 +2,8 @@ package leafout.backend.apimodel;
 
 import leafout.backend.model.Feedback;
 import leafout.backend.model.Ticket;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
 

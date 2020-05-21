@@ -1,11 +1,8 @@
 package leafout.backend.controller;
 
-import leafout.backend.apimodel.PlanRequest;
-import leafout.backend.apimodel.PlanResponse;
 import leafout.backend.apimodel.UserRequest;
 import leafout.backend.apimodel.UserResponse;
 import leafout.backend.model.Feedback;
-import leafout.backend.model.Plan;
 import leafout.backend.model.User;
 import leafout.backend.model.exception.NoUserFoundException;
 import leafout.backend.model.exception.UserAlreadyExistsException;
@@ -29,14 +26,14 @@ public class UserController {
     private UserServiceImpl userService;
 
     @GetMapping
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAll() {
         List<User> users = new ArrayList<>();
 
         try {
-            users= userService.getAll();
+            users = userService.getAll();
             return new ResponseEntity<>(mapUsersResponse(users), HttpStatus.ACCEPTED);
-        }catch (NoUserFoundException e){
-            return  new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NoUserFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -69,24 +66,25 @@ public class UserController {
     public ResponseEntity<?> getFeedbackById(){return null;}
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody UserRequest user){
+    public ResponseEntity<?> add(@RequestBody UserRequest user) {
         try {
             userService.save(mapUser(user));
             return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (UserAlreadyExistsException e){
+        } catch (UserAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping(path = "/{Id}")
-    public ResponseEntity<?> delete(@PathVariable("Id") String userId){
+    public ResponseEntity<?> delete(@PathVariable("Id") String userId) {
         try {
             userService.delete(userId);
             return new ResponseEntity<>(userId, HttpStatus.OK);
-        } catch (NoUserFoundException e){
+        } catch (NoUserFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
     /**
      * This method transforms a Rest user object into the business user object
      *
@@ -101,6 +99,7 @@ public class UserController {
                 .build();
         return user;
     }
+
     /**
      * This method transforms a Rest user object into the business user object
      *
@@ -115,6 +114,7 @@ public class UserController {
                 .build();
         return userResponse;
     }
+
     /**
      * This method transforms a lists of  User object into the response  list User object
      *

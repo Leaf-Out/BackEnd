@@ -2,14 +2,9 @@ package leafout.backend.apimodel;
 
 
 import leafout.backend.model.Population;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * This class represents a ticket to the client
@@ -23,10 +18,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketResponse {
-	/**
-	 * ID of the ticket to be payed
-	 */
-	private String id;
+    /**
+     * ID of the ticket to be payed
+     */
+    private String id;
 
 	/**
 	 * Date when the ticket starts being valid
