@@ -37,7 +37,8 @@ public class ShoppingCartImpl implements ShoppingCartService {
      * @return Shopping cart object
      */
     @Override
-    public Cart getCart(String id) {
+    public Cart getCart(String id) throws NoUserFoundException {
+
         final Optional<Cart> cart = cartRepository.findById(id);
         if (cart.isPresent()) {
             return cart.get();
@@ -68,7 +69,7 @@ public class ShoppingCartImpl implements ShoppingCartService {
      */
     @Override
     public void add(String userEmail, String pay, PayTypes type, Population population) throws NoUserFoundException, ParkException, ActivityException {
-        final User user = userService.getById(userEmail).get();
+        final User user = userService.getByEmail(userEmail);
         final Cart cart = getCart(userEmail);
         if(cart.getItems().get(pay.concat(population.toString())) != null){
             cart.getItems().get(pay.concat(population.toString())).setUnits(
@@ -83,6 +84,7 @@ public class ShoppingCartImpl implements ShoppingCartService {
                         .item(payItem)
                         .population(population)
                         .units(1)
+                        .type(type)
                         .build();
                 cart.getItems().put(pay.concat(population.toString()), cartItem);
             } else if (PayTypes.PLAN.equals(type)) {
@@ -91,6 +93,7 @@ public class ShoppingCartImpl implements ShoppingCartService {
                         .item(payItem)
                         .population(population)
                         .units(1)
+                        .type(type)
                         .build();
                 cart.getItems().put(pay.concat(population.toString()), cartItem);
             } else {
@@ -99,6 +102,7 @@ public class ShoppingCartImpl implements ShoppingCartService {
                         .item(payItem)
                         .population(population)
                         .units(1)
+                        .type(type)
                         .build();
                 cart.getItems().put(pay.concat(population.toString()), cartItem);
             }
@@ -113,11 +117,11 @@ public class ShoppingCartImpl implements ShoppingCartService {
      * @param pay item identifier for the object to be removed.
      */
     @Override
-    public void remove(String id, String pay) {
+    public void remove(String id, String pay) throws NoUserFoundException {
         Cart cart = getCart(id);
         Map<String,CartItem> items = cart.getItems();
         items.remove(pay);
-        cartRepository.insert(cart);
+        cartRepository.save(cart);
     }
 
     /**

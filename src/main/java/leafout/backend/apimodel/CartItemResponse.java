@@ -1,5 +1,7 @@
 package leafout.backend.apimodel;
 
+import leafout.backend.model.Feedback;
+import leafout.backend.model.Pay;
 import leafout.backend.model.Population;
 import lombok.*;
 
@@ -10,9 +12,8 @@ import lombok.*;
 @Builder
 public class CartItemResponse {
     PayTypes type;
-    String itemId;
+    Pay pay;
     double price;
-    double rating;
     Population population;
     int units;
 }

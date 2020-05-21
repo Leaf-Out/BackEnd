@@ -28,7 +28,7 @@ public class CartController {
     ShoppingCartService cartService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<CartItemResponse>> get(final @PathVariable("id") String id) {
+    public ResponseEntity<List<CartItemResponse>> get(final @PathVariable("id") String id) throws NoUserFoundException {
         List<CartItemResponse> cart = mapItems(cartService.getCart(id).getItems());
         final ResponseEntity<List<CartItemResponse>> response = new ResponseEntity(cart, HttpStatus.OK);
         return response;
@@ -50,7 +50,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}/items/{item}")
-    public ResponseEntity<Pay> removeItem(final @PathVariable("id") String id, final @PathVariable("item") String pay) {
+    public ResponseEntity<Pay> removeItem(final @PathVariable("id") String id, final @PathVariable("item") String pay) throws NoUserFoundException {
         cartService.remove(id, pay);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -59,10 +59,9 @@ public class CartController {
         final List<CartItemResponse> items = new ArrayList<>();
         for (Map.Entry<String, CartItem> payable : payables.entrySet()) {
             CartItemResponse newItem = CartItemResponse.builder()
-                    .itemId(payable.getValue().getItem().getId())
+                    .pay(payable.getValue().getItem())
                     .population(payable.getValue().getPopulation())
                     .price(payable.getValue().getItem().getPrices().get(payable.getValue().getPopulation()))
-                    .rating(payable.getValue().getItem().getFeedback().getRating())
                     .type(payable.getValue().getType())
                     .units(payable.getValue().getUnits())
                     .build();

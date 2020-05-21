@@ -16,7 +16,7 @@ public interface ShoppingCartService {
      * @param id
      * @return Shopping cart object
      */
-    Cart getCart(String id);
+    Cart getCart(String id) throws NoUserFoundException;
 
     /**
      * This method adds a new item to the cart
@@ -41,7 +41,7 @@ public interface ShoppingCartService {
      * @param id
      * @param pay item identifier for the object to be removed.
      */
-    void remove(String id, String pay);
+    void remove(String id, String pay) throws NoUserFoundException;
 
     /**
      * This method removes all items from the cart

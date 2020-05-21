@@ -198,9 +198,11 @@ public class PaymentController {
 	@SneakyThrows
 	private Ticket generateTicket(final PurchaseRequest purchaseRequest) {
 		final Pay pay;
-		if (PayRequest.PARK.equals(purchaseRequest.getPay())) {
+		System.err.println(purchaseRequest.getPay());
+		System.err.println(PayRequest.PLAN.toString().equals(purchaseRequest.getPay().toString()));
+		if (PayRequest.PARK.toString().equals(purchaseRequest.getPay().toString())) {
 			pay = parkService.getParkById(purchaseRequest.getPayId());
-		} else if (PayRequest.PLAN.equals(purchaseRequest.getPay())) {
+		} else if (PayRequest.PLAN.toString().equals(purchaseRequest.getPay().toString())) {
 			pay = planService.getPlanById(purchaseRequest.getPayId());
 		} else {
 			pay = activityService.getActivityById(purchaseRequest.getPayId());
