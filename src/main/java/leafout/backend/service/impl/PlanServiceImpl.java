@@ -102,7 +102,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     private void AlreadyPlanInPark(Plan plan) throws ParkException {
-        if (plan.getParkName() != null) {
+        if (plan.getParkName() != "") {
             Optional<Park> park = parkRepository.getParkByName(plan.getParkName());
             if (park.isPresent()) {
                 List<Plan> plansP = park.get().getPlanList();

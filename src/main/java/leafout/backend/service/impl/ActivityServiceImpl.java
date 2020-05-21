@@ -48,9 +48,10 @@ public class ActivityServiceImpl implements ActivityService {
         if(activityRepository.existsActivityByName(activity.getName())){
             throw new ActivityException(activity.getName());
         }
-        activityRepository.save(activity);
+
         AlreadyActivityInPark(activity);
         AlreadyActivityInPlan(activity);
+        activityRepository.save(activity);
 
     }
 
@@ -109,7 +110,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     private void AlreadyActivityInPark(Activity activity) throws ParkException, PlanException {
-        if (activity.getParkName() != null){
+        if (activity.getParkName() != ""){
             Optional<Park> park = parkRepository.getParkByName(activity.getParkName());
             if (park.isPresent()){
                 List<Activity> activityP = park.get().getActivitiesList();
@@ -139,7 +140,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     private void AlreadyActivityInPlan(Activity activity) throws PlanException {
-        if (activity.getPlanName() != null){
+        if (activity.getPlanName() != ""){
             Optional<Plan> plan = planRepository.getPlanByName(activity.getPlanName());
             if (plan.isPresent()){
                 List<Activity> activityPl = plan.get().getActivitiesList();
