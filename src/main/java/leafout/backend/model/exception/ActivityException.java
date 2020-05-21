@@ -1,4 +1,4 @@
-package leafout.backend.model.Exception;
+package leafout.backend.model.exception;
 
 
 import java.util.UUID;

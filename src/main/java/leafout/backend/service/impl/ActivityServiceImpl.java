@@ -1,9 +1,9 @@
 package leafout.backend.service.impl;
 
 import leafout.backend.model.*;
-import leafout.backend.model.Exception.ActivityException;
-import leafout.backend.model.Exception.ParkException;
-import leafout.backend.model.Exception.PlanException;
+import leafout.backend.model.exception.ActivityException;
+import leafout.backend.model.exception.ParkException;
+import leafout.backend.model.exception.PlanException;
 import leafout.backend.persistence.ActivityRepository;
 import leafout.backend.persistence.ParkRepository;
 import leafout.backend.persistence.PlanRepository;

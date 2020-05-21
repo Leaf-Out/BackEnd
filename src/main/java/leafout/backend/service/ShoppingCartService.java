@@ -3,8 +3,8 @@ package leafout.backend.service;
 import leafout.backend.apimodel.PayTypes;
 import leafout.backend.model.Cart;
 import leafout.backend.model.CartItem;
-import leafout.backend.model.Exception.ActivityException;
-import leafout.backend.model.Exception.ParkException;
+import leafout.backend.model.exception.ActivityException;
+import leafout.backend.model.exception.ParkException;
 import leafout.backend.model.Population;
 import leafout.backend.model.exception.NoUserFoundException;
 

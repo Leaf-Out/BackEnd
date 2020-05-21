@@ -1,8 +1,8 @@
 package leafout.backend.service;
 
-import leafout.backend.model.Exception.ActivityException;
-import leafout.backend.model.Exception.ParkException;
-import leafout.backend.model.Exception.PlanException;
+import leafout.backend.model.exception.ActivityException;
+import leafout.backend.model.exception.ParkException;
+import leafout.backend.model.exception.PlanException;
 import leafout.backend.model.Plan;
 import leafout.backend.model.Tag;
 

@@ -1,6 +1,4 @@
-package leafout.backend.model.Exception;
-
-import java.util.UUID;
+package leafout.backend.model.exception;
 
 public class PlanException extends Exception {
 

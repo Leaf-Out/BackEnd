@@ -1,13 +1,11 @@
 package leafout.backend.service;
 
-import leafout.backend.model.Exception.ActivityException;
-import leafout.backend.model.Exception.ParkException;
-import leafout.backend.model.Exception.PlanException;
+import leafout.backend.model.exception.ActivityException;
+import leafout.backend.model.exception.ParkException;
+import leafout.backend.model.exception.PlanException;
 import leafout.backend.model.Park;
 import leafout.backend.model.Population;
 import leafout.backend.model.Tag;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.List;

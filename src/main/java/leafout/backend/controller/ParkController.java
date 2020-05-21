@@ -2,14 +2,13 @@ package leafout.backend.controller;
 
 import leafout.backend.apimodel.*;
 import leafout.backend.model.*;
-import leafout.backend.model.Exception.ActivityException;
-import leafout.backend.model.Exception.ParkException;
-import leafout.backend.model.Exception.PlanException;
+import leafout.backend.model.exception.ActivityException;
+import leafout.backend.model.exception.ParkException;
+import leafout.backend.model.exception.PlanException;
 
 
 import leafout.backend.model.exception.NoUserFoundException;
 import leafout.backend.service.ParkService;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

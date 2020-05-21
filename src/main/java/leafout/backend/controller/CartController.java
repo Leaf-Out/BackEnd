@@ -2,10 +2,9 @@ package leafout.backend.controller;
 
 import leafout.backend.apimodel.CartItemResponse;
 import leafout.backend.apimodel.CartPayRequest;
-import leafout.backend.apimodel.TicketResponse;
 import leafout.backend.model.CartItem;
-import leafout.backend.model.Exception.ActivityException;
-import leafout.backend.model.Exception.ParkException;
+import leafout.backend.model.exception.ActivityException;
+import leafout.backend.model.exception.ParkException;
 import leafout.backend.model.Pay;
 import leafout.backend.model.exception.NoUserFoundException;
 import leafout.backend.service.ShoppingCartService;
